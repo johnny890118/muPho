@@ -1,0 +1,27 @@
+nav {
+  background-color: #c3c0db;
+  ul {
+    .logo {
+      h1 {
+        color: #5e5b78;
+      }
+    }
+    .bar {
+      li {
+        &:hover {
+          transition: 0.4s;
+          background-color: #5e5b78;
+          a {
+            color: #c3c0db;
+          }
+        }
+        a {
+          color: #5e5b78;
+          font-weight: bold;
+          display: block;
+          // padding: 0.5rem 1rem;
+        }
+      }
+    }
+  }
+}
