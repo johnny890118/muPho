@@ -1,7 +1,7 @@
 import Image from "next/image";
 import searchImg from "@/styles/icons8-search.svg";
 
-const Search = ({ search, setInput }) => {
+const Search = ({ search, setInput, handleButtonClick }) => {
   const inputHandler = (e) => {
     setInput(e.target.value);
   };
@@ -24,7 +24,13 @@ const Search = ({ search, setInput }) => {
           type="text"
           placeholder="搜尋相片"
         />
-        <button className="searchBtn sm:w-[18vh] w-[8vh]" onClick={search}>
+        <button
+          className="searchBtn sm:w-[18vh] w-[8vh]"
+          onClick={() => {
+            search();
+            handleButtonClick();
+          }}
+        >
           <Image src={searchImg} alt="" width={20} height={20} />
         </button>
       </div>

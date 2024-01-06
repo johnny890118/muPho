@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Search from "@/components/Search";
 import axios from "axios";
 import Picture from "@/components/Picture";
@@ -49,6 +49,14 @@ const Home = () => {
     search(initialURL);
   }, []);
 
+  const nextDivRef = useRef(null);
+
+  const handleButtonClick = () => {
+    if (nextDivRef.current) {
+      nextDivRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Layout>
       <div style={{ minHeight: "100vh" }}>
@@ -57,8 +65,9 @@ const Home = () => {
             search(searchURL);
           }}
           setInput={setInput}
+          handleButtonClick={handleButtonClick}
         />
-        <div className="pictures">
+        <div className="pictures" ref={nextDivRef}>
           {data &&
             data.map((d, index) => {
               return <Picture data={d} key={index} />;
