@@ -13,6 +13,34 @@ const Home = () => {
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
   let searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
+  let muphoURL = `https://api.timelessq.com/music/tencent/search?keyword=${input}`;
+
+  const searchMupho = async (url) => {
+    try {
+      let result = await axios.get(url, {
+        headers: { "User-Agent": "Apifox/1.0.0 (https://apifox.com)" },
+      });
+
+      const songmid = result.data.data.list[0].songmid;
+      const lyricsResponse = await axios.get(
+        `https://api.timelessq.com/music/tencent/lyric?songmid=${songmid}`,
+        {
+          headers: {
+            "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
+          },
+        }
+      );
+      const lyricsWonderful = lyricsResponse.data.data.lyric.replace(
+        /\[[^\]]*\]/g,
+        ""
+      );
+      setLyrics(lyricsWonderful);
+    } catch (error) {
+      console.error("Error fetching lyrics:", error);
+      setLyrics("無法加載歌詞");
+    }
+  };
+
   const search = async (url) => {
     if (input === "") {
       let result = await axios.get(initialURL, {
@@ -63,6 +91,9 @@ const Home = () => {
         <Search
           search={() => {
             search(searchURL);
+          }}
+          searchMupho={() => {
+            searchMupho(muphoURL);
           }}
           setInput={setInput}
           handleButtonClick={handleButtonClick}
