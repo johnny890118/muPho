@@ -28,15 +28,15 @@ const Search = ({ search, setInput, handleButtonClick, searchMupho }) => {
   }, [muphoSelect, searchOnclick]);
 
   return (
-    <div className="searchGroup">
-      <div className="title">
+    <div className="searchGroup flex flex-col justify-center h-[90vh] w-full mb-16">
+      <div className="title flex justify-center items-center mx-8">
         <h1 className="sm:text-4xl font-bold text-2xl">
           讓音樂與相片結合在您生活中的每個角落。
         </h1>
       </div>
-      <div className="search">
+      <div className="search flex justify-center items-center py-12">
         <select
-          className="chooseSel sm:w-[12vh] w-[13vh] text-center sm:text-xl"
+          className="chooseSel sm:w-[15vh] w-[14vh] text-center sm:text-lg h-[8vh]"
           value={muphoSelect}
           onChange={muphoSelectHandler}
         >
@@ -44,22 +44,13 @@ const Search = ({ search, setInput, handleButtonClick, searchMupho }) => {
           <option value="mupho">MuPho</option>
         </select>
         <input
-          className="input sm:w-[30vh] w-[20vh] sm:text-xl"
+          className="input sm:w-[30vh] w-[20vh] sm:text-lg h-[8vh] outline-none rounded-none"
           onChange={inputHandler}
           type="text"
           placeholder="搜尋相片"
         />
         <button
-          className="searchBtn sm:w-[12vh] w-[8vh]"
-          // onClick={() => {
-          //   if (muphoSelect === "photo") {
-          //     search();
-          //     handleButtonClick();
-          //   } else {
-          //     searchMupho();
-          //     handleButtonClick();
-          //   }
-          // }}
+          className="searchBtn sm:w-[12vh] w-[8vh] h-[8vh]"
           onClick={() => {
             setSearchOnclick(true);
           }}
