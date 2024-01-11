@@ -1,33 +1,16 @@
 .searchGroup {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)),
     url("./fidel-fernando-GuH4_xtKnnM-unsplash.jpg");
-  height: 90vh;
-  width: 100%;
-  margin-bottom: 4rem;
   @media screen and (min-width: 1370px) {
     background-size: 100%;
   }
 }
 
 .search {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem 0;
-
   input,
   button,
   .chooseSel {
     border: 5px solid white;
-    height: 7vh;
-  }
-  input {
-    border-radius: 0;
-    outline: none;
-    // width: 25vh;
   }
   .searchBtn,
   .chooseSel {
@@ -57,9 +40,5 @@
   }
 }
 .title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   color: #c3c0db;
-  margin: 0 2rem;
 }

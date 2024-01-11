@@ -17,27 +17,19 @@ const Home = () => {
 
   const searchMupho = async (url) => {
     try {
-      let result = await axios.get(url, {
-        headers: { "User-Agent": "Apifox/1.0.0 (https://apifox.com)" },
-      });
+      let result = await axios.get(url);
 
       const songmid = result.data.data.list[0].songmid;
       const lyricsResponse = await axios.get(
-        `https://api.timelessq.com/music/tencent/lyric?songmid=${songmid}`,
-        {
-          headers: {
-            "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-          },
-        }
+        `https://api.timelessq.com/music/tencent/lyric?songmid=${songmid}`
       );
       const lyricsWonderful = lyricsResponse.data.data.lyric.replace(
         /\[[^\]]*\]/g,
         ""
       );
-      setLyrics(lyricsWonderful);
+      console.log(lyricsWonderful);
     } catch (error) {
       console.error("Error fetching lyrics:", error);
-      setLyrics("無法加載歌詞");
     }
   };
 
