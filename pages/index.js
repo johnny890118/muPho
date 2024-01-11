@@ -13,31 +13,18 @@ const Home = () => {
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
   let searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
-  let muphoURL = `https://api.timelessq.com/music/tencent/search?keyword=${input}`;
-
-  const searchMupho = async (url) => {
+  const searchMupho = async (input) => {
     try {
-      let result = await axios.get(url, {
-        headers: { "User-Agent": "Apifox/1.0.0 (https://apifox.com)" },
-      });
-
-      const songmid = result.data.data.list[0].songmid;
-      const lyricsResponse = await axios.get(
-        `https://api.timelessq.com/music/tencent/lyric?songmid=${songmid}`,
+      const response = await axios.get(
+        `http://192.168.50.126:9457/get_lyrics`,
         {
-          headers: {
-            "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-          },
+          params: { songName: input },
         }
       );
-      const lyricsWonderful = lyricsResponse.data.data.lyric.replace(
-        /\[[^\]]*\]/g,
-        ""
-      );
-      setLyrics(lyricsWonderful);
+      console.log(response.data.lyrics);
     } catch (error) {
       console.error("Error fetching lyrics:", error);
-      setLyrics("無法加載歌詞");
+      console.log("歌詞無法找到。");
     }
   };
 
@@ -93,7 +80,7 @@ const Home = () => {
             search(searchURL);
           }}
           searchMupho={() => {
-            searchMupho(muphoURL);
+            searchMupho(input);
           }}
           setInput={setInput}
           handleButtonClick={handleButtonClick}
