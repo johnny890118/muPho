@@ -2,9 +2,12 @@ import Image from "next/image";
 import searchImg from "@/styles/icons8-search.svg";
 import { useEffect, useState } from "react";
 
-const Search = ({ search, setInput, handleButtonClick, searchMupho }) => {
+const Search = ({ search, setInput, searchMupho }) => {
   const [muphoSelect, setMuphoSelect] = useState("photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
+  const [muphoBg, setMuphoBg] = useState(
+    "/fidel-fernando-GuH4_xtKnnM-unsplash.jpg"
+  );
 
   const inputHandler = (e) => {
     setInput(e.target.value);
@@ -15,21 +18,28 @@ const Search = ({ search, setInput, handleButtonClick, searchMupho }) => {
   };
 
   useEffect(() => {
-    console.log("muphoSelect", muphoSelect, "searchOnclick", searchOnclick);
+    if (muphoSelect === "photo") {
+      setMuphoBg("/fidel-fernando-GuH4_xtKnnM-unsplash.jpg");
+    } else if (muphoSelect === "mupho") {
+      setMuphoBg("/pexels-keith-wako-89909.jpg");
+    }
     if (muphoSelect === "photo" && searchOnclick) {
       search();
-      handleButtonClick();
       setSearchOnclick(false);
     } else if (muphoSelect === "mupho" && searchOnclick) {
       searchMupho();
-      handleButtonClick();
       setSearchOnclick(false);
     }
-  }, [muphoSelect, searchOnclick]);
+  }, [muphoSelect, searchOnclick, muphoBg]);
 
   return (
-    <div className="searchGroup flex flex-col justify-center h-[90vh] w-full mb-16">
-      <div className="title flex justify-center items-center mx-8">
+    <div
+      className={`searchGroup flex flex-col justify-center h-[80vh] w-full bg-center items-center mb-8`}
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${muphoBg})`,
+      }}
+    >
+      <div className="title flex justify-center items-center mx-8 sm:w-[55vh]">
         <h1 className="sm:text-4xl font-bold text-2xl">
           讓音樂與相片結合在您生活中的每個角落。
         </h1>

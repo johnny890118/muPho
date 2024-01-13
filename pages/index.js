@@ -16,7 +16,7 @@ const Home = () => {
   const searchMupho = async (input) => {
     try {
       const response = await axios.get(
-        `http://192.168.50.126:9457/get_lyrics`,
+        "http://192.168.105.142:1487/get_lyrics",
         {
           params: { songName: input },
         }
@@ -41,6 +41,9 @@ const Home = () => {
       });
       setData(result.data.photos);
       setCurrentSearch(input);
+      if (nextDivRef.current) {
+        nextDivRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -66,12 +69,6 @@ const Home = () => {
 
   const nextDivRef = useRef(null);
 
-  const handleButtonClick = () => {
-    if (nextDivRef.current) {
-      nextDivRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <Layout>
       <div style={{ minHeight: "100vh" }}>
@@ -83,7 +80,6 @@ const Home = () => {
             searchMupho(input);
           }}
           setInput={setInput}
-          handleButtonClick={handleButtonClick}
         />
         <div className="pictures" ref={nextDivRef}>
           {data &&
