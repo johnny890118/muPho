@@ -8,7 +8,11 @@ const Nav = () => {
       <nav className="h-[8vh]">
         <ul className="flex justify-between mx-4 sm:mx-8 items-center h-[8vh]">
           <div className="logo px-4 flex items-center justify-center">
-            <Image src={mpLogo} className="h-[5vh] w-[5vh]" alt=""></Image>
+            <Image
+              src={mpLogo}
+              className="h-[6.5vh] w-[6.5vh] muLogo p-[5px] rounded-md"
+              alt=""
+            ></Image>
             <h1 className="text-2xl font-bold leading-[6vh] ml-2">MuPho</h1>
           </div>
           <div className="bar flex">
