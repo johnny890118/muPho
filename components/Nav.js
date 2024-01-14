@@ -10,7 +10,7 @@ const Nav = () => {
           <div className="logo px-4 flex items-center justify-center">
             <Image
               src={mpLogo}
-              className="h-[6.5vh] w-[6.5vh] muLogo p-[5px] rounded-md"
+              className="h-[7vh] w-[7vh] muLogo"
               alt=""
             ></Image>
             <h1 className="text-2xl font-bold leading-[6vh] ml-2">MuPho</h1>

@@ -21,7 +21,7 @@ const Search = ({ search, setInput, searchMupho }) => {
     if (muphoSelect === "photo") {
       setMuphoBg("/fidel-fernando-GuH4_xtKnnM-unsplash.jpg");
     } else if (muphoSelect === "mupho") {
-      setMuphoBg("/pexels-keith-wako-89909.jpg");
+      setMuphoBg("/wes-hicks-MEL-jJnm7RQ-unsplash.jpg");
     }
     if (muphoSelect === "photo" && searchOnclick) {
       search();
@@ -39,8 +39,8 @@ const Search = ({ search, setInput, searchMupho }) => {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${muphoBg})`,
       }}
     >
-      <div className="title flex justify-center items-center mx-8 sm:w-[55vh]">
-        <h1 className="sm:text-4xl font-bold text-2xl">
+      <div className="flex justify-center items-center mx-8 sm:w-[55vh]">
+        <h1 className="sm:text-4xl font-bold text-2xl text-white">
           讓音樂與相片結合在您生活中的每個角落。
         </h1>
       </div>
