@@ -13,7 +13,9 @@ const Nav = () => {
               className="h-[7vh] w-[7vh] muLogo"
               alt=""
             ></Image>
-            <h1 className="text-2xl font-bold leading-[6vh] ml-2">MuPho</h1>
+            <h1 className="pacifico-regular text-2xl font-bold leading-[6vh] ml-2">
+              MuPho
+            </h1>
           </div>
           <div className="bar flex">
             <li className="rounded-md m-1">
