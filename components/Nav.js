@@ -146,7 +146,7 @@ const Nav = () => {
               <div>
                 <Link
                   href="/"
-                  className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#5e5b78] hover:bg-[#797691]"
+                  className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#c3c0db] hover:bg-[#5e5b78]"
                 >
                   Sign up
                 </Link>
