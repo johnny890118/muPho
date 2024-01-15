@@ -6,6 +6,22 @@
 }
 
 .search {
+  .dropdown:focus .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-menu {
+    li {
+      background-color: #c3c0db;
+      color: #5e5b78;
+      &:hover {
+        transition: 0.4s;
+        background-color: #5e5b78;
+        color: #c3c0db;
+      }
+    }
+  }
+
   input,
   button,
   .chooseSel {
