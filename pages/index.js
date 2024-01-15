@@ -13,6 +13,12 @@ const Home = () => {
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
   let searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
+  const btnToInputHandler = () => {
+    if (btnToInput.current) {
+      btnToInput.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const searchMupho = async (input) => {
     try {
       const response = await axios.get(
@@ -67,12 +73,14 @@ const Home = () => {
     search(initialURL);
   }, []);
 
+  const btnToInput = useRef(null);
   const nextDivRef = useRef(null);
 
   return (
-    <Layout>
+    <Layout btnToInputHandler={btnToInputHandler}>
       <div style={{ minHeight: "100vh" }}>
         <Search
+          btnToInput={btnToInput}
           search={() => {
             search(searchURL);
           }}

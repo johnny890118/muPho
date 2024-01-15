@@ -1,8 +1,8 @@
 import Image from "next/image";
-import searchImg from "@/styles/icons8-search.svg";
+import searchImg from "@/styles/search.png";
 import { useEffect, useState } from "react";
 
-const Search = ({ search, setInput, searchMupho }) => {
+const Search = ({ search, setInput, searchMupho, btnToInput }) => {
   const [muphoSelect, setMuphoSelect] = useState("photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
   const [muphoBg, setMuphoBg] = useState(
@@ -38,6 +38,7 @@ const Search = ({ search, setInput, searchMupho }) => {
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${muphoBg})`,
       }}
+      ref={btnToInput}
     >
       <div className="flex justify-center items-center mx-8 sm:w-[55vh]">
         <h1 className="sm:text-4xl font-bold text-2xl text-white">

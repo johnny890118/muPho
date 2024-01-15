@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import Link from "next/link";
 import mpLogo from "@/styles/mpLogo.drawio.png";
 import mpName from "@/public/muphoName.png";
+import searchImg from "@/styles/search.png";
 import Image from "next/image";
 
-const Nav = () => {
+const Nav = ({ btnToInputHandler }) => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <div className="relative bg-[#c3c0db] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+      <div className="bg-[#c3c0db] shadow-[0_3px_10px_rgb(0,0,0,0.2)] sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center md:justify-start md:space-x-10 h-[8vh]">
             <div className="flex justify-start lg:w-0 lg:flex-1">
@@ -63,9 +64,16 @@ const Nav = () => {
               </Link>
             </nav>
             <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
+              <button onClick={btnToInputHandler}>
+                <Image
+                  src={searchImg}
+                  alt=""
+                  className="h-[3vh] w-[3vh] text-white"
+                />
+              </button>
               <Link
                 href="/"
-                className="whitespace-nowrap text-lg font-medium text-[#5e5b78] hover:text-gray-900"
+                className="ml-8 whitespace-nowrap text-lg font-medium text-[#5e5b78] hover:text-gray-900"
               >
                 Sign in
               </Link>
@@ -102,7 +110,6 @@ const Nav = () => {
                     onClick={() => setOpen(!open)}
                   >
                     <span className="sr-only">Close menu</span>
-                    {/* Heroicon name: outline/x */}
                     <svg
                       className="h-6 w-6"
                       xmlns="http://www.w3.org/2000/svg"
@@ -123,6 +130,15 @@ const Nav = () => {
               </div>
               <div className="mt-6">
                 <nav className="grid gap-y-8">
+                  <button
+                    className="text-start ml-3 text-base font-medium text-gray-900"
+                    onClick={() => {
+                      btnToInputHandler();
+                      setOpen(!open);
+                    }}
+                  >
+                    search
+                  </button>
                   <Link
                     href="/"
                     className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
@@ -146,7 +162,7 @@ const Nav = () => {
               <div>
                 <Link
                   href="/"
-                  className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-[#c3c0db] hover:bg-[#5e5b78]"
+                  className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-[#5e5b78] bg-[#c3c0db] hover:bg-[#5e5b78]"
                 >
                   Sign up
                 </Link>
