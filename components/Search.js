@@ -3,7 +3,7 @@ import searchImg from "@/styles/icons8-search.svg";
 import { useEffect, useState } from "react";
 
 const Search = ({ search, setInput, searchMupho }) => {
-  const [muphoSelect, setMuphoSelect] = useState("Photo");
+  const [muphoSelect, setMuphoSelect] = useState("photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
   const [muphoBg, setMuphoBg] = useState(
     "/fidel-fernando-GuH4_xtKnnM-unsplash.jpg"
@@ -13,16 +13,20 @@ const Search = ({ search, setInput, searchMupho }) => {
     setInput(e.target.value);
   };
 
+  const muphoSelectHandler = (e) => {
+    setMuphoSelect(e.target.value);
+  };
+
   useEffect(() => {
-    if (muphoSelect === "Photo") {
+    if (muphoSelect === "photo") {
       setMuphoBg("/fidel-fernando-GuH4_xtKnnM-unsplash.jpg");
-    } else if (muphoSelect === "MuPho") {
+    } else if (muphoSelect === "mupho") {
       setMuphoBg("/wes-hicks-MEL-jJnm7RQ-unsplash.jpg");
     }
-    if (muphoSelect === "Photo" && searchOnclick) {
+    if (muphoSelect === "photo" && searchOnclick) {
       search();
       setSearchOnclick(false);
-    } else if (muphoSelect === "MuPho" && searchOnclick) {
+    } else if (muphoSelect === "mupho" && searchOnclick) {
       searchMupho();
       setSearchOnclick(false);
     }
@@ -41,40 +45,14 @@ const Search = ({ search, setInput, searchMupho }) => {
         </h1>
       </div>
       <div className="search flex justify-center items-center py-12">
-        {/* <select
+        <select
           className="chooseSel sm:w-[15vh] w-[14vh] text-center sm:text-lg h-[8vh]"
           value={muphoSelect}
           onChange={muphoSelectHandler}
         >
           <option value="photo">Photo</option>
           <option value="mupho">MuPho</option>
-        </select> */}
-        <button className="dropdown chooseSel inline-block relative h-[8vh] sm:w-[15vh] w-[14vh]">
-          <div className=" bg-transparent font-semibold py-2 px-4 rounded inline-flex items-center">
-            <span className="mr-1 text-xl">{muphoSelect}</span>
-            <svg
-              className="fill-current h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />{" "}
-            </svg>
-          </div>
-          <ul className="dropdown-menu absolute hidden pt-5">
-            <li
-              className="rounded-t-lg py-3 px-9 block whitespace-no-wrap"
-              onClick={() => setMuphoSelect("Photo")}
-            >
-              Photo
-            </li>
-            <li
-              className="rounded-b-lg py-3 px-9 block whitespace-no-wrap"
-              onClick={() => setMuphoSelect("MuPho")}
-            >
-              MuPho
-            </li>
-          </ul>
-        </button>
+        </select>
         <input
           className="input sm:w-[30vh] w-[20vh] sm:text-lg h-[8vh] outline-none rounded-none"
           onChange={inputHandler}
