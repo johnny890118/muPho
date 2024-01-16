@@ -2,7 +2,7 @@ import Image from "next/image";
 import searchImg from "@/styles/search.png";
 import { useEffect, useState } from "react";
 
-const Search = ({ search, setInput, searchMupho, btnToInput }) => {
+const Search = ({ search, setInput, searchMupho, btnToTop, btnToInput }) => {
   const [muphoSelect, setMuphoSelect] = useState("photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
   const [muphoBg, setMuphoBg] = useState(
@@ -38,7 +38,7 @@ const Search = ({ search, setInput, searchMupho, btnToInput }) => {
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${muphoBg})`,
       }}
-      ref={btnToInput}
+      ref={btnToTop}
     >
       <div className="flex justify-center items-center mx-8 sm:w-[55vh]">
         <h1 className="sm:text-4xl font-bold text-2xl text-white">
@@ -59,6 +59,7 @@ const Search = ({ search, setInput, searchMupho, btnToInput }) => {
           onChange={inputHandler}
           type="text"
           placeholder="搜尋相片"
+          ref={btnToInput}
         />
         <button
           className="searchBtn sm:w-[12vh] w-[8vh] h-[8vh]"

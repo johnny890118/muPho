@@ -9,14 +9,19 @@ const Home = () => {
   let [data, setData] = useState(null);
   let [page, setPage] = useState(1);
   let [currentSearch, setCurrentSearch] = useState("");
+
   const auth = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
   let searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
+  const btnToTop = useRef(null);
+  const btnToInput = useRef(null);
+  const nextDivRef = useRef(null);
+  console.log(btnToTop.current);
+
   const btnToInputHandler = () => {
-    if (btnToInput.current) {
-      btnToInput.current.scrollIntoView({ behavior: "smooth" });
-    }
+    btnToInput.current.classList.add("input-transition");
+    btnToInput.current.focus();
   };
 
   const searchMupho = async (input) => {
@@ -73,13 +78,11 @@ const Home = () => {
     search(initialURL);
   }, []);
 
-  const btnToInput = useRef(null);
-  const nextDivRef = useRef(null);
-
   return (
     <Layout btnToInputHandler={btnToInputHandler}>
       <div style={{ minHeight: "100vh" }}>
         <Search
+          btnToTop={btnToTop}
           btnToInput={btnToInput}
           search={() => {
             search(searchURL);
@@ -90,10 +93,9 @@ const Home = () => {
           setInput={setInput}
         />
         <div className="pictures" ref={nextDivRef}>
-          {data &&
-            data.map((d, index) => {
-              return <Picture data={d} key={index} />;
-            })}
+          {data?.map((d, index) => {
+            return <Picture data={d} key={index} />;
+          })}
         </div>
         <div className="morePicture">
           <button onClick={morePicture}>load more</button>
