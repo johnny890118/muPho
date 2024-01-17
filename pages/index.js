@@ -17,7 +17,6 @@ const Home = () => {
   const btnToTop = useRef(null);
   const btnToInput = useRef(null);
   const nextDivRef = useRef(null);
-  console.log(btnToTop.current);
 
   const btnToInputHandler = () => {
     btnToInput.current.classList.add("input-transition");
@@ -27,12 +26,21 @@ const Home = () => {
   const searchMupho = async (input) => {
     try {
       const response = await axios.get(
-        "http://192.168.105.142:1487/get_lyrics",
+        "http://192.168.50.126:1487/get_lyrics",
         {
           params: { songName: input },
         }
       );
-      console.log(response.data.lyrics);
+      let keywords = response.data.choices[0].message.content;
+      console.log(keywords);
+      let result = await axios.get(
+        `https://api.pexels.com/v1/search?query=${keywords}&per_page=15&page=1`,
+        {
+          headers: { Authorization: auth },
+        }
+      );
+      setData(result.data.photos);
+      setCurrentSearch(keywords);
     } catch (error) {
       console.error("Error fetching lyrics:", error);
       console.log("歌詞無法找到。");
