@@ -41,6 +41,9 @@ const Home = () => {
       );
       setData(result.data.photos);
       setCurrentSearch(keywords);
+      if (nextDivRef.current) {
+        nextDivRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     } catch (error) {
       console.error("Error fetching lyrics:", error);
       console.log("歌詞無法找到。");
