@@ -47,7 +47,7 @@ const Search = ({ search, setInput, searchMupho, btnToTop, btnToInput }) => {
       </div>
       <div className="search flex justify-center items-center py-12">
         <select
-          className="chooseSel sm:w-[15vh] w-[14vh] text-center sm:text-lg h-[8vh]"
+          className="chooseSel sm:w-[15vh] w-[11vh] text-center sm:text-lg h-[8vh]"
           value={muphoSelect}
           onChange={muphoSelectHandler}
         >
@@ -55,14 +55,14 @@ const Search = ({ search, setInput, searchMupho, btnToTop, btnToInput }) => {
           <option value="mupho">MuPho</option>
         </select>
         <input
-          className="input sm:w-[30vh] w-[20vh] sm:text-lg h-[8vh] outline-none rounded-none"
+          className="input sm:w-[30vh] w-[18vh] sm:text-lg h-[8vh] outline-none rounded-none"
           onChange={inputHandler}
           type="text"
           placeholder="搜尋相片"
           ref={btnToInput}
         />
         <button
-          className="searchBtn sm:w-[12vh] w-[8vh] h-[8vh]"
+          className="searchBtn sm:w-[12vh] w-[7vh] h-[8vh]"
           onClick={() => {
             setSearchOnclick(true);
           }}
