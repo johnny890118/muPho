@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import mpLogo from "@/styles/mpLogo.drawio.png";
+import mpLogo from "@/public/mpLogo.drawio.png";
 import mpName from "@/public/muphoName.png";
 import searchImg from "@/styles/search.png";
 import Image from "next/image";
