@@ -79,7 +79,7 @@ const Nav = ({ btnToInputHandler }) => {
               </Link>
               <Link
                 href="/"
-                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-[#5e5b78] hover:bg-[#797691]"
+                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-lg text-white bg-[#5e5b78] hover:bg-[#797691] font-medium"
               >
                 Sign up
               </Link>
