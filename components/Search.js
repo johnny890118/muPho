@@ -47,7 +47,7 @@ const Search = ({ search, setInput, searchMupho, btnToTop, btnToInput }) => {
       </div>
       <div className="search flex justify-center items-center py-12">
         <select
-          className="chooseSel sm:w-[15vh] w-[12vh] text-center sm:text-lg h-[8vh]"
+          className="chooseSel sm:w-[15vh] w-[13vh] text-center sm:text-lg h-[8vh]"
           value={muphoSelect}
           onChange={muphoSelectHandler}
         >
