@@ -3,12 +3,14 @@ import Search from "@/components/Search";
 import axios from "axios";
 import Picture from "@/components/Picture";
 import Layout from "@/components/Layout";
+import Loading from "@/components/Loading";
 
 const Home = () => {
   let [input, setInput] = useState("");
   let [data, setData] = useState(null);
   let [page, setPage] = useState(1);
   let [currentSearch, setCurrentSearch] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
 
   const auth = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
@@ -25,8 +27,9 @@ const Home = () => {
 
   const searchMupho = async (input) => {
     try {
+      setIsFetching(true);
       const response = await axios.get(
-        "http://192.168.50.126:1487/get_lyrics",
+        "http://192.168.105.142:1487/get_lyrics",
         {
           params: { songName: input },
         }
@@ -44,6 +47,7 @@ const Home = () => {
       if (nextDivRef.current) {
         nextDivRef.current.scrollIntoView({ behavior: "smooth" });
       }
+      setIsFetching(false);
     } catch (error) {
       console.error("Error fetching lyrics:", error);
       console.log("歌詞無法找到。");
@@ -52,12 +56,15 @@ const Home = () => {
 
   const search = async (url) => {
     if (input === "") {
+      setIsFetching(true);
       let result = await axios.get(initialURL, {
         headers: { Authorization: auth },
       });
       setData(result.data.photos);
       setCurrentSearch(input);
+      setIsFetching(false);
     } else {
+      setIsFetching(true);
       let result = await axios.get(url, {
         headers: { Authorization: auth },
       });
@@ -66,6 +73,7 @@ const Home = () => {
       if (nextDivRef.current) {
         nextDivRef.current.scrollIntoView({ behavior: "smooth" });
       }
+      setIsFetching(false);
     }
   };
 
@@ -104,9 +112,13 @@ const Home = () => {
           setInput={setInput}
         />
         <div className="pictures" ref={nextDivRef}>
-          {data?.map((d, index) => {
-            return <Picture data={d} key={index} />;
-          })}
+          {isFetching ? (
+            <Loading />
+          ) : (
+            data?.map((d, index) => {
+              return <Picture data={d} key={index} />;
+            })
+          )}
         </div>
         <div className="morePicture">
           <button onClick={morePicture}>load more</button>

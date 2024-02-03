@@ -3,6 +3,7 @@ import "@/styles/_footer.scss";
 import "@/styles/_picture.scss";
 import "@/styles/_search.scss";
 import "@/styles/style.scss";
+import "@/styles/loading.scss";
 import Head from "next/head";
 
 export default function App({ Component, pageProps }) {
