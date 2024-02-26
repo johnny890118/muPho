@@ -52,13 +52,13 @@ const Nav = ({ btnToInputHandler }) => {
             <nav className="hidden md:flex space-x-10">
               <Link
                 href="/"
-                className="text-lg font-medium text-[#5e5b78] hover:text-gray-900"
+                className="text-base font-medium text-[#5e5b78] hover:text-gray-900"
               >
                 Home
               </Link>
               <Link
                 href="/AI"
-                className="text-lg font-medium text-[#5e5b78] hover:text-gray-900"
+                className="text-base font-medium text-[#5e5b78] hover:text-gray-900"
               >
                 AI
               </Link>
@@ -73,13 +73,13 @@ const Nav = ({ btnToInputHandler }) => {
               </button>
               <Link
                 href="/"
-                className="ml-8 whitespace-nowrap text-lg font-medium text-[#5e5b78] hover:text-gray-900"
+                className="ml-8 whitespace-nowrap text-base font-medium text-[#5e5b78] hover:text-gray-900"
               >
                 Sign in
               </Link>
               <Link
                 href="/"
-                className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-2 py-1 border border-transparent rounded-md shadow-sm text-lg text-white bg-[#5e5b78] hover:bg-[#797691] font-medium"
+                className="ml-8 whitespace-nowrap px-3 py-2 rounded-md text-base text-white bg-[#5e5b78] hover:bg-[#797691] font-medium"
               >
                 Sign up
               </Link>
