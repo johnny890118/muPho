@@ -57,7 +57,7 @@ const Nav = ({ btnToInputHandler }) => {
                 Home
               </Link>
               <Link
-                href="/AI"
+                href="/ai"
                 className="text-base font-medium text-[#5e5b78] hover:text-gray-900"
               >
                 AI
@@ -148,7 +148,7 @@ const Nav = ({ btnToInputHandler }) => {
                     </span>
                   </Link>
                   <Link
-                    href="/AI"
+                    href="/ai"
                     className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
                   >
                     <span className="ml-3 text-base font-medium text-gray-900">
