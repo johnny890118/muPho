@@ -12,8 +12,9 @@ const Home = () => {
   const [currentSearch, setCurrentSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const [isOverSearchArea, setIsOverSearchArea] = useState(false);
+  const [curSearch, setCurSearch] = useState("");
 
-  const auth = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
+  const searchKey = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
   const searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
@@ -36,7 +37,7 @@ const Home = () => {
       let result = await axios.get(
         `https://api.pexels.com/v1/search?query=${keywords}&per_page=15&page=1`,
         {
-          headers: { Authorization: auth },
+          headers: { Authorization: searchKey },
         }
       );
       setData(result.data.photos);
@@ -52,10 +53,11 @@ const Home = () => {
   };
 
   const search = async (url) => {
+    setCurSearch(input);
     if (input === "") {
       setIsFetching(true);
       let result = await axios.get(initialURL, {
-        headers: { Authorization: auth },
+        headers: { Authorization: searchKey },
       });
       setData(result.data.photos);
       setCurrentSearch(input);
@@ -63,7 +65,7 @@ const Home = () => {
     } else {
       setIsFetching(true);
       let result = await axios.get(url, {
-        headers: { Authorization: auth },
+        headers: { Authorization: searchKey },
       });
       setData(result.data.photos);
       setCurrentSearch(input);
@@ -85,7 +87,7 @@ const Home = () => {
       }`;
     }
     let result = await axios.get(newURL, {
-      headers: { Authorization: auth },
+      headers: { Authorization: searchKey },
     });
     setData(data.concat(result.data.photos));
   };
@@ -122,7 +124,7 @@ const Home = () => {
         />
 
         <div className="p-4 sm:p-8 flex flex-col gap-8 w-full mt-4 sm:mt-0">
-          <p className="sm:text-2xl">{`關於「${input ? input : "熱門圖片"}」的圖片`}</p>
+          <p className="sm:text-2xl">{`關於「${curSearch ? curSearch : "熱門圖片"}」的圖片`}</p>
           {isFetching ? (
             <Loading />
           ) : (
