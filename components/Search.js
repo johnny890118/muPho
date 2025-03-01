@@ -1,32 +1,20 @@
-import Image from "next/image";
-import searchImg from "@/styles/search.png";
 import { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { searchBg } from "@/constants";
 
 const Search = ({ search, setInput, searchMupho, btnToTop, btnToInput }) => {
-  const [muphoSelect, setMuphoSelect] = useState("photo");
+  const [muphoSelect, setMuphoSelect] = useState("Photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
-  const [muphoBg, setMuphoBg] = useState(
-    "/fidel-fernando-GuH4_xtKnnM-unsplash.jpg"
-  );
-
-  const inputHandler = (e) => {
-    setInput(e.target.value);
-  };
-
-  const muphoSelectHandler = (e) => {
-    setMuphoSelect(e.target.value);
-  };
+  const [muphoBg, setMuphoBg] = useState(searchBg.Photo);
 
   useEffect(() => {
-    if (muphoSelect === "photo") {
-      setMuphoBg("/fidel-fernando-GuH4_xtKnnM-unsplash.jpg");
-    } else if (muphoSelect === "mupho") {
-      setMuphoBg("/wes-hicks-MEL-jJnm7RQ-unsplash.jpg");
-    }
-    if (muphoSelect === "photo" && searchOnclick) {
+    setMuphoBg(searchBg[muphoSelect]);
+
+    if (muphoSelect === "Photo" && searchOnclick) {
       search();
       setSearchOnclick(false);
-    } else if (muphoSelect === "mupho" && searchOnclick) {
+    } else if (muphoSelect === "MuPho" && searchOnclick) {
       searchMupho();
       setSearchOnclick(false);
     }
@@ -34,46 +22,44 @@ const Search = ({ search, setInput, searchMupho, btnToTop, btnToInput }) => {
 
   return (
     <div
-      className={`searchGroup flex flex-col justify-center h-[80vh] w-full bg-center items-center mb-8`}
+      className="searchGroup flex flex-col justify-center h-[80vh] w-full bg-center items-center mb-8 gap-8 p-4"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${muphoBg})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${muphoBg})`,
       }}
       ref={btnToTop}
     >
-      <div className="flex justify-center items-center mx-8 sm:w-[55vh]">
-        <h1 className="sm:text-4xl font-bold text-2xl text-white">
-          讓音樂與相片結合在您生活中的每個角落。
-        </h1>
-      </div>
-      <div className="search flex justify-center items-center py-12">
-        <select
-          className="chooseSel sm:w-[15vh] w-[13vh] text-center sm:text-lg h-[8vh]"
-          value={muphoSelect}
-          onChange={muphoSelectHandler}
-        >
-          <option value="photo">Photo</option>
-          <option value="mupho">MuPho</option>
-        </select>
+      <h1 className="md:text-4xl font-bold text-2xl text-white">
+        讓音樂與相片結合在您生活中的每個角落
+      </h1>
+      <div className="flex justify-between items-center rounded-xl bg-white p-1">
+        <Select onValueChange={(value) => setMuphoSelect(value)}>
+          <SelectTrigger className="rounded-xl p-3 bg-[#c3c0db] text-[#5e5b78] h-full text-base border-none focus:ring-0">
+            <SelectValue placeholder={muphoSelect} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Photo">Photo</SelectItem>
+            <SelectItem value="MuPho">MuPho</SelectItem>
+          </SelectContent>
+        </Select>
         <input
-          className="input sm:w-[30vh] w-[18vh] sm:text-lg h-[8vh] outline-none rounded-none"
-          onChange={inputHandler}
+          className="p-2 outline-none w-36 sm:w-52"
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setSearchOnclick(true);
+            }
+          }}
           type="text"
           placeholder="搜尋相片"
           ref={btnToInput}
         />
         <button
-          className="searchBtn sm:w-[12vh] w-[7vh] h-[8vh]"
+          className="rounded-xl p-3 bg-[#c3c0db] text-[#5e5b78] h-full"
           onClick={() => {
             setSearchOnclick(true);
           }}
         >
-          <Image
-            src={searchImg}
-            alt=""
-            width={20}
-            height={20}
-            className="sm:w-6"
-          />
+          <FaSearch />
         </button>
       </div>
     </div>

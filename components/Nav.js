@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import mpLogo from "@/public/mpLogo.drawio.png";
 import mpName from "@/public/muphoName.png";
-import searchImg from "@/styles/search.png";
 import Image from "next/image";
+import { FaSearch } from "react-icons/fa";
 
 const Nav = ({ btnToInputHandler }) => {
   const [open, setOpen] = useState(false);
@@ -16,11 +16,7 @@ const Nav = ({ btnToInputHandler }) => {
             <div className="flex justify-start lg:w-0 lg:flex-1">
               <Link href="/">
                 <div className="logo px-4 flex items-center justify-center">
-                  <Image
-                    src={mpLogo}
-                    className="h-[6vh] w-[6vh]"
-                    alt=""
-                  ></Image>
+                  <Image src={mpLogo} className="h-[6vh] w-[6vh]" alt=""></Image>
                   <Image src={mpName} className="h-[6vh] w-auto" alt=""></Image>
                 </div>
               </Link>
@@ -50,26 +46,16 @@ const Nav = ({ btnToInputHandler }) => {
               </button>
             </div>
             <nav className="hidden md:flex space-x-10">
-              <Link
-                href="/"
-                className="text-base font-medium text-[#5e5b78] hover:text-gray-900"
-              >
+              <Link href="/" className="text-base font-medium text-[#5e5b78] hover:text-gray-900">
                 Home
               </Link>
-              <Link
-                href="/ai"
-                className="text-base font-medium text-[#5e5b78] hover:text-gray-900"
-              >
+              <Link href="/ai" className="text-base font-medium text-[#5e5b78] hover:text-gray-900">
                 AI
               </Link>
             </nav>
             <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
               <button onClick={btnToInputHandler}>
-                <Image
-                  src={searchImg}
-                  alt=""
-                  className="h-[3vh] w-[3vh] text-white"
-                />
+                <FaSearch />
               </button>
               <Link
                 href="/"
@@ -97,11 +83,7 @@ const Nav = ({ btnToInputHandler }) => {
             <div className="pt-5 pb-6 px-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <Image
-                    src={mpLogo}
-                    className="h-[6vh] w-[6vh]"
-                    alt=""
-                  ></Image>
+                  <Image src={mpLogo} className="h-[6vh] w-[6vh]" alt=""></Image>
                 </div>
                 <div className="-mr-2">
                   <button
@@ -139,21 +121,14 @@ const Nav = ({ btnToInputHandler }) => {
                   >
                     search
                   </button>
-                  <Link
-                    href="/"
-                    className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
-                  >
-                    <span className="ml-3 text-base font-medium text-gray-900">
-                      Home
-                    </span>
+                  <Link href="/" className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
+                    <span className="ml-3 text-base font-medium text-gray-900">Home</span>
                   </Link>
                   <Link
                     href="/ai"
                     className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50"
                   >
-                    <span className="ml-3 text-base font-medium text-gray-900">
-                      AI
-                    </span>
+                    <span className="ml-3 text-base font-medium text-gray-900">AI</span>
                   </Link>
                 </nav>
               </div>
@@ -168,10 +143,7 @@ const Nav = ({ btnToInputHandler }) => {
                 </Link>
                 <p className="mt-6 text-center text-base font-medium text-gray-500">
                   尚未註冊?
-                  <Link
-                    href="/"
-                    className="text-[#5e5b78] hover:text-[#797691] ml-3"
-                  >
+                  <Link href="/" className="text-[#5e5b78] hover:text-[#797691] ml-3">
                     Sign in
                   </Link>
                 </p>
