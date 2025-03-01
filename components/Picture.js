@@ -7,7 +7,7 @@ const Picture = ({ data }) => {
       <Image
         src={data.src && data.src.large}
         alt=""
-        className="rounded-3xl"
+        className="rounded-xl sm:rounded-2xl"
         width={400}
         height={900}
       />
