@@ -6,15 +6,15 @@ import Layout from "@/components/Layout";
 import Loading from "@/components/Loading";
 
 const Home = () => {
-  let [input, setInput] = useState("");
-  let [data, setData] = useState(null);
-  let [page, setPage] = useState(1);
-  let [currentSearch, setCurrentSearch] = useState("");
+  const [input, setInput] = useState("");
+  const [data, setData] = useState(null);
+  const [page, setPage] = useState(1);
+  const [currentSearch, setCurrentSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
 
   const auth = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
-  let searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
+  const searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
   const btnToTop = useRef(null);
   const btnToInput = useRef(null);
@@ -28,12 +28,9 @@ const Home = () => {
   const searchMupho = async (input) => {
     try {
       setIsFetching(true);
-      const response = await axios.get(
-        "http://192.168.105.142:1487/get_lyrics",
-        {
-          params: { songName: input },
-        }
-      );
+      const response = await axios.get("http://192.168.105.142:1487/get_lyrics", {
+        params: { songName: input },
+      });
       let keywords = response.data.choices[0].message.content;
       console.log(keywords);
       let result = await axios.get(
@@ -111,15 +108,16 @@ const Home = () => {
           }}
           setInput={setInput}
         />
-        <div className="pictures" ref={nextDivRef}>
-          {isFetching ? (
-            <Loading />
-          ) : (
-            data?.map((d, index) => {
+        {isFetching ? (
+          <Loading />
+        ) : (
+          <div className="columns-2 sm:columns-3 lg:columns-4 p-4" ref={nextDivRef}>
+            {data?.map((d, index) => {
               return <Picture data={d} key={index} />;
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
+
         <div className="morePicture">
           <button onClick={morePicture}>load more</button>
         </div>
