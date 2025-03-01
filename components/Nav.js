@@ -4,27 +4,30 @@ import mpLogo from "@/public/mpLogo.drawio.png";
 import mpName from "@/public/muphoName.png";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
+import { navLinks } from "@/constants";
 
-const Nav = ({ btnToInputHandler }) => {
+const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <div className="bg-[#c3c0db] shadow-[0_3px_10px_rgb(0,0,0,0.2)] sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center md:justify-start md:space-x-10 h-[8vh]">
-            <div className="flex justify-start lg:w-0 lg:flex-1">
-              <Link href="/">
-                <div className="logo px-4 flex items-center justify-center">
-                  <Image src={mpLogo} className="h-[6vh] w-[6vh]" alt=""></Image>
-                  <Image src={mpName} className="h-[6vh] w-auto" alt=""></Image>
-                </div>
-              </Link>
-            </div>
+      <div
+        className={`${
+          isOverSearchArea ? "bg-[#c3c0db]" : "bg-transparent"
+        } fixed top-0 z-10 w-full`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+          <div className="flex justify-between items-center">
+            <Link href="/">
+              <div className="flex items-center justify-center">
+                <Image src={mpLogo} className="h-[6vh] w-[6vh]" alt=""></Image>
+                <Image src={mpName} className="h-[6vh] w-auto" alt=""></Image>
+              </div>
+            </Link>
             <div className="-mr-2 -my-2 md:hidden">
               <button
                 type="button"
-                className="bg-[#c3c0db] rounded-md p-2 inline-flex items-center justify-center text-[5e5b78] hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                className="text-[#c3c0db] rounded-md p-2 inline-flex items-center justify-center"
                 onClick={() => setOpen(!open)}
               >
                 <span className="sr-only">Open menu</span>
@@ -45,27 +48,37 @@ const Nav = ({ btnToInputHandler }) => {
                 </svg>
               </button>
             </div>
-            <nav className="hidden md:flex space-x-10">
-              <Link href="/" className="text-base font-medium text-[#5e5b78] hover:text-gray-900">
-                Home
-              </Link>
-              <Link href="/ai" className="text-base font-medium text-[#5e5b78] hover:text-gray-900">
-                AI
-              </Link>
+            <nav className="hidden md:flex gap-6">
+              {navLinks.map(({ name, path }) => (
+                <Link
+                  key={name}
+                  href={path}
+                  className={`text-base font-medium ${
+                    isOverSearchArea ? "text-[#5e5b78]" : "text-[#c3c0db]"
+                  }`}
+                >
+                  {name}
+                </Link>
+              ))}
             </nav>
-            <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-              <button onClick={btnToInputHandler}>
+            <div className="hidden md:flex items-center gap-6">
+              <button
+                onClick={btnToInputHandler}
+                className={`${isOverSearchArea ? "text-[#5e5b78]" : "text-[#c3c0db]"}`}
+              >
                 <FaSearch />
               </button>
               <Link
                 href="/"
-                className="ml-8 whitespace-nowrap text-base font-medium text-[#5e5b78] hover:text-gray-900"
+                className={`text-base ${isOverSearchArea ? "text-[#5e5b78]" : "text-[#c3c0db]"}`}
               >
                 Sign in
               </Link>
               <Link
                 href="/"
-                className="ml-8 whitespace-nowrap px-3 py-2 rounded-md text-base text-white bg-[#5e5b78] hover:bg-[#797691] font-medium"
+                className={`py-3 px-4 rounded-xl text-base ${
+                  isOverSearchArea ? "text-[#c3c0db] bg-[#5e5b78]" : "text-[#5e5b78] bg-[#c3c0db]"
+                } `}
               >
                 Sign up
               </Link>

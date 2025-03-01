@@ -11,18 +11,18 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [currentSearch, setCurrentSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
+  const [isOverSearchArea, setIsOverSearchArea] = useState(false);
 
   const auth = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
   const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
   const searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
 
-  const btnToTop = useRef(null);
-  const btnToInput = useRef(null);
+  const searchRef = useRef(null);
+  const searchInputRef = useRef(null);
   const nextDivRef = useRef(null);
 
   const btnToInputHandler = () => {
-    btnToInput.current.classList.add("input-transition");
-    btnToInput.current.focus();
+    searchInputRef.current.focus();
   };
 
   const searchMupho = async (input) => {
@@ -94,12 +94,24 @@ const Home = () => {
     search(initialURL);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (searchRef.current) {
+        const searchBottom = searchRef.current.getBoundingClientRect().bottom;
+        setIsOverSearchArea(searchBottom < 0);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <Layout btnToInputHandler={btnToInputHandler}>
+    <Layout btnToInputHandler={btnToInputHandler} isOverSearchArea={isOverSearchArea}>
       <div style={{ minHeight: "100vh" }}>
         <Search
-          btnToTop={btnToTop}
-          btnToInput={btnToInput}
+          searchRef={searchRef}
+          searchInputRef={searchInputRef}
           search={() => {
             search(searchURL);
           }}
@@ -108,15 +120,19 @@ const Home = () => {
           }}
           setInput={setInput}
         />
-        {isFetching ? (
-          <Loading />
-        ) : (
-          <div className="columns-2 sm:columns-3 lg:columns-4 p-4" ref={nextDivRef}>
-            {data?.map((d, index) => {
-              return <Picture data={d} key={index} />;
-            })}
-          </div>
-        )}
+
+        <div className="p-4 sm:p-8 flex flex-col gap-8 w-full mt-4 sm:mt-0">
+          <p className="sm:text-2xl">{`關於「${input ? input : "熱門圖片"}」的圖片`}</p>
+          {isFetching ? (
+            <Loading />
+          ) : (
+            <div className="columns-2 sm:columns-3 lg:columns-4" ref={nextDivRef}>
+              {data?.map((d, index) => {
+                return <Picture data={d} key={index} />;
+              })}
+            </div>
+          )}
+        </div>
 
         <div className="morePicture">
           <button onClick={morePicture}>load more</button>
