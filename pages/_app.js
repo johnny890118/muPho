@@ -1,5 +1,4 @@
 import "@/styles/globals.css";
-import "@/styles/_footer.scss";
 import "@/styles/_search.scss";
 import "@/styles/style.scss";
 import "@/styles/loading.scss";

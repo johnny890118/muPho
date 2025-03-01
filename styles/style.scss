@@ -18,29 +18,3 @@ a {
 ul {
   list-style-type: none;
 }
-
-.morePicture {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4rem;
-  button {
-    min-width: 200px;
-    width: 70%;
-    border-radius: 10px;
-    color: #5e5b78;
-    &:hover {
-      transition: 0.4s;
-      color: #c3c0db;
-      background-color: #5e5b78;
-    }
-  }
-
-  button {
-    padding: 0.5rem 0.75rem;
-    font-size: 1.5rem;
-    border: none;
-    background-color: #c3c0db;
-    cursor: pointer;
-  }
-}

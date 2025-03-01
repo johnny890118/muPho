@@ -136,8 +136,13 @@ const Home = () => {
           )}
         </div>
 
-        <div className="morePicture">
-          <button onClick={morePicture}>load more</button>
+        <div className="flex justify-center items-center pb-8">
+          <button
+            className="bg-[#c3c0db] text-[#5e5b78] w-4/5 p-4 rounded-xl text-base"
+            onClick={morePicture}
+          >
+            load more
+          </button>
         </div>
       </div>
     </Layout>
