@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import mpName from "@/public/muphoName.png";
-import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
 import { navLinks } from "@/constants";
 import MuPhoLogo from "./icon/MuPhoLogo";
+import { Dancing_Script } from "next/font/google";
+
+const logoFont = Dancing_Script({ subsets: ["latin"], weight: "700" });
 
 const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
                 <p
                   className={`${
                     isOverSearchArea ? "text-[#5e5b78]" : "text-[#c3c0db]"
-                  } font-bold text-2xl`}
+                  } font-bold text-3xl ${logoFont.className}`}
                 >
                   MuPho
                 </p>
