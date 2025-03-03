@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import mpLogo from "@/public/mpLogo.drawio.png";
 import mpName from "@/public/muphoName.png";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
 import { navLinks } from "@/constants";
+import MuPhoLogo from "./icon/MuPhoLogo";
 
 const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
   const [open, setOpen] = useState(false);
@@ -19,15 +19,23 @@ const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
           <div className="flex justify-between items-center">
             <Link href="/">
-              <div className="flex items-center justify-center">
-                <Image src={mpLogo} className="h-[6vh] w-[6vh]" alt=""></Image>
-                <Image src={mpName} className="h-[6vh] w-auto" alt=""></Image>
+              <div className="flex items-center justify-center gap-2">
+                <MuPhoLogo color={isOverSearchArea ? "#5e5b78" : "#c3c0db"} />
+                <p
+                  className={`${
+                    isOverSearchArea ? "text-[#5e5b78]" : "text-[#c3c0db]"
+                  } font-bold text-2xl`}
+                >
+                  MuPho
+                </p>
               </div>
             </Link>
             <div className="-mr-2 -my-2 md:hidden">
               <button
                 type="button"
-                className="text-[#c3c0db] rounded-md p-2 inline-flex items-center justify-center"
+                className={`${
+                  isOverSearchArea ? "text-[#5e5b78]" : "text-[#c3c0db]"
+                } rounded-md p-2 inline-flex items-center justify-center`}
                 onClick={() => setOpen(!open)}
               >
                 <span className="sr-only">Open menu</span>
@@ -76,7 +84,7 @@ const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
               </Link>
               <Link
                 href="/"
-                className={`py-3 px-4 rounded-xl text-base ${
+                className={`py-2 px-3 rounded-xl text-base ${
                   isOverSearchArea ? "text-[#c3c0db] bg-[#5e5b78]" : "text-[#5e5b78] bg-[#c3c0db]"
                 } `}
               >
@@ -96,7 +104,7 @@ const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
             <div className="pt-5 pb-6 px-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <Image src={mpLogo} className="h-[6vh] w-[6vh]" alt=""></Image>
+                  <MuPhoLogo />
                 </div>
                 <div className="-mr-2">
                   <button
@@ -132,7 +140,7 @@ const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
                       setOpen(!open);
                     }}
                   >
-                    search
+                    Search
                   </button>
                   <Link href="/" className="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
                     <span className="ml-3 text-base font-medium text-gray-900">Home</span>

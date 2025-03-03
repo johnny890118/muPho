@@ -12,7 +12,7 @@ const Picture = ({ data }) => {
         height={900}
       />
 
-      <div className="absolute inset-0 flex flex-col justify-between bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl p-4">
+      <div className="absolute inset-0 flex flex-col justify-between bg-black/20  text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl sm:rounded-2xl p-4">
         <p className="text-gray-200">{data.photographer}</p>
         <div className="flex justify-end">
           <a
