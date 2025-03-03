@@ -122,7 +122,7 @@ const Home = () => {
         />
 
         <div className="p-4 sm:p-8 flex flex-col gap-8 w-full mt-4 sm:mt-0">
-          <p className="sm:text-2xl">{`關於「${
+          <p className="text-lg sm:text-2xl">{`關於「${
             currentSearch ? currentSearch : "熱門圖片"
           }」的圖片`}</p>
           {isFetching ? (
