@@ -17,7 +17,7 @@ const Nav = ({ btnToInputHandler, isOverSearchArea }) => {
           isOverSearchArea ? "bg-[#c3c0db]" : "bg-transparent"
         } fixed top-0 z-10 w-full`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+        <div className="max-w-7xl mx-auto px-4 py-2 sm:px-6 sm:py-3">
           <div className="flex justify-between items-center">
             <Link href="/">
               <div className="flex items-center justify-center gap-2">

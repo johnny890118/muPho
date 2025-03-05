@@ -1,5 +1,5 @@
 export const searchAreaBg = {
-  Photo: "/fidel-fernando-GuH4_xtKnnM-unsplash.jpg",
+  Photo: "/anton-shuvalov-HuquhqJH9Sk-unsplash.jpg",
   MuPho: "/wes-hicks-MEL-jJnm7RQ-unsplash.jpg",
 };
 

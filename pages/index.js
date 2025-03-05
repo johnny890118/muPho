@@ -4,18 +4,17 @@ import axios from "axios";
 import Picture from "@/components/Picture";
 import Layout from "@/components/Layout";
 import Loading from "@/components/Loading";
+import { api } from "@/api";
 
 const Home = () => {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState("熱門圖片");
   const [data, setData] = useState(null);
   const [page, setPage] = useState(1);
   const [currentSearch, setCurrentSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
   const [isOverSearchArea, setIsOverSearchArea] = useState(false);
 
-  const searchKey = "RuTjVz8Ruba0yDd1SA80Hk6aEdFeAbmIlunpOmxDtiegSPiqG1uXTeEx";
-  const initialURL = "https://api.pexels.com/v1/curated?page=1&per_page=15";
-  const searchURL = `https://api.pexels.com/v1/search?query=${input}&per_page=15&page=1`;
+  const searchKey = process.env.NEXT_PUBLIC_PEXELS_API_KEY;
 
   const searchRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -25,52 +24,56 @@ const Home = () => {
     searchInputRef.current.focus();
   };
 
-  const searchMupho = async (input) => {
+  const resetSearch = () => {
+    setInput("");
+    setCurrentSearch("");
+    setData(null);
+  };
+
+  const searchPhoto = async (url) => {
     try {
       setIsFetching(true);
-      const response = await axios.get("http://192.168.105.142:1487/get_lyrics", {
-        params: { songName: input },
+
+      const result = await axios.get(url, {
+        headers: { Authorization: searchKey },
       });
-      let keywords = response.data.choices[0].message.content;
-      console.log(keywords);
-      let result = await axios.get(
-        `https://api.pexels.com/v1/search?query=${keywords}&per_page=15&page=1`,
-        {
-          headers: { Authorization: searchKey },
-        }
-      );
+
       setData(result.data.photos);
-      setCurrentSearch(keywords);
+      setCurrentSearch(input);
+
       if (nextDivRef.current) {
         nextDivRef.current.scrollIntoView({ behavior: "smooth" });
       }
+    } catch (e) {
+      resetSearch();
+      console.log("Error fetching photos:", e);
+    } finally {
       setIsFetching(false);
-    } catch (error) {
-      console.error("Error fetching lyrics:", error);
-      console.log("歌詞無法找到。");
     }
   };
 
-  const search = async (url) => {
-    if (input === "") {
+  const getAiKeywords = async (input) => {
+    try {
+      const { data } = await axios.post("/api/chat", { message: input });
+      return data.content;
+    } catch (e) {
+      console.log("Error fetching AI keywords:", e);
+      return "love couple separate";
+    }
+  };
+
+  const searchMupho = async (input) => {
+    try {
       setIsFetching(true);
-      let result = await axios.get(initialURL, {
-        headers: { Authorization: searchKey },
-      });
-      setData(result.data.photos);
-      setCurrentSearch(input);
-      setIsFetching(false);
-    } else {
-      setIsFetching(true);
-      let result = await axios.get(url, {
-        headers: { Authorization: searchKey },
-      });
-      setData(result.data.photos);
-      setCurrentSearch(input);
-      if (nextDivRef.current) {
-        nextDivRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-      setIsFetching(false);
+
+      const keywords = await getAiKeywords(input);
+      console.log("keywords", keywords);
+
+      const searchUrl = api.getSearchPhoto(keywords);
+
+      await searchPhoto(searchUrl);
+    } catch (e) {
+      console.log("Error in searchMupho:", e);
     }
   };
 
@@ -78,20 +81,18 @@ const Home = () => {
     let newURL;
     setPage(page + 1);
     if (currentSearch === "") {
-      newURL = `https://api.pexels.com/v1/curated?page=${page + 1}&per_page=15`;
+      newURL = api.getHotPhoto(page + 1);
     } else {
-      newURL = `https://api.pexels.com/v1/search?query=${currentSearch}&per_page=15&page=${
-        page + 1
-      }`;
+      newURL = api.getSearchPhoto(currentSearch, page + 1);
     }
     let result = await axios.get(newURL, {
       headers: { Authorization: searchKey },
     });
-    setData(data.concat(result.data.photos));
+    setData((prev) => prev.concat(result.data.photos));
   };
 
   useEffect(() => {
-    search(initialURL);
+    searchPhoto(api.getHotPhoto());
   }, []);
 
   useEffect(() => {
@@ -112,8 +113,8 @@ const Home = () => {
         <Search
           searchRef={searchRef}
           searchInputRef={searchInputRef}
-          search={() => {
-            search(searchURL);
+          searchPhoto={() => {
+            searchPhoto(api.getSearchPhoto(input));
           }}
           searchMupho={() => {
             searchMupho(input);
@@ -122,9 +123,7 @@ const Home = () => {
         />
 
         <div className="p-4 sm:p-8 flex flex-col gap-8 w-full mt-4 sm:mt-0">
-          <p className="text-lg sm:text-2xl">{`關於「${
-            currentSearch ? currentSearch : "熱門圖片"
-          }」的圖片`}</p>
+          <p className="text-lg sm:text-2xl">{`關於「${currentSearch}」的圖片`}</p>
           {isFetching ? (
             <Loading />
           ) : (

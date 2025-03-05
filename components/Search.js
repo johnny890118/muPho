@@ -3,7 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { searchAreaBg, searchAreaSelectOptions } from "@/constants";
 
-const Search = ({ search, setInput, searchMupho, searchRef, searchInputRef }) => {
+const Search = ({ searchPhoto, setInput, searchMupho, searchRef, searchInputRef }) => {
   const [muphoSelect, setMuphoSelect] = useState("Photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
   const [muphoBg, setMuphoBg] = useState(searchAreaBg.Photo);
@@ -12,7 +12,7 @@ const Search = ({ search, setInput, searchMupho, searchRef, searchInputRef }) =>
     setMuphoBg(searchAreaBg[muphoSelect]);
 
     if (muphoSelect === "Photo" && searchOnclick) {
-      search();
+      searchPhoto();
       setSearchOnclick(false);
     } else if (muphoSelect === "MuPho" && searchOnclick) {
       searchMupho();
@@ -22,9 +22,9 @@ const Search = ({ search, setInput, searchMupho, searchRef, searchInputRef }) =>
 
   return (
     <div
-      className="searchGroup flex justify-center h-[70vh] w-full bg-center items-center p-4 sm:rounded-b-3xl"
+      className="searchGroup flex justify-center h-[80vh] w-full bg-center items-center p-4 sm:rounded-b-3xl"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4)), url(${muphoBg})`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0)), url(${muphoBg})`,
       }}
       ref={searchRef}
     >
