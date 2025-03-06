@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { searchAreaBg, searchAreaSelectOptions } from "@/constants";
+import { searchAreaSettings } from "@/constants";
 
 const Search = ({ searchPhoto, setInput, searchMupho, searchRef, searchInputRef }) => {
   const [muphoSelect, setMuphoSelect] = useState("Photo");
   const [searchOnclick, setSearchOnclick] = useState(false);
-  const [muphoBg, setMuphoBg] = useState(searchAreaBg.Photo);
+  const [muphoBg, setMuphoBg] = useState("");
 
   useEffect(() => {
-    setMuphoBg(searchAreaBg[muphoSelect]);
-
     if (muphoSelect === "Photo" && searchOnclick) {
       searchPhoto();
       setSearchOnclick(false);
@@ -18,7 +16,12 @@ const Search = ({ searchPhoto, setInput, searchMupho, searchRef, searchInputRef 
       searchMupho();
       setSearchOnclick(false);
     }
-  }, [muphoSelect, searchOnclick, muphoBg]);
+  }, [muphoSelect, searchOnclick]);
+
+  useEffect(() => {
+    const foundSetting = searchAreaSettings.find(({ name }) => name === muphoSelect);
+    setMuphoBg(foundSetting?.backgroundImg || searchAreaSettings[0].backgroundImg);
+  }, [muphoSelect, searchAreaSettings]);
 
   return (
     <div
@@ -36,9 +39,9 @@ const Search = ({ searchPhoto, setInput, searchMupho, searchRef, searchInputRef 
               <SelectValue placeholder={muphoSelect} />
             </SelectTrigger>
             <SelectContent>
-              {searchAreaSelectOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
+              {searchAreaSettings.map(({ id, name }) => (
+                <SelectItem key={id} value={name}>
+                  {name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -52,7 +55,9 @@ const Search = ({ searchPhoto, setInput, searchMupho, searchRef, searchInputRef 
               }
             }}
             type="text"
-            placeholder="搜尋相片"
+            placeholder={
+              searchAreaSettings.find(({ name }) => name === muphoSelect).placeholder || "搜尋圖片"
+            }
             ref={searchInputRef}
           />
           <button
