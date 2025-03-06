@@ -7,8 +7,8 @@ import Loading from "@/components/Loading";
 import { api } from "@/api";
 
 const Home = () => {
-  const [input, setInput] = useState("熱門圖片");
-  const [data, setData] = useState(null);
+  const [input, setInput] = useState("");
+  const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [currentSearch, setCurrentSearch] = useState("");
   const [isFetching, setIsFetching] = useState(false);
@@ -27,7 +27,7 @@ const Home = () => {
   const resetSearch = () => {
     setInput("");
     setCurrentSearch("");
-    setData(null);
+    setData([]);
   };
 
   const searchPhoto = async (url) => {
@@ -41,7 +41,7 @@ const Home = () => {
       setData(result.data.photos);
       setCurrentSearch(input);
 
-      if (nextDivRef.current) {
+      if (nextDivRef.current && input) {
         nextDivRef.current.scrollIntoView({ behavior: "smooth" });
       }
     } catch (e) {
@@ -67,8 +67,6 @@ const Home = () => {
       setIsFetching(true);
 
       const keywords = await getAiKeywords(input);
-      console.log("keywords", keywords);
-
       const searchUrl = api.getSearchPhoto(keywords);
 
       await searchPhoto(searchUrl);
@@ -114,7 +112,7 @@ const Home = () => {
           searchRef={searchRef}
           searchInputRef={searchInputRef}
           searchPhoto={() => {
-            searchPhoto(api.getSearchPhoto(input));
+            searchPhoto(input ? api.getSearchPhoto(input) : api.getHotPhoto());
           }}
           searchMupho={() => {
             searchMupho(input);
@@ -123,14 +121,16 @@ const Home = () => {
         />
 
         <div className="p-4 sm:p-8 flex flex-col gap-8 w-full mt-4 sm:mt-0">
-          <p className="text-lg sm:text-2xl">{`關於「${currentSearch}」的圖片`}</p>
+          <p className="text-lg sm:text-2xl">{`關於「${currentSearch || "熱門圖片"}」的圖片`}</p>
           {isFetching ? (
             <Loading />
           ) : (
-            <div className="columns-2 sm:columns-3 lg:columns-4" ref={nextDivRef}>
-              {data?.map((d, index) => {
-                return <Picture data={d} key={index} />;
-              })}
+            <div className="columns-2 sm:columns-3 lg:columns-4 2xl:columns-5" ref={nextDivRef}>
+              {data &&
+                data.length > 0 &&
+                data.map((d, index) => {
+                  return <Picture data={d} key={index} />;
+                })}
             </div>
           )}
         </div>
