@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Image as ImageIcon, Bookmark, Music2, Search } from "lucide-react";
-import { SearchHero } from "./search-shell";
+import { Bookmark } from "lucide-react";
+import { heroWorkId, SearchHero, SearchShell } from "./search-shell";
+import { SearchForm } from "./search-form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { Skeleton } from "./ui/skeleton";
-import { FeaturedWork, featuredWorkId } from "./featured-work";
+import { FeaturedWorks } from "./featured-work";
 import { WorkImage, WorkPreview } from "./work-preview";
 import { readFavorites, similarWorks } from "@/lib/work-actions";
 import { describeTrack } from "@/lib/song-intents";
@@ -37,6 +38,7 @@ async function search<T>(params: Record<string, string>, signal: AbortSignal): P
 const favoritesKey = "mupho-favorites-v1";
 
 export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blockedIds: string[] }) {
+  const [searched, setSearched] = useState(false);
   const [mode, setMode] = useState("song");
   const [input, setInput] = useState("");
   const [tracks, setTracks] = useState<Track[] | null>(null);
@@ -58,7 +60,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   const focusOrigin = useRef<HTMLButtonElement>(null);
   const favoritesButton = useRef<HTMLButtonElement>(null);
   const current = useRef<AbortController | null>(null);
-  const resultRef = useRef<HTMLElement>(null);
+
 
   useEffect(() => {
     function refresh() {
@@ -142,7 +144,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     setQuery("");
     setWorks([]);
     setMore(false);
-    resultRef.current?.scrollIntoView({ block: "start" });
+    setSearched(true);
+    window.scrollTo({ top: 0 });
     if (mode === "image") { setBaseQuery(q); return void load(q, media); }
     void run(async (signal) => {
       const data = await search<{ tracks: Track[] }>({ kind: "tracks", q }, signal);
@@ -164,32 +167,24 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     void load(intent, media);
   }
 
+  const compact = searched || showFavorites;
+  const form = <SearchForm mode={mode} input={input} onMode={setMode} onInput={setInput} onSubmit={submit} compact={compact} />;
+  const favoritesControl = <Button ref={favoritesButton} variant="ghost" aria-pressed={showFavorites}
+    className="min-h-11 text-muted-foreground hover:text-foreground" onClick={() => {
+      setShowFavorites(!showFavorites); setSelected(undefined); window.scrollTo({ top: 0 });
+    }}><Bookmark />{showFavorites ? "返回搜尋" : `收藏${favorites.length ? `（${favorites.length}）` : ""}`}</Button>;
+
   return (
-    <>
-      <SearchHero featured={blockedIds.includes(featuredWorkId) ? undefined : <FeaturedWork />}>
-        <form onSubmit={submit} className="mt-8 max-w-2xl">
-          <Tabs value={mode} onValueChange={setMode}>
-            <TabsList aria-label="搜尋模式">
-              <TabsTrigger value="song"><Music2 />歌曲找圖</TabsTrigger>
-              <TabsTrigger value="image"><ImageIcon />圖片搜尋</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="mt-3 flex gap-2">
-            <Input aria-label={mode === "song" ? "歌名" : "圖片關鍵字"} value={input} onChange={(event) => setInput(event.target.value)}
-              placeholder={mode === "song" ? "例如 晴天 — 周杰倫" : "例如 海邊日落"} maxLength={100} required className="h-12 bg-background text-base" />
-            <Button type="submit" className="h-12 px-4"><Search />搜尋</Button>
-          </div>
-        </form>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {mode === "song" && ["晴天 — 周杰倫", "Space Oddity — David Bowie", "夜に駆ける — YOASOBI", "봄날 — BTS"].map((example) =>
-            <Button key={example} variant="outline" onClick={() => setInput(example)}>{example}</Button>)}
-        </div>
-      </SearchHero>
-      <section ref={resultRef} aria-label="搜尋結果" aria-busy={pending} className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
-        <Button ref={favoritesButton} type="button" variant="outline" aria-pressed={showFavorites} className="mb-6"
-          onClick={() => { setShowFavorites(!showFavorites); setSelected(undefined); }}>
-          <Bookmark />{showFavorites ? "返回搜尋" : `收藏${favorites.length ? `（${favorites.length}）` : ""}`}
-        </Button>
+    <SearchShell actions={favoritesControl} compact={compact ? form : undefined}>
+      {!compact && <SearchHero showPhoto={!blockedIds.includes(heroWorkId)} featured={<FeaturedWorks blockedIds={blockedIds} />}>
+        {form}
+        {mode === "song" && <div className="mt-3 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+          <span className="mr-1">試試看</span>
+          {["晴天 — 周杰倫", "Space Oddity — David Bowie", "夜に駆ける — YOASOBI", "봄날 — BTS"].map((example) =>
+            <Button key={example} variant="ghost" className="min-h-11 rounded-full px-2.5 text-xs hover:bg-secondary" onClick={() => setInput(example)}>{example}</Button>)}
+        </div>}
+      </SearchHero>}
+      {compact && <section aria-label="搜尋結果" aria-busy={pending} className="mx-auto max-w-[100rem] px-3 py-5 sm:px-8">
         {showFavorites ? <>
           <h2 className="text-xl font-semibold">本機收藏</h2>
           <p className="my-3 text-sm text-muted-foreground">收藏保存在這個瀏覽器，無跨裝置同步。清除瀏覽器資料會移除收藏。</p>
@@ -274,8 +269,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
             if (!similarWorks(selectedWork, works).length) return "目前這批作品的描述線索不足。可以再載入一批，或用關鍵字微調。";
             setReference(selectedWork); setSelected(undefined); return "";
           }} />}
-      </section>
-    </>
+      </section>}
+    </SearchShell>
   );
 }
 

@@ -15,3 +15,7 @@
 下列情形應擋下結果或只導向原始來源：授權欄位不符或缺少作者，無法判斷媒體，檔案失效，疑似 AI 作品或來源遭封鎖。
 
 首頁示範使用 Vyacheslav Argenberg 的〈Lake Baikal, Maloye More Strait at sunrise, Baikal, Russia〉，從 Commons 直接載入縮圖，按原比例呈現。作品頁明列作者自行創作、CC BY 4.0 授權及指定署名。[作品與授權](https://commons.wikimedia.org/wiki/File:Lake_Baikal,_Maloye_More_Strait_at_sunrise,_Baikal,_Russia.jpg)
+
+電影感首頁封面為 Jorge Franganillo 的〈Pontevedra - rainy night〉，從 Commons 載入縮圖，以 CSS 裁切及暗角呈現。原始作品頁標示 CC BY 4.0 與作者資訊。[作品與授權](https://commons.wikimedia.org/wiki/File:Pontevedra_-_rainy_night.jpg)
+
+首頁另外選用〈Night Rainy View〉（S.M.M.Musabbir Uddin）與〈Olkhon Island, Capes, cliffs at sunset, Lake Baikal, Russia〉（Vyacheslav Argenberg）。兩個原始檔案頁均標示 CC BY 4.0，首頁標明裁切。[雨夜作品](https://commons.wikimedia.org/wiki/File:Night_Rainy_View.jpg) · [暮色作品](https://commons.wikimedia.org/wiki/File:Olkhon_Island,_Capes,_cliffs_at_sunset,_Lake_Baikal,_Russia.jpg)
