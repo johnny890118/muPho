@@ -210,10 +210,23 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     <SearchShell actions={favoritesControl} compact={compact ? form : undefined}>
       {!compact && <SearchHero showPhoto={!blockedIds.includes(heroWorkId)} featured={<FeaturedWorks blockedIds={blockedIds} />}>
         {form}
-        {mode === "song" && <div className="mt-3 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-          <span className="mr-1">試試看</span>
-          {["晴天 — 周杰倫", "Space Oddity — David Bowie", "夜に駆ける — YOASOBI", "봄날 — BTS"].map((example) =>
-            <Button key={example} variant="ghost" className="min-h-11 rounded-full px-2.5 text-xs hover:bg-secondary" onClick={() => setInput(example)}>{example}</Button>)}
+        {mode === "song" && <div className="mt-4 max-w-xl" role="group" aria-labelledby="song-examples">
+          <p id="song-examples" className="mb-2 text-sm font-medium text-foreground">試試看</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {[
+              ["晴天", "周杰倫"],
+              ["Space Oddity", "David Bowie"],
+              ["夜に駆ける", "YOASOBI"],
+              ["봄날", "BTS"],
+            ].map(([title, artist]) => (
+              <Button key={title} type="button" variant="outline" aria-label={`${title} — ${artist}`}
+                className="h-full min-h-12 min-w-0 flex-col items-start gap-0.5 border-input/70 bg-background/85 px-2.5 py-1.5 text-left whitespace-normal dark:bg-background/85 dark:hover:bg-secondary"
+                onClick={() => setInput(`${title} — ${artist}`)}>
+                <span className="text-xs leading-tight font-medium">{title}</span>
+                <span className="text-xs leading-tight font-normal text-muted-foreground">{artist}</span>
+              </Button>
+            ))}
+          </div>
         </div>}
       </SearchHero>}
       {compact && <section ref={results} tabIndex={-1} aria-label="搜尋結果" aria-busy={pending}
