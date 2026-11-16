@@ -20,6 +20,7 @@ export class SearchBudget {
       CREATE TABLE IF NOT EXISTS locks (key TEXT PRIMARY KEY, owner TEXT, expires INTEGER);
       CREATE TABLE IF NOT EXISTS cache (key TEXT PRIMARY KEY, expires INTEGER, body TEXT);
       CREATE TABLE IF NOT EXISTS provider (key TEXT PRIMARY KEY, next INTEGER);
+      CREATE TABLE IF NOT EXISTS provider_failures (key TEXT PRIMARY KEY, expires INTEGER, code TEXT);
     `);
   }
 
@@ -38,6 +39,9 @@ export class SearchBudget {
         this.db.exec("COMMIT");
         return result;
       }
+      const failure = this.db.prepare("SELECT code, expires FROM provider_failures WHERE key = ? AND expires > ?").get(kind, now);
+      if (failure) throw new SearchError(failure.code === "upstream_limited" ? "upstream_limited" : "offline",
+        Math.ceil((Number(failure.expires) - now) / 1000));
       const next = Number(this.db.prepare("SELECT next FROM provider WHERE key = ?").get(kind)?.next ?? 0);
       if (next > now) {
         const retry = Math.ceil((next - now) / 1000);
@@ -73,7 +77,10 @@ export class SearchBudget {
       return result;
     } catch (error) {
       if (error instanceof SearchError && error.retrySeconds) {
-        this.setCooldown(kind, Date.now() + error.retrySeconds * 1000);
+        const expires = Date.now() + error.retrySeconds * 1000;
+        this.db.prepare(`INSERT INTO provider_failures VALUES (?, ?, ?)
+          ON CONFLICT(key) DO UPDATE SET expires = excluded.expires, code = excluded.code
+          WHERE excluded.expires > provider_failures.expires`).run(kind, expires, error.code);
       }
       throw error;
     } finally {

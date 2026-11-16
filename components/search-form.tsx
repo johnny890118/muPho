@@ -15,7 +15,7 @@ export function SearchForm({ mode, input, onMode, onInput, onSubmit, compact }: 
       : "mt-5 max-w-xl flex-col gap-4")}>
       <Tabs value={mode} onValueChange={onMode} className={compact ? "order-2 md:flex-none" : ""}>
         <TabsList aria-label="搜尋模式" className={cn("h-auto gap-0 p-0", compact
-          ? "grid w-full grid-cols-2 bg-transparent md:flex md:rounded-full md:bg-secondary"
+          ? "search-modes grid w-full grid-cols-2 bg-transparent md:flex md:rounded-full md:bg-secondary"
           : "rounded-none border-b border-border bg-transparent")}>
           {["歌曲找圖", "圖片搜尋"].map((label, index) =>
             <TabsTrigger value={index === 0 ? "song" : "image"} key={label} className={cn(

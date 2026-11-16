@@ -27,3 +27,14 @@ body { font-family: "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
 }
+
+.media-tabs [role="tab"][aria-selected="true"] {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+@media (min-width: 768px) {
+  .search-modes [role="tab"][aria-selected="true"] {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+}

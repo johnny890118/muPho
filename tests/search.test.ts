@@ -50,7 +50,7 @@ test("validates and normalizes user input and labels all 24 title-based intents"
   assert.equal(searchSchema.safeParse({kind: "tracks", q: "x".repeat(101)}).success, false);
   assert.equal(songIntents.length, 24);
   for (const [title, artist, expected] of songIntents) {
-    assert.deepEqual(describeTrack({id: "fixture", title, artist}), {mode: "metadata_only", query: expected, curated: true});
+    assert.deepEqual(describeTrack({id: "fixture", title, artist}), {mode: "metadata_only", query: expected, curated: true, ...(title === "晴天" ? { fallback: "schoolyard" } : {})});
   }
   assert.equal(describeTrack({id: "fixture", title: "Dreams", artist: "Unlisted cover"}).curated, false);
 });
@@ -68,7 +68,7 @@ test("recording adapter accepts absent lengths and keeps distinct recordings", a
 test("provider failures propagate a typed cooldown", async (t) => {
   const url = new URL("https://commons.wikimedia.org/w/api.php");
   const fetchMock = t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 429, headers: { "Retry-After": "75" } }));
-  await assert.rejects(providerJson(url, "MuPho test"), { code: "limited", retrySeconds: 75 });
+  await assert.rejects(providerJson(url, "MuPho test"), { code: "upstream_limited", retrySeconds: 75 });
   fetchMock.mock.mockImplementation(async () => new Response(null, { status: 503 }));
   await assert.rejects(providerJson(url, "MuPho test"), { code: "offline", retrySeconds: 30 });
   fetchMock.mock.mockImplementation(async () => { throw new DOMException("test timeout", "TimeoutError"); });
@@ -107,4 +107,62 @@ test("shared SQLite atomically caps calls across two connections and serves cach
   assert.equal(await b.run("tracks", "visitor", "first", "c", perform), 1);
   await assert.rejects(a.run("tracks", "other", "uncached", "d", perform), (error) => error instanceof SearchError && error.code === "limited");
   assert.equal(calls, limits.tracks.site);
+});
+
+test("known compact song credits share a canonical query without splitting arbitrary titles", () => {
+  for (const input of ["晴天 — 周杰倫", "晴天-周杰倫", "晴天 周杰倫", "晴天－周杰伦", "晴天 — Jay Chou", "晴天—周傑倫"]) {
+    assert.equal(canonicalQuery(input), "晴天 — 周杰倫");
+  }
+  assert.equal(canonicalQuery("晴天"), "晴天");
+  assert.equal(canonicalQuery("Dreams"), "Dreams");
+  assert.equal(canonicalQuery("T-Shirt"), "T-Shirt");
+  assert.equal(canonicalQuery("Space Oddity — David Bowie"), "Space Oddity — David Bowie");
+  assert.equal(canonicalQuery("夜に駆ける — YOASOBI"), "夜に駆ける — YOASOBI");
+  assert.equal(canonicalQuery("봄날 — BTS"), "봄날 — BTS");
+  const intent = describeTrack({ id: "fixture", title: "晴天", artist: "Jay Chou" });
+  assert.equal(intent.query, "school corridor");
+  assert.equal(intent.fallback, "schoolyard");
+});
+
+test("one fallback is allowed for an empty song image batch, not for upstream failure", async () => {
+  const { fetchImageBatch } = await import("../lib/image-search");
+  const photo = toWork(record, "photo", new Set());
+  assert.ok(photo);
+  const requested: string[] = [];
+  const result = await fetchImageBatch("school corridor", "schoolyard", async (query) => {
+    requested.push(query);
+    return query === "schoolyard"
+      ? { works: [photo], hasMore: true, status: "matched" }
+      : { works: [], hasMore: false, status: "filtered" };
+  });
+  assert.deepEqual(requested, ["school corridor", "schoolyard"]);
+  assert.equal(result.query, "schoolyard");
+  assert.equal(result.works.length, 1);
+
+  requested.length = 0;
+  await assert.rejects(fetchImageBatch("school corridor", "schoolyard", async (query) => {
+    requested.push(query);
+    throw new SearchError("offline", 30);
+  }), { code: "offline" });
+  assert.deepEqual(requested, ["school corridor"]);
+});
+
+test("Commons distinguishes no upstream candidates from candidates rejected by policy", async (t) => {
+  const { findWorks } = await import("../lib/providers/commons");
+  const mock = t.mock.method(globalThis, "fetch", async () => Response.json({ batchcomplete: true }));
+  const result = await findWorks("school corridor", "photo", 0, "MuPho test", new Set());
+  assert.equal(result.status, "empty");
+  mock.mock.mockImplementation(async () => Response.json({ query: { pages: [record] } }));
+  assert.equal((await findWorks("school corridor", "illustration", 0, "MuPho test", new Set())).status, "filtered");
+  assert.equal((await findWorks("school corridor", "photo", 0, "MuPho test", new Set())).status, "matched");
+});
+
+test("shared cooldown preserves an upstream outage separately from visitor and site quotas", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "mupho-cooldown-"));
+  const file = join(root, "shared.sqlite");
+  const a = new SearchBudget(file);
+  const b = new SearchBudget(file);
+  t.after(() => { a.close(); b.close(); rmSync(root, { recursive: true, force: true }); });
+  await assert.rejects(a.run("images", "first", "one", "a", async () => { throw new SearchError("offline", 45); }), { code: "offline" });
+  await assert.rejects(b.run("images", "second", "two", "b", async () => assert.fail("cooldown must stop upstream calls")), { code: "offline" });
 });

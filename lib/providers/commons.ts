@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Media, Work } from "@/lib/search-types";
+import type { ImageBatch, Media, Work } from "@/lib/search-types";
 import { providerJson, SearchError } from "./http";
 
 const pageSchema = z.object({
@@ -58,7 +58,7 @@ export function toWork(raw: unknown, media: Media, blocked: ReadonlySet<string>)
 }
 
 const batchSize = 18;
-export async function findWorks(query: string, media: Media, page: number, agent: string, blocked: ReadonlySet<string>) {
+export async function findWorks(query: string, media: Media, page: number, agent: string, blocked: ReadonlySet<string>): Promise<ImageBatch> {
   const url = new URL("https://commons.wikimedia.org/w/api.php");
   const words = query.replace(/[^\p{L}\p{N}\s'-]/gu, " ").trim();
   if (!words) throw new SearchError("invalid");
@@ -83,5 +83,9 @@ export async function findWorks(query: string, media: Media, page: number, agent
     authors.set(key, repetition + 1);
     return { work, repetition };
   }).sort((a, b) => a.repetition - b.repetition);
-  return { works: ordered.map(({ work }) => work), hasMore: page === 8 || (raw.length === batchSize && page < 9) };
+  return {
+    works: ordered.map(({ work }) => work),
+    hasMore: page < 9 && (page === 8 || raw.length === batchSize),
+    status: ordered.length ? "matched" : raw.length ? "filtered" : "empty",
+  };
 }

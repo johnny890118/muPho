@@ -1,7 +1,7 @@
-import { normalize, type Track } from "./search-types";
+import { normalize, type AnalysisMode, type Track } from "./search-types";
 
 export const songIntents = [
-  ["晴天", "周杰倫", "sunlight school bicycle"],
+  ["晴天", "周杰倫", "school corridor"],
   ["稻香", "周杰倫", "rice fields sunset"],
   ["夜曲", "周杰倫", "night city shadows"],
   ["小幸運", "田馥甄", "schoolyard golden light"],
@@ -31,19 +31,42 @@ const aliases: Record<string, string> = {
   "ye ni kakeru": "夜に駆ける", "yoru ni kakeru": "夜に駆ける", "spring day": "봄날",
   "bam pyeonji": "밤편지", "dao xiang": "稻香", "qing tian": "晴天", "夜に駆ける (racing into the night)": "夜に駆ける",
 };
+const artistAliases: Record<string, string> = {
+  "jay chou": "周杰倫", "周杰伦": "周杰倫", "周傑倫": "周杰倫",
+};
+const key = (value: string) => normalize(value).toLowerCase();
+const titleName = (value: string) => aliases[key(value)] ?? normalize(value);
+const artistName = (value: string) => artistAliases[key(value)] ?? normalize(value);
+
 export function canonicalQuery(query: string) {
   const normalized = normalize(query);
-  const [title, artist] = normalized.split(/\s+[—–-]\s+/, 2);
-  const mapped = aliases[title.toLowerCase()] ?? title;
-  return artist ? `${mapped} — ${artist}` : mapped;
+  const explicit = normalized.match(/^(.+?)(?:\s*[—–]\s*|\s+-\s+)(.+)$/);
+  if (explicit) return `${titleName(explicit[1])} — ${artistName(explicit[2])}`;
+
+  // Compact separators are ambiguous in arbitrary song titles. Recognize only known title–artist pairs.
+  const compact = normalized.match(/^(.+?)[ -]+(.+)$/);
+  if (compact) {
+    for (let end = 1; end < normalized.length; end++) {
+      if (!/[ -]/.test(normalized[end])) continue;
+      const title = titleName(normalized.slice(0, end));
+      const artist = artistName(normalized.slice(end).replace(/^[ -]+/, ""));
+      if (songIntents.some(([name, credit]) => key(name) === key(title) && key(credit) === key(artist))) {
+        return `${title} — ${artist}`;
+      }
+    }
+  }
+  return titleName(normalized);
 }
 
-export function describeTrack(track: Track) {
-  const key = (value: string) => normalize(value).toLowerCase();
-  const intents = songIntents.find(([title, artist]) => key(title) === key(track.title) && key(artist) === key(track.artist));
+export type VisualIntent = { mode: AnalysisMode; query: string; fallback?: string; curated: boolean };
+
+export function describeTrack(track: Track): VisualIntent {
+  const intents = songIntents.find(([title, artist]) => key(title) === key(titleName(track.title)) && key(artist) === key(artistName(track.artist)));
+  const fallback = intents?.[0] === "晴天" ? "schoolyard" : undefined;
   return {
-    mode: "metadata_only" as const,
+    mode: "metadata_only",
     query: intents?.[2] ?? track.title,
     curated: Boolean(intents),
+    ...(fallback ? { fallback } : {}),
   };
 }

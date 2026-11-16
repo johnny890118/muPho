@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Bookmark } from "lucide-react";
+import { Bookmark, RefreshCw, SlidersHorizontal } from "lucide-react";
 import { heroWorkId, SearchHero, SearchShell } from "./search-shell";
 import { SearchForm } from "./search-form";
 import { Button } from "./ui/button";
@@ -11,13 +11,16 @@ import { Skeleton } from "./ui/skeleton";
 import { FeaturedWorks } from "./featured-work";
 import { WorkImage, WorkPreview } from "./work-preview";
 import { readFavorites, similarWorks } from "@/lib/work-actions";
-import { describeTrack } from "@/lib/song-intents";
-import type { Media, SearchErrorCode, Track, Work } from "@/lib/search-types";
+import { fetchImageBatch } from "@/lib/image-search";
+import { TrackOptions } from "./track-options";
+import { canonicalQuery, describeTrack } from "@/lib/song-intents";
+import type { ImageBatch, Media, SearchErrorCode, Track, Work } from "@/lib/search-types";
 
 const messages: Record<SearchErrorCode, string> = {
   disabled: "這個環境尚未啟用搜尋服務。",
   invalid: "請輸入 1–100 字的歌名或圖片關鍵字。",
   limited: "目前已達搜尋額度，請稍後再試。",
+  upstream_limited: "圖片或歌曲來源正在限流，請稍後再試。",
   busy: "搜尋服務正在處理其他請求，請稍候。",
   offline: "來源服務暫時無法回應，請稍後再試。",
 };
@@ -26,9 +29,9 @@ async function search<T>(params: Record<string, string>, signal: AbortSignal): P
   const url = "/api/search?" + new URLSearchParams(params);
   for (let attempt = 0; ; attempt++) {
     const response = await fetch(url, { signal });
-    const data = await response.json().catch(() => ({}));
-    if (response.ok) return data as T;
-    if (data.error !== "busy" || attempt >= 2) throw new Error(messages[data.error as SearchErrorCode] ?? messages.offline);
+    const data = await response.json().catch(() => undefined);
+    if (response.ok && data) return data as T;
+    if (data?.error !== "busy" || attempt >= 2) throw new Error(messages[data?.error as SearchErrorCode] ?? messages.offline);
     const retry = Number(response.headers.get("retry-after")) || 1;
     await new Promise((resolve) => setTimeout(resolve, Math.min(retry, 3) * 1000 + 100));
     signal.throwIfAborted();
@@ -42,9 +45,13 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   const [mode, setMode] = useState("song");
   const [input, setInput] = useState("");
   const [tracks, setTracks] = useState<Track[] | null>(null);
+  const [choosing, setChoosing] = useState(false);
   const [track, setTrack] = useState<Track>();
   const [media, setMedia] = useState<Media>("photo");
-  const [baseQuery, setBaseQuery] = useState("");
+  const [imageLabel, setImageLabel] = useState("");
+  const [status, setStatus] = useState<ImageBatch["status"]>();
+  const [refining, setRefining] = useState(false);
+  const [appliedRefine, setAppliedRefine] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [more, setMore] = useState(false);
@@ -60,6 +67,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   const focusOrigin = useRef<HTMLButtonElement>(null);
   const favoritesButton = useRef<HTMLButtonElement>(null);
   const current = useRef<AbortController | null>(null);
+  const results = useRef<HTMLElement>(null);
+  const retrySearch = useRef<() => void>(null);
 
 
   useEffect(() => {
@@ -117,18 +126,21 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     }
   }
 
-  function load(q: string, kind: Media, offset = 0, append = false) {
+  function load(q: string, kind: Media, offset = 0, append = false, fallback?: string) {
     setQuery(q);
     setMedia(kind);
-    if (!append) setMore(false);
+    if (offset === 0) setMore(false);
+    retrySearch.current = () => void load(q, kind, offset, append, fallback);
     return run(async (signal) => {
-      const data = await search<{ works: Work[]; hasMore: boolean }>({
-        kind: "images", q, media: kind, page: String(offset),
-      }, signal);
+      const data = await fetchImageBatch(q, offset === 0 ? fallback : undefined, (candidate) =>
+        search<ImageBatch>({ kind: "images", q: candidate, media: kind, page: String(offset) }, signal),
+      );
       signal.throwIfAborted();
+      setQuery(data.query);
       setWorks((previous) => [...new Map([...(append ? previous : []), ...data.works].map((work) => [work.id, work])).values()]);
       setPage(offset);
       setMore(data.hasMore);
+      setStatus(data.status);
     });
   }
 
@@ -139,32 +151,51 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     setShowFavorites(false);
     setReference(undefined);
     setRefine("");
+    setAppliedRefine("");
+    setRefining(false);
     setTrack(undefined);
     setTracks(null);
+    setChoosing(false);
     setQuery("");
     setWorks([]);
     setMore(false);
+    setStatus(undefined);
     setSearched(true);
     window.scrollTo({ top: 0 });
-    if (mode === "image") { setBaseQuery(q); return void load(q, media); }
-    void run(async (signal) => {
-      const data = await search<{ tracks: Track[] }>({ kind: "tracks", q }, signal);
-      signal.throwIfAborted();
-      setTracks(data.tracks);
-      if (data.tracks.length === 1 && q.includes(" — ") &&
-          `${data.tracks[0].title} — ${data.tracks[0].artist}`.normalize("NFKC").toLowerCase() === q.normalize("NFKC").toLowerCase()) {
-        select(data.tracks[0]);
-      }
-    });
+    if (mode === "image") { setImageLabel(q); return void load(q, media); }
+    retrySearch.current = lookup;
+    lookup();
+
+    function lookup() {
+      void run(async (signal) => {
+        const data = await search<{ tracks: Track[] }>({ kind: "tracks", q }, signal);
+        signal.throwIfAborted();
+        setTracks(data.tracks);
+        const canonical = canonicalQuery(q).toLowerCase();
+        const only = data.tracks.length === 1 ? data.tracks[0] : undefined;
+        if (only && canonical === canonicalQuery(`${only.title} — ${only.artist}`).toLowerCase()) select(only);
+        else setChoosing(data.tracks.length > 0);
+      });
+    }
+  }
+
+  function loadInitial(item: Track | undefined, kind: Media, refinement = "") {
+    const intent = item ? describeTrack(item) : undefined;
+    const base = intent?.query ?? imageLabel;
+    const q = [base, refinement].filter(Boolean).join(" ").slice(0, 100);
+    setReference(undefined);
+    setWorks([]);
+    setStatus(undefined);
+    void load(q, kind, 0, false, refinement ? undefined : intent?.fallback);
   }
 
   function select(item: Track) {
     setTrack(item);
-    setReference(undefined);
+    setChoosing(false);
     setRefine("");
-    const intent = describeTrack(item).query;
-    setBaseQuery(intent);
-    void load(intent, media);
+    setAppliedRefine("");
+    setRefining(false);
+    loadInitial(item, media);
   }
 
   const compact = searched || showFavorites;
@@ -184,78 +215,83 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
             <Button key={example} variant="ghost" className="min-h-11 rounded-full px-2.5 text-xs hover:bg-secondary" onClick={() => setInput(example)}>{example}</Button>)}
         </div>}
       </SearchHero>}
-      {compact && <section aria-label="搜尋結果" aria-busy={pending} className="mx-auto max-w-[100rem] px-3 py-5 sm:px-8">
+      {compact && <section ref={results} tabIndex={-1} aria-label="搜尋結果" aria-busy={pending}
+        className="mx-auto max-w-[100rem] px-2.5 pt-4 pb-8 outline-none sm:px-6 lg:px-8">
         {showFavorites ? <>
-          <h2 className="text-xl font-semibold">本機收藏</h2>
-          <p className="my-3 text-sm text-muted-foreground">收藏保存在這個瀏覽器，無跨裝置同步。清除瀏覽器資料會移除收藏。</p>
+          <h2 className="font-display text-2xl">本機收藏</h2>
+          <p className="my-3 text-sm text-muted-foreground">收藏保存在這個瀏覽器。清除瀏覽器資料會移除收藏。</p>
           {favoriteStatus && <p role="status">{favoriteStatus}</p>}
-          {favorites.length === 0 && <p className="text-muted-foreground">還沒有收藏作品。</p>}
+          {favorites.length === 0 && <p className="py-8 text-muted-foreground">還沒有收藏作品。</p>}
         </> : <>
-        {error && <p role="alert" className="rounded-md border border-border bg-card p-4 text-destructive">{error}</p>}
-        {tracks && !track && (
-          <>
-            <h2 className="mb-3 text-xl font-semibold">{tracks.length ? "選擇歌曲版本" : "找不到符合的歌曲"}</h2>
-            {tracks.length === 0 && <p className="text-muted-foreground">可以試試原文歌名，或用「歌名 — 歌手」縮小搜尋範圍。</p>}
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {tracks.map((item) => (
-                <li key={item.id}>
-                  <Button variant="outline" className="h-auto min-h-14 w-full flex-col items-start gap-1 p-3 text-left whitespace-normal" onClick={() => select(item)}>
-                    <span>{item.title} — {item.artist}</span>
-                    <span className="text-xs text-muted-foreground">{[item.album, item.version, item.milliseconds && formatDuration(item.milliseconds)].filter(Boolean).join(" · ")}</span>
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-        {query && (
-          <>
-            <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-semibold">{track ? `${track.title} — ${track.artist}` : query}</h2>
-                {track && (
-                  <>
-                    <p className="mt-2 text-sm text-muted-foreground">歌曲資料推薦，未分析完整歌詞。搜尋線索為「{query}」。</p>
-                    <Button variant="ghost" onClick={() => {
-                      current.current?.abort(); setPending(false); setError(""); setTrack(undefined); setQuery(""); setWorks([]); setReference(undefined);
-                    }} className="mt-2 px-0">更換歌曲</Button>
-                    <details className="mt-2 max-w-xl text-sm text-muted-foreground">
-                      <summary className="cursor-pointer">歌詞分析</summary>
-                      <p className="mt-2">目前未啟用歌詞分析或上傳。圖片以選定的歌曲資料與搜尋線索查找。</p>
-                    </details>
-                  </>
-                )}
+          {tracks && !track && !query && <div className="px-2 py-4">
+            <h2 className="font-display text-2xl">{tracks.length ? "選擇歌曲版本" : "找不到符合的歌曲"}</h2>
+            {tracks.length > 0
+              ? <Button variant="outline" className="mt-3 min-h-11" onClick={() => setChoosing(true)}>查看歌曲版本</Button>
+              : <p className="mt-2 text-sm text-muted-foreground">試試原文歌名，或用「歌名 — 歌手」縮小搜尋範圍。</p>}
+          </div>}
+          {choosing && tracks?.length ? <TrackOptions tracks={tracks} onSelect={select} onClose={() => setChoosing(false)}
+            restoreFocus={() => results.current?.focus({ preventScroll: true })} /> : null}
+          {query && <>
+            <div className="md:mb-3 md:flex md:items-center md:justify-between md:gap-5">
+            <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 px-1.5 sm:px-0 md:mb-0 md:flex-1 md:justify-start">
+              <div className="min-w-0 flex-1">
+                <h2 className="font-display text-2xl leading-tight break-words sm:text-3xl">
+                  {track ? <>{track.title}<span className="ml-2 font-sans text-sm text-muted-foreground sm:text-base">· {track.artist}</span></> : imageLabel}
+                </h2>
+                {track && <p className="mt-1 text-xs text-muted-foreground">依歌曲資料推薦・未分析完整歌詞</p>}
               </div>
-              <Tabs value={media} onValueChange={(value) => {
-                setReference(undefined); setWorks([]); void load(query, value as Media);
-              }}>
-                <TabsList aria-label="圖片類型">
-                  <TabsTrigger value="photo">攝影</TabsTrigger>
-                  <TabsTrigger value="illustration">插畫</TabsTrigger>
+              {track && <Button variant="ghost" className="min-h-11 shrink-0 px-2 text-primary" onClick={() => setChoosing(true)}>
+                <RefreshCw />更換歌曲
+              </Button>}
+            </div>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2 px-1.5 sm:px-0 md:mb-0">
+              <Tabs value={media} onValueChange={(value) => loadInitial(track, value as Media, appliedRefine)}>
+                <TabsList aria-label="圖片類型" className="media-tabs h-auto rounded-full bg-secondary p-0.5">
+                  <TabsTrigger value="photo" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">攝影</TabsTrigger>
+                  <TabsTrigger value="illustration" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">插畫</TabsTrigger>
                 </TabsList>
               </Tabs>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" className="min-h-11 px-2 text-muted-foreground" aria-expanded={refining} onClick={() => setRefining(!refining)}>
+                  <SlidersHorizontal />微調
+                </Button>
+                <Button variant="ghost" className="size-11 text-muted-foreground" aria-label="更新結果" disabled={pending}
+                  onClick={() => loadInitial(track, media, appliedRefine)}><RefreshCw /></Button>
+              </div>
             </div>
-            <form className="mb-5 flex max-w-md gap-2" onSubmit={(event) => {
+            </div>
+            {refining && <form className="mb-4 flex max-w-md gap-2" onSubmit={(event) => {
               event.preventDefault();
-              const base = baseQuery;
-              if (!base) return;
-              setReference(undefined); setWorks([]); void load([base, refine.trim()].filter(Boolean).join(" ").slice(0, 100), media);
+              const text = refine.trim();
+              setAppliedRefine(text);
+              loadInitial(track, media, text);
             }}>
-              <Input aria-label="微調關鍵字" placeholder="加上場景、光線或物件" maxLength={36} value={refine} onChange={(event) => setRefine(event.target.value)} />
-              <Button variant="outline" type="submit" disabled={pending}>微調</Button>
-            </form>
-            {reference && <Button variant="ghost" className="mb-4" onClick={() => setReference(undefined)}>返回原搜尋排序</Button>}
-            {!pending && !error && !works.length && <p className="mb-4 text-muted-foreground">這一批沒有符合類型與授權條件的作品。</p>}
-          </>
-        )}
-        {pending && <div role="status" className="mt-4 grid gap-3 sm:grid-cols-3"><span className="sr-only">搜尋中</span>{[0, 1, 2].map((id) => <Skeleton key={id} className="h-28 bg-card" />)}</div>}
+              <Input aria-label="微調關鍵字" className="min-h-11" placeholder="加上場景、光線或物件" maxLength={36} value={refine} onChange={(event) => setRefine(event.target.value)} />
+              <Button variant="outline" type="submit" className="min-h-11" disabled={pending}>套用</Button>
+            </form>}
+            {reference && <Button variant="ghost" className="mb-2 min-h-11" onClick={() => setReference(undefined)}>返回原搜尋排序</Button>}
+            {!pending && !error && !works.length && <div className="rounded-md bg-card px-4 py-6">
+              <h3 className="font-display text-xl">{status === "empty" ? "目前沒有相符的作品" : "這一批沒有符合類型與授權條件的作品。"}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{media === "illustration"
+                ? "可搜尋較常見的場景，或切換到攝影。"
+                : "試著縮短關鍵字，或從光線、場景與物件中選一項微調。"}</p>
+              <Button variant="ghost" className="mt-2 min-h-11 px-0 text-primary" onClick={() => setRefining(true)}>調整關鍵字</Button>
+            </div>}
+          </>}
+          {error && <div className="mb-3 rounded-md bg-card px-4 py-3">
+            <p role="alert" className="text-destructive">{error}</p>
+            {(error === messages.offline || error === messages.busy) && <Button variant="ghost" className="min-h-11 px-0 text-primary" onClick={() => retrySearch.current?.()}>重試</Button>}
+          </div>}
+          {pending && <div role="status" className="mb-3 grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
+            <span className="sr-only">搜尋中</span>{[0, 1, 2, 3].map((id) => <Skeleton key={id} className="aspect-[5/3] bg-card" />)}
+          </div>}
         </>}
-        <div className="columns-2 gap-3 sm:columns-3 lg:columns-4">
+        <div className="columns-2 gap-2 md:columns-3 xl:columns-4">
           {visibleWorks.map((work) => <WorkCard key={work.id} work={work} onOpen={(button) => openPreview(work.id, button)} />)}
         </div>
         {!showFavorites && more && <div className="mt-4 flex flex-wrap gap-2">
           <Button variant="outline" disabled={pending} onClick={() => void load(query, media, page + 1, true)}>載入更多</Button>
-          <Button variant="outline" disabled={pending} onClick={() => { setReference(undefined); setWorks([]); void load(query, media, page + 1); }}>換一批</Button>
+          <Button variant="outline" disabled={pending} onClick={() => { setReference(undefined); void load(query, media, page + 1); }}>換一批</Button>
         </div>}
         {selectedWork && <WorkPreview key={selectedWork.id} work={selectedWork} track={showFavorites ? undefined : track}
           saved={favorites.some((item) => item.id === selectedWork.id)} toggle={() => {
@@ -274,19 +310,14 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   );
 }
 
-function formatDuration(milliseconds: number) {
-  const seconds = Math.floor(milliseconds / 1000);
-  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-}
-
 function WorkCard({ work, onOpen }: { work: Work; onOpen: (button: HTMLButtonElement) => void }) {
   return (
-    <article className="mb-3 break-inside-avoid overflow-hidden rounded-xl border border-border bg-card">
+    <article className="mb-2 break-inside-avoid overflow-hidden rounded-md bg-card">
       <button type="button" onClick={(event) => onOpen(event.currentTarget)} aria-label={`預覽 ${work.title}`}
         className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]">
         <WorkImage work={work} />
       </button>
-      <p className="p-2 text-xs break-words text-muted-foreground">{work.author} · <a className="underline" href={work.licenseUrl} target="_blank" rel="noreferrer">{work.license}</a></p>
+      <p className="px-2 py-1.5 text-xs break-words text-muted-foreground">{work.author} · <a className="underline" href={work.licenseUrl} target="_blank" rel="noreferrer">{work.license}</a></p>
     </article>
   );
 }

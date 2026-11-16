@@ -16,4 +16,6 @@ export type Work = {
   id: string; title: string; author: string; thumbnail: string; source: string; width: number; height: number;
   license: "CC BY 4.0" | "CC0 1.0"; licenseUrl: string; checkedAt: string; media: Media; terms: string;
 };
-export type SearchErrorCode = "disabled" | "invalid" | "limited" | "busy" | "offline";
+export type ImageBatch = { works: Work[]; hasMore: boolean; status: "matched" | "empty" | "filtered" };
+
+export type SearchErrorCode = "disabled" | "invalid" | "limited" | "upstream_limited" | "busy" | "offline";

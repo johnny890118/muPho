@@ -59,7 +59,7 @@ test("song selection, pagination, preview and local favorites", async ({ page })
   await trigger.click();
   await page.getByRole("button", { name: "更像這張" }).click();
   await expect(page.getByRole("button", { name: "預覽 Sunset at dusk" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Dreams — Fleetwood Mac" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^Dreams.*Fleetwood Mac/ })).toBeVisible();
   await page.getByRole("button", { name: "返回原搜尋排序" }).click();
   await page.getByRole("tab", { name: "插畫" }).click();
   await expect(page.getByText("這一批沒有符合類型與授權條件的作品。")).toBeVisible();

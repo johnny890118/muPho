@@ -25,7 +25,7 @@ function getVisitor(existing: string | undefined, secret: string) {
   return randomUUID();
 }
 
-const statuses = { disabled: 503, invalid: 400, limited: 429, busy: 429, offline: 503 };
+const statuses = { disabled: 503, invalid: 400, limited: 429, upstream_limited: 429, busy: 429, offline: 503 };
 
 export async function GET(request: NextRequest) {
   const headers = { "Cache-Control": "private, no-store" };
@@ -39,18 +39,20 @@ export async function GET(request: NextRequest) {
     if (process.env.MUPHO_ENABLE_SEARCH !== "1" || !path || !isAbsolute(path) ||
         !secret || secret.length < 32 || !contact || !/^https:\/\/[^\s]+$/.test(contact)) throw new SearchError("disabled");
     budget ??= new SearchBudget(path);
-    const params = parsed.data;
+    const params = parsed.data.kind === "tracks"
+      ? { ...parsed.data, q: canonicalQuery(parsed.data.q) }
+      : parsed.data;
     const existing = request.cookies.get(cookieName)?.value;
     const visitor = getVisitor(existing, secret);
     const proxyHeader = process.env.MUPHO_TRUSTED_IP_HEADER;
     const ip = proxyHeader ? request.headers.get(proxyHeader) : null;
     const network = ip && isIP(ip) ? sign(secret, `ip:${ip}`) : undefined;
     const blocked = new Set(blockedCommonsIds());
-    const key = createHash("sha256").update(JSON.stringify(["v4", params, [...blocked]])).digest("hex");
+    const key = createHash("sha256").update(JSON.stringify(["v5", params, [...blocked]])).digest("hex");
     const agent = `MuPho/0.2 (${contact})`;
     const data = await budget.run<object>(params.kind, visitor, key, randomUUID(), async () =>
       params.kind === "tracks"
-        ? { tracks: await findTracks(canonicalQuery(params.q), agent) }
+        ? { tracks: await findTracks(params.q, agent) }
         : findWorks(params.q, params.media, params.page, agent, blocked),
       network,
     );
