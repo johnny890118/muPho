@@ -66,6 +66,8 @@ test("song selection, pagination, preview and local favorites", async ({ page })
   await page.reload();
   await page.getByRole("button", { name: "收藏（1）" }).click();
   await trigger.click();
+  await page.getByRole("button", { name: "分享", exact: true }).click();
+  await expect(page.getByRole("textbox", { name: "編輯分享文案" })).toHaveValue(/Dreams — Fleetwood Mac/);
   await page.getByRole("button", { name: "取消收藏" }).click();
   await expect(page.getByText("還沒有收藏作品。")).toBeVisible();
 });

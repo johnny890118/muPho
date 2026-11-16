@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { Skeleton } from "./ui/skeleton";
 import { FeaturedWorks } from "./featured-work";
 import { WorkImage, WorkPreview } from "./work-preview";
-import { readFavorites, similarWorks } from "@/lib/work-actions";
+import { readFavorites, similarWorks, type FavoriteWork } from "@/lib/work-actions";
 import { fetchImageBatch } from "@/lib/image-search";
 import { TrackOptions } from "./track-options";
 import { canonicalQuery, describeTrack } from "@/lib/song-intents";
@@ -58,7 +58,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   const [works, setWorks] = useState<Work[]>([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [favorites, setFavorites] = useState<Work[]>([]);
+  const [favorites, setFavorites] = useState<FavoriteWork[]>([]);
   const [showFavorites, setShowFavorites] = useState(false);
   const [favoriteStatus, setFavoriteStatus] = useState("");
   const [selected, setSelected] = useState<string>();
@@ -86,7 +86,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
 
   function toggleFavorite(work: Work) {
     const saved = favorites.some((item) => item.id === work.id);
-    const updated = saved ? favorites.filter((item) => item.id !== work.id) : [work, ...favorites].slice(0, 200);
+    const song = track ? { title: track.title, artist: track.artist } : undefined;
+    const updated = saved ? favorites.filter((item) => item.id !== work.id) : [{ ...work, song }, ...favorites].slice(0, 200);
     setFavorites(updated);
     try {
       localStorage.setItem(favoritesKey, JSON.stringify(updated));
@@ -287,13 +288,15 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
           </div>}
         </>}
         <div className="columns-2 gap-2 md:columns-3 xl:columns-4">
-          {visibleWorks.map((work) => <WorkCard key={work.id} work={work} onOpen={(button) => openPreview(work.id, button)} />)}
+          {visibleWorks.map((work) => <WorkCard key={work.id} work={work} saved={favorites.some((item) => item.id === work.id)}
+            onToggle={() => setFavoriteStatus(toggleFavorite(work))} onOpen={(button) => openPreview(work.id, button)} />)}
         </div>
         {!showFavorites && more && <div className="mt-4 flex flex-wrap gap-2">
           <Button variant="outline" disabled={pending} onClick={() => void load(query, media, page + 1, true)}>載入更多</Button>
           <Button variant="outline" disabled={pending} onClick={() => { setReference(undefined); void load(query, media, page + 1); }}>換一批</Button>
         </div>}
-        {selectedWork && <WorkPreview key={selectedWork.id} work={selectedWork} track={showFavorites ? undefined : track}
+        {!showFavorites && favoriteStatus && <p role="status" className="sr-only">{favoriteStatus}</p>}
+        {selectedWork && <WorkPreview work={selectedWork} track={showFavorites ? favorites.find((work) => work.id === selectedWork.id)?.song : track}
           saved={favorites.some((item) => item.id === selectedWork.id)} toggle={() => {
             const status = toggleFavorite(selectedWork);
             if (showFavorites) { setFavoriteStatus(status); setSelected(undefined); }
@@ -310,13 +313,19 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   );
 }
 
-function WorkCard({ work, onOpen }: { work: Work; onOpen: (button: HTMLButtonElement) => void }) {
+function WorkCard({ work, saved, onToggle, onOpen }: {
+  work: Work; saved: boolean; onToggle: () => void; onOpen: (button: HTMLButtonElement) => void;
+}) {
   return (
-    <article className="mb-2 break-inside-avoid overflow-hidden rounded-md bg-card">
+    <article className="relative mb-2 break-inside-avoid overflow-hidden rounded-md bg-card">
       <button type="button" onClick={(event) => onOpen(event.currentTarget)} aria-label={`預覽 ${work.title}`}
         className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-[-2px]">
         <WorkImage work={work} />
       </button>
+      <Button variant="ghost" size="icon" aria-label={`${saved ? "取消收藏" : "收藏"} ${work.title}`} aria-pressed={saved} onClick={onToggle}
+        className="absolute top-1 right-1 size-11 rounded-md bg-background/75 text-foreground hover:bg-background">
+        <Bookmark fill={saved ? "currentColor" : "none"} />
+      </Button>
       <p className="px-2 py-1.5 text-xs break-words text-muted-foreground">{work.author} · <a className="underline" href={work.licenseUrl} target="_blank" rel="noreferrer">{work.license}</a></p>
     </article>
   );

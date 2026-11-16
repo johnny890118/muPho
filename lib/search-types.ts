@@ -13,7 +13,7 @@ export type Track = {
   id: string; title: string; artist: string; album?: string; milliseconds?: number; version?: string;
 };
 export type Work = {
-  id: string; title: string; author: string; thumbnail: string; source: string; width: number; height: number;
+  id: string; title: string; author: string; thumbnail: string; previewUrl?: string; source: string; width: number; height: number;
   license: "CC BY 4.0" | "CC0 1.0"; licenseUrl: string; checkedAt: string; media: Media; terms: string;
 };
 export type ImageBatch = { works: Work[]; hasMore: boolean; status: "matched" | "empty" | "filtered" };

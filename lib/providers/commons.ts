@@ -6,6 +6,7 @@ const pageSchema = z.object({
   pageid: z.number().int(), title: z.string(), index: z.number().optional(),
   categories: z.array(z.object({ title: z.string() })).default([]),
   imageinfo: z.array(z.object({
+    responsiveUrls: z.record(z.string(), z.string()).optional(),
     mime: z.string(), thumburl: z.string(), thumbwidth: z.number().int().positive(), thumbheight: z.number().int().positive(),
     descriptionurl: z.string(), metadata: z.array(z.object({ name: z.string(), value: z.unknown() })).optional(), extmetadata: z.record(z.string(), z.object({ value: z.string() })),
   })),
@@ -50,10 +51,11 @@ export function toWork(raw: unknown, media: Media, blocked: ReadonlySet<string>)
   const evidence = photo.test(terms) || Boolean(camera);
   if (excludedArt.test(terms) || (media === "photo" ? !evidence || illustration.test(terms) : !illustration.test(terms) || evidence)) return;
   const thumbnail = cleanUrl(image.thumburl, ["upload.wikimedia.org", "thumb.wikimedia.org"], "/wikipedia/commons/");
+  const previewUrl = cleanUrl(image.responsiveUrls?.["2"] ?? "", ["upload.wikimedia.org", "thumb.wikimedia.org"], "/wikipedia/commons/");
   const source = cleanUrl(image.descriptionurl, ["commons.wikimedia.org"], "/wiki/File:");
   if (!thumbnail || !source) return;
   return { id: String(pageid), title: strip(meta("ObjectName") || name).slice(0, 180), author,
-    thumbnail, source, width: image.thumbwidth, height: image.thumbheight, license, licenseUrl,
+    thumbnail, previewUrl, source, width: image.thumbwidth, height: image.thumbheight, license, licenseUrl,
     checkedAt: new Date().toISOString(), media, terms: terms.slice(0, 320) };
 }
 

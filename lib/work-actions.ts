@@ -6,9 +6,14 @@ const licenseUrls = {
   "CC0 1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
 } as const;
 
+const commonsImage = z.string().regex(/^https:\/\/(?:thumb|upload)\.wikimedia\.org\/wikipedia\/commons\//);
+export type SongCredit = Pick<Track, "title" | "artist">;
+export type FavoriteWork = Work & { song?: SongCredit };
+
 const favorite = z.object({
   id: z.string().regex(/^\d+$/), title: z.string().max(180), author: z.string().min(1).max(200),
-  thumbnail: z.string().regex(/^https:\/\/(?:thumb|upload)\.wikimedia\.org\/wikipedia\/commons\//),
+  thumbnail: commonsImage, previewUrl: commonsImage.optional(),
+  song: z.object({ title: z.string().min(1).max(500), artist: z.string().min(1).max(500) }).optional(),
   source: z.string().regex(/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/),
   width: z.number().int().positive(), height: z.number().int().positive(),
   license: z.enum(["CC BY 4.0", "CC0 1.0"]), licenseUrl: z.string(),
@@ -28,7 +33,7 @@ export function attribution(work: Work) {
   return `「${work.title}」\n📷 ${work.author} · Wikimedia Commons\n${work.source}\n${work.license} ${work.licenseUrl}\n作品未修改`;
 }
 
-export function shareText(work: Work, track?: Track) {
+export function shareText(work: Work, track?: SongCredit) {
   return (track ? `🎧 ${track.title} — ${track.artist}\n\n` : "") + attribution(work);
 }
 
