@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #141719;
+  --color-foreground: #f5f2ed;
+  --color-card: #1f2427;
+  --color-secondary: #252c2e;
+  --color-secondary-foreground: #f5f2ed;
+  --color-accent: #303a39;
+  --color-accent-foreground: #f5f2ed;
+  --color-muted: #252c2e;
+  --color-muted-foreground: #b6c0bd;
+  --color-primary: #bdedc7;
+  --color-primary-foreground: #172b20;
+  --color-ring: #bdedc7;
+  --color-border: #46514e;
+  --color-input: #52605a;
+  --color-destructive: #ff9f99;
+}
+
+body { font-family: "Inter", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.hero { background: radial-gradient(ellipse at 58% 0%, #293d35 0%, transparent 68%); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
+}
