@@ -13,3 +13,5 @@
 | [OpenRouter](https://openrouter.ai/collections/free-models) · [Gemini](https://ai.google.dev/gemini-api/docs/billing) | 模型、免費配額及資料政策可變。未確認歌詞外送與無計費部署條件，均停用。 |
 
 下列情形應擋下結果或只導向原始來源：授權欄位不符或缺少作者，無法判斷媒體，檔案失效，疑似 AI 作品或來源遭封鎖。
+
+首頁示範使用 Vyacheslav Argenberg 的〈Lake Baikal, Maloye More Strait at sunrise, Baikal, Russia〉，從 Commons 直接載入縮圖，按原比例呈現。作品頁明列作者自行創作、CC BY 4.0 授權及指定署名。[作品與授權](https://commons.wikimedia.org/wiki/File:Lake_Baikal,_Maloye_More_Strait_at_sunrise,_Baikal,_Russia.jpg)

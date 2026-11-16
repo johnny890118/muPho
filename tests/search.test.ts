@@ -1,0 +1,110 @@
+import assert from "node:assert/strict";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { test } from "node:test";
+import { SearchBudget, limits } from "../lib/search-budget";
+import { SearchError, providerJson } from "../lib/providers/http";
+import { findTracks } from "../lib/providers/musicbrainz";
+import { toWork } from "../lib/providers/commons";
+import { canonicalQuery, describeTrack, songIntents } from "../lib/song-intents";
+import { searchSchema } from "../lib/search-types";
+import { attribution, readFavorites, similarWorks } from "../lib/work-actions";
+
+const record = {
+  pageid: 21, title: "File:Sunset by the coast.jpg", categories: [{ title: "Category:Coastal photographs" }],
+  imageinfo: [{
+    mime: "image/jpeg", thumbwidth: 640, thumbheight: 400,
+    thumburl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Test.jpg/640px-Test.jpg",
+    descriptionurl: "https://commons.wikimedia.org/wiki/File:Test.jpg",
+    extmetadata: {
+      Artist: { value: "<a href='/wiki/Artist'>An Artist</a>" },
+      LicenseShortName: { value: "CC BY 4.0" },
+      LicenseUrl: { value: "https://creativecommons.org/licenses/by/4.0" },
+    },
+  }],
+};
+
+test("Commons validates attribution, source hosts, media and take-downs", () => {
+  const work = toWork(record, "photo", new Set());
+  assert.ok(work);
+  assert.match(attribution(work), /An Artist[\s\S]*creativecommons\.org/);
+  assert.equal(toWork(record, "illustration", new Set()), undefined);
+  assert.equal(toWork(record, "photo", new Set(["21"])), undefined);
+  const changed = structuredClone(record);
+  changed.imageinfo[0].extmetadata.LicenseShortName.value = "CC BY-SA 4.0";
+  assert.equal(toWork(changed, "photo", new Set()), undefined);
+  changed.imageinfo[0].extmetadata.LicenseShortName.value = "CC BY 4.0";
+  changed.imageinfo[0].thumburl = "https://upload.wikimedia.org.evil.example/wikipedia/commons/Test.jpg";
+  assert.equal(toWork(changed, "photo", new Set()), undefined);
+  assert.equal(readFavorites(JSON.stringify([work, { ...work, source: "javascript:alert(1)" }])).length, 1);
+  assert.deepEqual(similarWorks(work, [{ ...work, id: "22" }]).map(({ id }) => id), ["22"]);
+  assert.deepEqual(similarWorks(work, [work]), []);
+});
+
+test("validates and normalizes user input and labels all 24 title-based intents", () => {
+  assert.equal(canonicalQuery(" Ｑｉｎｇ　Ｔｉａｎ — 周杰倫 "), "晴天 — 周杰倫");
+  assert.equal(canonicalQuery("Yoru ni Kakeru — YOASOBI"), "夜に駆ける — YOASOBI");
+  assert.equal(canonicalQuery("Spring Day — BTS"), "봄날 — BTS");
+  assert.equal(searchSchema.safeParse({kind: "images", q: "bad", media: "svg", page: 0}).success, false);
+  assert.equal(searchSchema.safeParse({kind: "tracks", q: "x".repeat(101)}).success, false);
+  assert.equal(songIntents.length, 24);
+  for (const [title, artist, expected] of songIntents) {
+    assert.deepEqual(describeTrack({id: "fixture", title, artist}), {mode: "metadata_only", query: expected, curated: true});
+  }
+  assert.equal(describeTrack({id: "fixture", title: "Dreams", artist: "Unlisted cover"}).curated, false);
+});
+
+test("recording adapter accepts absent lengths and keeps distinct recordings", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => Response.json({ records: [], recordings: [
+    { id: "10cd3bf5-a37e-4532-b914-c6a59a730781", title: "Dreams", score: 100, length: null, "artist-credit": [{ name: "Fleetwood Mac" }] },
+    { id: "70cd3bf5-a37e-4532-b914-c6a59a730781", title: "Dreams", score: 100, length: 120000, "artist-credit": [{ name: "The Cranberries" }] },
+  ] }));
+  const tracks = await findTracks("Dreams", "MuPho test");
+  assert.deepEqual(tracks.map(({ artist }) => artist), ["Fleetwood Mac", "The Cranberries"]);
+  assert.equal(tracks[0].milliseconds, undefined);
+});
+
+test("provider failures propagate a typed cooldown", async (t) => {
+  const url = new URL("https://commons.wikimedia.org/w/api.php");
+  const fetchMock = t.mock.method(globalThis, "fetch", async () => new Response(null, { status: 429, headers: { "Retry-After": "75" } }));
+  await assert.rejects(providerJson(url, "MuPho test"), { code: "limited", retrySeconds: 75 });
+  fetchMock.mock.mockImplementation(async () => new Response(null, { status: 503 }));
+  await assert.rejects(providerJson(url, "MuPho test"), { code: "offline", retrySeconds: 30 });
+  fetchMock.mock.mockImplementation(async () => { throw new DOMException("test timeout", "TimeoutError"); });
+  await assert.rejects(providerJson(url, "MuPho test"), { code: "offline", retrySeconds: 30 });
+});
+
+test("shared SQLite atomically caps calls across two connections and serves cache hits at the limit", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "mupho-budget-"));
+  const file = join(root, "shared.sqlite");
+  const a = new SearchBudget(file);
+  const b = new SearchBudget(file);
+  t.after(() => { a.close(); b.close(); rmSync(root, { recursive: true, force: true }); });
+  let now = 3_600_000;
+  t.mock.method(Date, "now", () => now);
+  let calls = 0;
+  let release!: () => void;
+  const wait = new Promise<void>((resolve) => { release = resolve; });
+  const entry = a.run("tracks", "visitor", "first", "a", async () => { calls++; await wait; return 1; });
+  try {
+    await assert.rejects(b.run("tracks", "visitor", "first", "b", async () => { calls++; }), { code: "busy" });
+  } finally {
+    release();
+  }
+  assert.equal(await entry, 1);
+  const perform = async () => ++calls;
+  for (let index = 1; index < limits.tracks.site; index++) {
+    now += 1200;
+    const store = index % 2 ? a : b;
+    if (index === limits.tracks.visitor) {
+      await assert.rejects(store.run("tracks", "visitor", "over", "visitor", perform), { code: "limited" });
+    }
+    const visitor = index < limits.tracks.visitor ? "visitor" : String(index);
+    await store.run("tracks", visitor, String(index), String(index), perform);
+  }
+  now += 1200;
+  assert.equal(await b.run("tracks", "visitor", "first", "c", perform), 1);
+  await assert.rejects(a.run("tracks", "other", "uncached", "d", perform), (error) => error instanceof SearchError && error.code === "limited");
+  assert.equal(calls, limits.tracks.site);
+});

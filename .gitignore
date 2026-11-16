@@ -45,3 +45,5 @@ next-env.d.ts
 *.tsbuildinfo
 next-env.d.ts
 .mupho/
+/test-results/
+/playwright-report/

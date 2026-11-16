@@ -17,7 +17,7 @@ const responseSchema = z.object({
 const strip = (value: string) => value.replace(/<[^>]*>/g, " ").replaceAll("&amp;", "&").replace(/\s+/g, " ").trim();
 const illustration = /illustrat|drawings?|sketch|digital art|插畫|イラスト|일러스트/i;
 const photo = /photo(?:graph)?|taken (?:with|on)|攝影|写真|사진/i;
-const excludedArt = /oil painting|century painting|engravings?|coat of arms|logos?|icons?|ai.generated|midjourney|stable diffusion|dall.e|graphic symbols|infographics?|posters?|maps?|diagrams?|screenshots?/i;
+const excludedArt = /oil painting|century painting|engravings?|coat of arms|logos?|icons?|ai.generated|midjourney|stable diffusion|dall.e|graphic symbols|infographics?|posters?|maps?|diagrams?|screenshots?|campaign|noirlab|technical drawing/i;
 const licenses = {
   "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
   "CC0 1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
@@ -76,5 +76,12 @@ export async function findWorks(query: string, media: Media, page: number, agent
   const pages = raw.map((item) => pageSchema.safeParse(item)).flatMap((item) => item.success ? [item.data] : []);
   const works = pages.sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
     .flatMap((item) => toWork(item, media, blocked) ?? []);
-  return { works, hasMore: raw.length === batchSize && page < 9 };
+  const authors = new Map<string, number>();
+  const ordered = works.map((work) => {
+    const key = work.author.toLowerCase();
+    const repetition = authors.get(key) ?? 0;
+    authors.set(key, repetition + 1);
+    return { work, repetition };
+  }).sort((a, b) => a.repetition - b.repetition);
+  return { works: ordered.map(({ work }) => work), hasMore: page === 8 || (raw.length === batchSize && page < 9) };
 }

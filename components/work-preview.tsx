@@ -61,7 +61,7 @@ export function WorkPreview({ work, track, saved, toggle, onClose, previous, nex
             <DialogTitle className="font-semibold break-words">{work.title}</DialogTitle>
             <DialogDescription className="mt-1 text-sm text-muted-foreground">{work.author} · Wikimedia Commons</DialogDescription>
           </div>
-          <Button size="icon" variant="ghost" aria-label="關閉預覽" onClick={onClose}><X /></Button>
+          <Button size="icon" variant="ghost" aria-label="關閉預覽" className="size-11" onClick={onClose}><X /></Button>
         </div>
         <div className="relative overflow-hidden rounded-md bg-card" onTouchStart={(event) => { start.current = event.touches[0]?.clientX ?? null; }}
           onTouchEnd={(event) => {
@@ -72,13 +72,13 @@ export function WorkPreview({ work, track, saved, toggle, onClose, previous, nex
             if (dx < -60) next?.();
           }}>
           <WorkImage work={work} preview />
-          <Button aria-label="上一張" size="icon" disabled={!previous} onClick={previous} className="absolute top-1/2 left-2 -translate-y-1/2"><ChevronLeft /></Button>
-          <Button aria-label="下一張" size="icon" disabled={!next} onClick={next} className="absolute top-1/2 right-2 -translate-y-1/2"><ChevronRight /></Button>
+          <Button aria-label="上一張" size="icon" disabled={!previous} onClick={previous} className="absolute size-11 top-1/2 left-2 -translate-y-1/2"><ChevronLeft /></Button>
+          <Button aria-label="下一張" size="icon" disabled={!next} onClick={next} className="absolute size-11 top-1/2 right-2 -translate-y-1/2"><ChevronRight /></Button>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
           <a href={work.source} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-primary underline">來源／取得原檔 <ExternalLink size={14} /></a>
           <a href={work.licenseUrl} target="_blank" rel="noreferrer" className="underline">{work.license}</a>
-          <span>授權資料擷取於 {work.checkedAt.slice(0, 10)}</span>
+          <span>授權資料擷取於 {new Intl.DateTimeFormat("zh-TW", { timeZone: "Asia/Taipei", dateStyle: "medium" }).format(new Date(work.checkedAt))}</span>
           {reportUrl && <a href={reportUrl} target="_blank" rel="noreferrer" className="underline">回報作品</a>}
         </div>
         <div className="flex flex-wrap gap-2">

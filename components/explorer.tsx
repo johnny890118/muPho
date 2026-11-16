@@ -7,6 +7,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 import { Skeleton } from "./ui/skeleton";
+import { FeaturedWork, featuredWorkId } from "./featured-work";
 import { WorkImage, WorkPreview } from "./work-preview";
 import { readFavorites, similarWorks } from "@/lib/work-actions";
 import { describeTrack } from "@/lib/song-intents";
@@ -24,22 +25,24 @@ async function search<T>(params: Record<string, string>, signal: AbortSignal): P
   const url = "/api/search?" + new URLSearchParams(params);
   for (let attempt = 0; ; attempt++) {
     const response = await fetch(url, { signal });
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     if (response.ok) return data as T;
     if (data.error !== "busy" || attempt >= 2) throw new Error(messages[data.error as SearchErrorCode] ?? messages.offline);
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    const retry = Number(response.headers.get("retry-after")) || 1;
+    await new Promise((resolve) => setTimeout(resolve, Math.min(retry, 3) * 1000 + 100));
     signal.throwIfAborted();
   }
 }
 
 const favoritesKey = "mupho-favorites-v1";
 
-export function Explorer({ reportUrl }: { reportUrl?: string }) {
+export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blockedIds: string[] }) {
   const [mode, setMode] = useState("song");
   const [input, setInput] = useState("");
   const [tracks, setTracks] = useState<Track[] | null>(null);
   const [track, setTrack] = useState<Track>();
   const [media, setMedia] = useState<Media>("photo");
+  const [baseQuery, setBaseQuery] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(0);
   const [more, setMore] = useState(false);
@@ -60,7 +63,7 @@ export function Explorer({ reportUrl }: { reportUrl?: string }) {
   useEffect(() => {
     function refresh() {
       try {
-        setFavorites(readFavorites(localStorage.getItem(favoritesKey)));
+        setFavorites(readFavorites(localStorage.getItem(favoritesKey)).filter((work) => !blockedIds.includes(work.id)));
       } catch {
         setFavoriteStatus("目前無法讀取本機收藏。");
       }
@@ -68,7 +71,7 @@ export function Explorer({ reportUrl }: { reportUrl?: string }) {
     refresh();
     window.addEventListener("storage", refresh);
     return () => window.removeEventListener("storage", refresh);
-  }, []);
+  }, [blockedIds]);
 
   function toggleFavorite(work: Work) {
     const saved = favorites.some((item) => item.id === work.id);
@@ -140,7 +143,7 @@ export function Explorer({ reportUrl }: { reportUrl?: string }) {
     setWorks([]);
     setMore(false);
     resultRef.current?.scrollIntoView({ block: "start" });
-    if (mode === "image") return void load(q, media);
+    if (mode === "image") { setBaseQuery(q); return void load(q, media); }
     void run(async (signal) => {
       const data = await search<{ tracks: Track[] }>({ kind: "tracks", q }, signal);
       signal.throwIfAborted();
@@ -156,12 +159,14 @@ export function Explorer({ reportUrl }: { reportUrl?: string }) {
     setTrack(item);
     setReference(undefined);
     setRefine("");
-    void load(describeTrack(item).query, media);
+    const intent = describeTrack(item).query;
+    setBaseQuery(intent);
+    void load(intent, media);
   }
 
   return (
     <>
-      <SearchHero>
+      <SearchHero featured={blockedIds.includes(featuredWorkId) ? undefined : <FeaturedWork />}>
         <form onSubmit={submit} className="mt-8 max-w-2xl">
           <Tabs value={mode} onValueChange={setMode}>
             <TabsList aria-label="搜尋模式">
@@ -219,6 +224,10 @@ export function Explorer({ reportUrl }: { reportUrl?: string }) {
                     <Button variant="ghost" onClick={() => {
                       current.current?.abort(); setPending(false); setError(""); setTrack(undefined); setQuery(""); setWorks([]); setReference(undefined);
                     }} className="mt-2 px-0">更換歌曲</Button>
+                    <details className="mt-2 max-w-xl text-sm text-muted-foreground">
+                      <summary className="cursor-pointer">歌詞分析</summary>
+                      <p className="mt-2">目前未啟用歌詞分析或上傳。圖片以選定的歌曲資料與搜尋線索查找。</p>
+                    </details>
                   </>
                 )}
               </div>
@@ -233,7 +242,7 @@ export function Explorer({ reportUrl }: { reportUrl?: string }) {
             </div>
             <form className="mb-5 flex max-w-md gap-2" onSubmit={(event) => {
               event.preventDefault();
-              const base = track ? describeTrack(track).query : input.trim();
+              const base = baseQuery;
               if (!base) return;
               setReference(undefined); setWorks([]); void load([base, refine.trim()].filter(Boolean).join(" ").slice(0, 100), media);
             }}>

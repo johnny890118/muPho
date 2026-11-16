@@ -23,7 +23,7 @@ export class SearchBudget {
     `);
   }
 
-  async run<T>(kind: keyof typeof limits, visitor: string, key: string, owner: string, perform: () => Promise<T>): Promise<T> {
+  async run<T>(kind: keyof typeof limits, visitor: string, key: string, owner: string, perform: () => Promise<T>, network?: string): Promise<T> {
     const policy = limits[kind];
     const now = Date.now();
     const lease = 18_000;
@@ -45,9 +45,12 @@ export class SearchBudget {
       }
       const active = this.db.prepare("SELECT key FROM locks WHERE key = ?").get(kind);
       if (active) throw new SearchError("busy", 2);
-      for (const [scope, period, cap] of [
-        ["site-hour", hour, policy.site], ["site-day", day, policy.daily], [visitor, hour, policy.visitor],
-      ] as const) {
+      const quotas: [string, number, number][] = [
+        ["site-hour", hour, policy.site], ["site-day", day, policy.daily],
+        [`visitor:${visitor}`, hour, policy.visitor], [`visitor:${visitor}:day`, day, policy.visitor * 3],
+      ];
+      if (network) quotas.push([`network:${network}`, hour, policy.visitor * 2]);
+      for (const [scope, period, cap] of quotas) {
         const bucket = Math.floor(now / period);
         const expires = (bucket + 1) * period;
         const countKey = `${kind}:${scope}:${bucket}`;

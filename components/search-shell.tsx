@@ -16,13 +16,16 @@ export function SearchShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function SearchHero({ children }: { children: React.ReactNode }) {
+export function SearchHero({ children, featured }: { children: React.ReactNode; featured?: React.ReactNode }) {
   return (
     <section className="hero border-b border-border">
-      <div className="mx-auto max-w-6xl px-5 pt-14 pb-12 sm:px-8 sm:pt-24 sm:pb-20">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pt-14 pb-12 sm:px-8 sm:pt-20 sm:pb-16 lg:grid-cols-[1.55fr_1fr]">
+        <div>
         <h1 className="text-4xl leading-tight font-semibold tracking-tight sm:text-6xl">從一首歌<br />找到一幅畫面</h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">輸入歌名，探索與它相呼應的攝影和插畫。</p>
-        {children}
+          {children}
+        </div>
+        {featured && <div className="w-full max-w-sm justify-self-start lg:justify-self-end">{featured}</div>}
       </div>
     </section>
   );
