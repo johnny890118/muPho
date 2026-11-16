@@ -116,6 +116,7 @@ test("known compact song credits share a canonical query without splitting arbit
   assert.equal(canonicalQuery("晴天"), "晴天");
   assert.equal(canonicalQuery("Dreams"), "Dreams");
   assert.equal(canonicalQuery("T-Shirt"), "T-Shirt");
+  assert.equal(canonicalQuery("constructor"), "constructor");
   assert.equal(canonicalQuery("Space Oddity — David Bowie"), "Space Oddity — David Bowie");
   assert.equal(canonicalQuery("夜に駆ける — YOASOBI"), "夜に駆ける — YOASOBI");
   assert.equal(canonicalQuery("봄날 — BTS"), "봄날 — BTS");

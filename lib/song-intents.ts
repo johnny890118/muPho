@@ -35,8 +35,12 @@ const artistAliases: Record<string, string> = {
   "jay chou": "周杰倫", "周杰伦": "周杰倫", "周傑倫": "周杰倫",
 };
 const key = (value: string) => normalize(value).toLowerCase();
-const titleName = (value: string) => aliases[key(value)] ?? normalize(value);
-const artistName = (value: string) => artistAliases[key(value)] ?? normalize(value);
+function name(value: string, names: Record<string, string>) {
+  const lookup = key(value);
+  return Object.hasOwn(names, lookup) ? names[lookup] : normalize(value);
+}
+const titleName = (value: string) => name(value, aliases);
+const artistName = (value: string) => name(value, artistAliases);
 
 export function canonicalQuery(query: string) {
   const normalized = normalize(query);
@@ -44,15 +48,11 @@ export function canonicalQuery(query: string) {
   if (explicit) return `${titleName(explicit[1])} — ${artistName(explicit[2])}`;
 
   // Compact separators are ambiguous in arbitrary song titles. Recognize only known title–artist pairs.
-  const compact = normalized.match(/^(.+?)[ -]+(.+)$/);
-  if (compact) {
-    for (let end = 1; end < normalized.length; end++) {
-      if (!/[ -]/.test(normalized[end])) continue;
-      const title = titleName(normalized.slice(0, end));
-      const artist = artistName(normalized.slice(end).replace(/^[ -]+/, ""));
-      if (songIntents.some(([name, credit]) => key(name) === key(title) && key(credit) === key(artist))) {
-        return `${title} — ${artist}`;
-      }
+  for (const separator of normalized.matchAll(/[ -]+/g)) {
+    const title = titleName(normalized.slice(0, separator.index));
+    const artist = artistName(normalized.slice(separator.index + separator[0].length));
+    if (songIntents.some(([name, credit]) => key(name) === key(title) && key(credit) === key(artist))) {
+      return `${title} — ${artist}`;
     }
   }
   return titleName(normalized);

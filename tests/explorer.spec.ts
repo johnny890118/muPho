@@ -82,3 +82,77 @@ test("image-search quota and disabled states", async ({ page }) => {
   await page.getByRole("button", { name: "搜尋", exact: true }).click();
   await expect(page.getByRole("region", { name: "搜尋結果" }).getByRole("alert")).toHaveText("目前已達搜尋額度，請稍後再試。");
 });
+
+test("song fallback, first-screen gallery and preview image recovery", async ({ page }, info) => {
+  const photo = { ...sunset, title: "A long title for a schoolyard photograph ".repeat(4), previewUrl: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Unavailable.jpg" };
+  await page.route("https://thumb.wikimedia.org/**", (route) => route.request().url() === photo.previewUrl
+    ? route.fulfill({ status: 404 })
+    : route.fulfill({ contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="640" height="400" fill="#655746"/></svg>' }));
+  const imageQueries: string[] = [];
+  await page.route("**/api/search?**", async (route) => {
+    const params = new URL(route.request().url()).searchParams;
+    if (params.get("kind") === "tracks") {
+      expect(params.get("q")).toBe("晴天-周杰倫");
+      return route.fulfill({ json: { tracks: [
+        { id: "1", title: "晴天", artist: "周杰倫", album: "葉惠美" },
+        { id: "2", title: "晴天", artist: "張信哲" },
+      ] } });
+    }
+    const q = params.get("q") ?? "";
+    imageQueries.push(q);
+    if (q === "school corridor") return route.fulfill({ json: { works: [], hasMore: false, status: "filtered" } });
+    return route.fulfill({ json: { works: [photo, dusk], hasMore: false, status: "matched" } });
+  });
+
+  await page.goto("/");
+  await page.getByRole("textbox", { name: "歌名" }).fill("晴天-周杰倫");
+  await page.getByRole("button", { name: "搜尋", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
+  await page.getByRole("dialog").getByRole("button", { name: /晴天 — 周杰倫/ }).click();
+  const trigger = page.getByRole("button", { name: /^預覽 A long title/ });
+  await expect(trigger).toBeInViewport();
+  expect(imageQueries).toEqual(["school corridor", "schoolyard"]);
+  await expect(page.getByText("schoolyard", { exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(info.project.use.viewport!.width);
+
+  await trigger.click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.locator("img")).toHaveAttribute("src", photo.thumbnail);
+  await expect.poll(() => dialog.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1);
+  if (info.project.use.hasTouch) {
+    await dialog.locator("img").evaluate((image) => {
+      const touch = (clientX: number) => new Touch({ identifier: 1, target: image, clientX, clientY: 120 });
+      image.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [touch(220)] }));
+      image.dispatchEvent(new TouchEvent("touchend", { bubbles: true, changedTouches: [touch(100)] }));
+    });
+  } else {
+    await page.keyboard.press("ArrowRight");
+  }
+  await expect(dialog.getByRole("heading")).toHaveText(dusk.title);
+  await page.keyboard.press("Escape");
+  await expect(trigger).toBeFocused();
+
+  await page.getByRole("tab", { name: "圖片搜尋" }).click();
+  await page.getByRole("textbox", { name: "圖片關鍵字" }).fill("sunset");
+  await page.getByRole("button", { name: "搜尋", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "sunset" })).toBeVisible();
+  await expect(page.getByText("依歌曲資料推薦", { exact: false })).toHaveCount(0);
+  expect(imageQueries.at(-1)).toBe("sunset");
+});
+
+test("upstream outage, upstream rate limit and true empty results are distinct", async ({ page }) => {
+  let response = { status: 503, json: { error: "offline" } } as { status: number; json: object };
+  await page.route("**/api/search?**", (route) => route.fulfill(response));
+  await page.goto("/");
+  await page.getByRole("tab", { name: "圖片搜尋" }).click();
+  await page.getByRole("textbox", { name: "圖片關鍵字" }).fill("sunset");
+  await page.getByRole("button", { name: "搜尋", exact: true }).click();
+  const region = page.getByRole("region", { name: "搜尋結果" });
+  await expect(region.getByRole("alert")).toHaveText(/來源服務暫時無法回應/);
+  response = { status: 429, json: { error: "upstream_limited" } };
+  await page.getByRole("button", { name: "重試" }).click();
+  await expect(region.getByRole("alert")).toHaveText(/來源正在限流/);
+  response = { status: 200, json: { works: [], hasMore: false, status: "empty" } };
+  await page.getByRole("button", { name: "搜尋", exact: true }).click();
+  await expect(region.getByRole("heading", { name: "目前沒有相符的作品" })).toBeVisible();
+});
