@@ -33,6 +33,7 @@ const aliases: Record<string, string> = {
 };
 const artistAliases: Record<string, string> = {
   "jay chou": "周杰倫", "周杰伦": "周杰倫", "周傑倫": "周杰倫",
+  "busker busker": "버스커 버스커",
 };
 const key = (value: string) => normalize(value).toLowerCase();
 function name(value: string, names: Record<string, string>) {
@@ -58,7 +59,7 @@ export function canonicalQuery(query: string) {
   for (const separator of normalized.matchAll(/[ -]+/g)) {
     const title = titleName(normalized.slice(0, separator.index));
     const artist = artistName(normalized.slice(separator.index + separator[0].length));
-    if (songIntents.some(([name, credit]) => key(name) === key(title) && key(credit) === key(artist))) {
+    if (songIntents.some(([name, credit]) => key(name) === key(title) && key(artistName(credit)) === key(artist))) {
       return creditedQuery(title, artist);
     }
   }
@@ -68,7 +69,8 @@ export function canonicalQuery(query: string) {
 export type VisualIntent = { mode: AnalysisMode; query: string; fallback?: string; curated: boolean };
 
 export function describeTrack(track: Track): VisualIntent {
-  const intents = songIntents.find(([title, artist]) => key(title) === key(titleName(track.title)) && key(artist) === key(artistName(track.artist)));
+  const credit = key(creditedQuery(track.title, track.artist));
+  const intents = songIntents.find(([title, artist]) => key(creditedQuery(title, artist)) === credit);
   const fallback = intents?.[0] === "晴天" ? "schoolyard" : undefined;
   return {
     mode: "metadata_only",

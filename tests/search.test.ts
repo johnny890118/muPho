@@ -121,6 +121,8 @@ test("known compact song credits share a canonical query without splitting arbit
   assert.equal(canonicalQuery("Through the Night IU"), "밤편지 — IU");
   assert.equal(canonicalQuery("Through the Night — Other Artist"), "Through the Night — Other Artist");
   assert.equal(canonicalQuery("Through the Night"), "Through the Night");
+  assert.equal(canonicalQuery("벚꽃 엔딩 — Busker Busker"), "벚꽃 엔딩 — 버스커 버스커");
+  assert.equal(describeTrack({ id: "fixture", title: "벚꽃 엔딩", artist: "버스커 버스커" }).query, "cherry blossoms breeze");
   assert.equal(canonicalQuery("Space Oddity — David Bowie"), "Space Oddity — David Bowie");
   assert.equal(canonicalQuery("夜に駆ける — YOASOBI"), "夜に駆ける — YOASOBI");
   assert.equal(canonicalQuery("봄날 — BTS"), "봄날 — BTS");
