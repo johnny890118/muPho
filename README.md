@@ -33,6 +33,19 @@ npm run test:e2e
 
 `npm run test:live` 選用。依序查詢 MusicBrainz 並依其退避規則停止，結果受上游資料與可用性影響。
 
+## UI 驗收
+
+[Design System](docs/design/design-system.md) 是現行設計規範。依改動選擇檢查，視覺變更可先執行首頁基準測試。
+
+```sh
+npm run build
+npm run test:visual
+```
+
+首頁快照使用 Playwright 鎖定的 Chromium、1440×900／390×844、測試專用字型與固定圖片。基準在 macOS 建立，其他平台跳過像素比較，可繼續跑一般互動測試。首次安裝瀏覽器使用 `npx playwright install chromium`。首頁基準範圍以外的頁面與狀態，依改動另開瀏覽器驗收。
+
+比較失敗時先檢查 `test-results/` 的 expected、actual、diff。修正意外差異後重跑。只有確認是預期變更並檢視差異後，才用 `npx playwright test tests/home.visual.spec.ts --project=<受影響專案> --update-snapshots=changed` 更新該尺寸，再正常重跑。測試字型為首頁字元子集，若新增字元，檢查 fixture 的字形覆蓋與回退。和即時來源有關的冒煙測試另跑並另記結果。
+
 ## 營運
 
 [架構](docs/architecture.md) · [可行性盤點](docs/feasibility.md) · [資料來源與授權](docs/providers-and-licensing.md) · [營運與額度](docs/operations-and-limits.md) · [驗收紀錄](docs/verification.md)

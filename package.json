@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
-    "test:live": "tsx tests/live-music.ts"
+    "test:live": "tsx tests/live-music.ts",
+    "test:visual": "playwright test tests/home.visual.spec.ts --project=desktop-1440 --project=mobile-390 --update-snapshots=none"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "Fixture Sans";
+  src: url("/__visual__/sans.woff2") format("woff2");
+  font-weight: 400 700;
+}
+@font-face {
+  font-family: "Fixture Serif";
+  src: url("/__visual__/serif.woff2") format("woff2");
+  font-weight: 400 700;
+}
+@font-face {
+  font-family: "Fixture Hangul";
+  src: url("/__visual__/hangul.woff2") format("woff2");
+  font-weight: 400 700;
+  unicode-range: U+BD04, U+B0A0;
+}
+
+body {
+  font-family: "Fixture Sans", "Fixture Hangul", sans-serif;
+}
+.font-display {
+  font-family: "Fixture Serif", "Fixture Hangul", serif;
+}
