@@ -42,17 +42,24 @@ function name(value: string, names: Record<string, string>) {
 const titleName = (value: string) => name(value, aliases);
 const artistName = (value: string) => name(value, artistAliases);
 
+function creditedQuery(title: string, artist: string) {
+  const creditedArtist = artistName(artist);
+  const creditedTitle = titleName(title);
+  if (key(creditedTitle) === "through the night" && key(creditedArtist) === "iu") return `밤편지 — ${creditedArtist}`;
+  return `${creditedTitle} — ${creditedArtist}`;
+}
+
 export function canonicalQuery(query: string) {
   const normalized = normalize(query);
   const explicit = normalized.match(/^(.+?)(?:\s*[—–]\s*|\s+-\s+)(.+)$/);
-  if (explicit) return `${titleName(explicit[1])} — ${artistName(explicit[2])}`;
+  if (explicit) return creditedQuery(explicit[1], explicit[2]);
 
   // Compact separators are ambiguous in arbitrary song titles. Recognize only known title–artist pairs.
   for (const separator of normalized.matchAll(/[ -]+/g)) {
     const title = titleName(normalized.slice(0, separator.index));
     const artist = artistName(normalized.slice(separator.index + separator[0].length));
     if (songIntents.some(([name, credit]) => key(name) === key(title) && key(credit) === key(artist))) {
-      return `${title} — ${artist}`;
+      return creditedQuery(title, artist);
     }
   }
   return titleName(normalized);

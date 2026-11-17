@@ -19,8 +19,7 @@ async function main() {
     const query = canonicalQuery(`${alternate} — ${artist}`);
     try {
       const tracks = await findTracks(query, "MuPho/0.2 (https://github.com/johnny890118/muPho)");
-      const equal = (a: string, b: string) => a.normalize("NFKC").toLowerCase() === b.normalize("NFKC").toLowerCase();
-      const match = tracks.find((track) => equal(track.title, title) && equal(track.artist, artist));
+      const match = tracks.find((track) => canonicalQuery(`${track.title} — ${track.artist}`).toLowerCase() === query.toLowerCase());
       const mode = match && describeTrack(match);
       console.log(`${index + 1}. ${title} — ${artist}\t${match ? `match ${tracks.indexOf(match) + 1}/${tracks.length} ${mode?.mode}` : `MISS ${tracks.slice(0, 2).map((track) => `${track.title} / ${track.artist}`).join("; ")}`}`);
       if (match) passes++;
