@@ -167,3 +167,37 @@ test("shared cooldown preserves an upstream outage separately from visitor and s
   await assert.rejects(a.run("images", "first", "one", "a", async () => { throw new SearchError("offline", 45); }), { code: "offline" });
   await assert.rejects(b.run("images", "second", "two", "b", async () => assert.fail("cooldown must stop upstream calls")), { code: "offline" });
 });
+
+test("authorized lyrics yield only fixed imagery terms across four languages", async () => {
+  const { deriveLyricsIntent, lyricsMaxLength } = await import("../lib/lyrics-intent");
+  assert.deepEqual(deriveLyricsIntent("雨落在窗前\n窗邊等一封信\n雨落在窗前\n私密原文"), {
+    mode: "user_provided_lyrics", curated: false, query: "window rain", fallback: "window",
+  });
+  assert.equal(deriveLyricsIntent("At midnight I counted the stars\nThe last train left")?.query, "night train");
+  assert.equal(deriveLyricsIntent("窓に雪が舞う")?.query, "window snow");
+  assert.equal(deriveLyricsIntent("새벽에 기차를 기다려")?.query, "sunrise train");
+  assert.equal(deriveLyricsIntent("抽象抒情文字"), undefined);
+  assert.equal(deriveLyricsIntent("雨".repeat(lyricsMaxLength + 1)), undefined);
+});
+
+test("Commons can reach CC0 after a short CC BY page without querying empty intermediate pages", async (t) => {
+  const { findWorks } = await import("../lib/providers/commons");
+  const queries: string[] = [];
+  const cc0 = structuredClone(record);
+  cc0.imageinfo[0].extmetadata.LicenseShortName.value = "CC0 1.0";
+  cc0.imageinfo[0].extmetadata.LicenseUrl.value = "https://creativecommons.org/publicdomain/zero/1.0/";
+  t.mock.method(globalThis, "fetch", async (url: URL) => {
+    const query = url.searchParams.get("gsrsearch") ?? "";
+    queries.push(query);
+    const item = query.endsWith("CC-Zero") ? cc0 : record;
+    return Response.json({ query: { pages: [item] } });
+  });
+  const first = await findWorks("coast", "photo", 0, "MuPho test", new Set());
+  assert.equal(first.nextPage, 9);
+  assert.equal(first.works[0].license, "CC BY 4.0");
+  const second = await findWorks("coast", "photo", first.nextPage, "MuPho test", new Set());
+  assert.equal(second.hasMore, false);
+  assert.equal(second.works[0].license, "CC0 1.0");
+  assert.match(queries[0], /incategory:CC-BY-4\.0$/);
+  assert.match(queries[1], /incategory:CC-Zero$/);
+});

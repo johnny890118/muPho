@@ -12,8 +12,9 @@ import { FeaturedWorks } from "./featured-work";
 import { WorkImage, WorkPreview } from "./work-preview";
 import { readFavorites, similarWorks, type FavoriteWork } from "@/lib/work-actions";
 import { fetchImageBatch } from "@/lib/image-search";
+import { LyricsInput } from "./lyrics-input";
 import { TrackOptions } from "./track-options";
-import { canonicalQuery, describeTrack } from "@/lib/song-intents";
+import { canonicalQuery, describeTrack, type VisualIntent } from "@/lib/song-intents";
 import type { ImageBatch, Media, SearchErrorCode, Track, Work } from "@/lib/search-types";
 
 const messages: Record<SearchErrorCode, string> = {
@@ -47,14 +48,14 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   const [tracks, setTracks] = useState<Track[] | null>(null);
   const [choosing, setChoosing] = useState(false);
   const [track, setTrack] = useState<Track>();
+  const [lyricsIntent, setLyricsIntent] = useState<VisualIntent>();
   const [media, setMedia] = useState<Media>("photo");
   const [imageLabel, setImageLabel] = useState("");
   const [status, setStatus] = useState<ImageBatch["status"]>();
   const [refining, setRefining] = useState(false);
   const [appliedRefine, setAppliedRefine] = useState("");
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(0);
-  const [more, setMore] = useState(false);
+  const [nextPage, setNextPage] = useState<number>();
   const [works, setWorks] = useState<Work[]>([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -130,7 +131,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   function load(q: string, kind: Media, offset = 0, append = false, fallback?: string) {
     setQuery(q);
     setMedia(kind);
-    if (offset === 0) setMore(false);
+    if (offset === 0) setNextPage(undefined);
     retrySearch.current = () => void load(q, kind, offset, append, fallback);
     return run(async (signal) => {
       const data = await fetchImageBatch(q, offset === 0 ? fallback : undefined, (candidate) =>
@@ -139,8 +140,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
       signal.throwIfAborted();
       setQuery(data.query);
       setWorks((previous) => [...new Map([...(append ? previous : []), ...data.works].map((work) => [work.id, work])).values()]);
-      setPage(offset);
-      setMore(data.hasMore);
+      setNextPage(data.hasMore ? data.nextPage ?? offset + 1 : undefined);
       setStatus(data.status);
     });
   }
@@ -155,11 +155,12 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     setAppliedRefine("");
     setRefining(false);
     setTrack(undefined);
+    setLyricsIntent(undefined);
     setTracks(null);
     setChoosing(false);
     setQuery("");
     setWorks([]);
-    setMore(false);
+    setNextPage(undefined);
     setStatus(undefined);
     setSearched(true);
     window.scrollTo({ top: 0 });
@@ -180,8 +181,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     }
   }
 
-  function loadInitial(item: Track | undefined, kind: Media, refinement = "") {
-    const intent = item ? describeTrack(item) : undefined;
+  function loadInitial(item: Track | undefined, kind: Media, refinement = "", provided?: VisualIntent) {
+    const intent = provided ?? (item ? describeTrack(item) : undefined);
     const base = intent?.query ?? imageLabel;
     const q = [base, refinement].filter(Boolean).join(" ").slice(0, 100);
     setReference(undefined);
@@ -192,6 +193,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
 
   function select(item: Track) {
     setTrack(item);
+    setLyricsIntent(undefined);
     setChoosing(false);
     setRefine("");
     setAppliedRefine("");
@@ -252,14 +254,14 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
                 <h2 className="font-display text-2xl leading-tight break-words sm:text-3xl">
                   {track ? <>{track.title}<span className="ml-2 font-sans text-sm text-muted-foreground sm:text-base">· {track.artist}</span></> : imageLabel}
                 </h2>
-                {track && <p className="mt-1 text-xs text-muted-foreground">依歌曲資料推薦・未分析完整歌詞</p>}
+                {track && <p className="mt-1 text-xs text-muted-foreground">{lyricsIntent ? "依你提供的歌詞擷取意象" : "依歌曲資料推薦・未分析完整歌詞"}</p>}
               </div>
               {track && <Button variant="ghost" className="min-h-11 shrink-0 px-2 text-primary" onClick={() => setChoosing(true)}>
                 <RefreshCw />更換歌曲
               </Button>}
             </div>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2 px-1.5 sm:px-0 md:mb-0">
-              <Tabs value={media} onValueChange={(value) => loadInitial(track, value as Media, appliedRefine)}>
+              <Tabs value={media} onValueChange={(value) => loadInitial(track, value as Media, appliedRefine, lyricsIntent)}>
                 <TabsList aria-label="圖片類型" className="media-tabs h-auto rounded-full bg-secondary p-0.5">
                   <TabsTrigger value="photo" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">攝影</TabsTrigger>
                   <TabsTrigger value="illustration" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">插畫</TabsTrigger>
@@ -270,15 +272,26 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
                   <SlidersHorizontal />微調
                 </Button>
                 <Button variant="ghost" className="size-11 text-muted-foreground" aria-label="更新結果" disabled={pending}
-                  onClick={() => loadInitial(track, media, appliedRefine)}><RefreshCw /></Button>
+                  onClick={() => loadInitial(track, media, appliedRefine, lyricsIntent)}><RefreshCw /></Button>
               </div>
             </div>
             </div>
+            {track && <LyricsInput key={track.id} pending={pending} active={Boolean(lyricsIntent)}
+              onApply={(intent) => {
+                setLyricsIntent(intent);
+                setAppliedRefine("");
+                setRefine("");
+                setRefining(false);
+                loadInitial(track, media, "", intent);
+              }} onReset={() => {
+                setLyricsIntent(undefined);
+                loadInitial(track, media, appliedRefine);
+              }} />}
             {refining && <form className="mb-4 flex max-w-md gap-2" onSubmit={(event) => {
               event.preventDefault();
               const text = refine.trim();
               setAppliedRefine(text);
-              loadInitial(track, media, text);
+              loadInitial(track, media, text, lyricsIntent);
             }}>
               <Input aria-label="微調關鍵字" className="min-h-11" placeholder="加上場景、光線或物件" maxLength={36} value={refine} onChange={(event) => setRefine(event.target.value)} />
               <Button variant="outline" type="submit" className="min-h-11" disabled={pending}>套用</Button>
@@ -304,9 +317,9 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
           {visibleWorks.map((work) => <WorkCard key={work.id} work={work} saved={favorites.some((item) => item.id === work.id)}
             onToggle={() => setFavoriteStatus(toggleFavorite(work))} onOpen={(button) => openPreview(work.id, button)} />)}
         </div>
-        {!showFavorites && more && <div className="mt-4 flex flex-wrap gap-2">
-          <Button variant="outline" disabled={pending} onClick={() => void load(query, media, page + 1, true)}>載入更多</Button>
-          <Button variant="outline" disabled={pending} onClick={() => { setReference(undefined); void load(query, media, page + 1); }}>換一批</Button>
+        {!showFavorites && nextPage !== undefined && <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="outline" disabled={pending} onClick={() => void load(query, media, nextPage, true)}>載入更多</Button>
+          <Button variant="outline" disabled={pending} onClick={() => { setReference(undefined); void load(query, media, nextPage); }}>換一批</Button>
         </div>}
         {!showFavorites && favoriteStatus && <p role="status" className="sr-only">{favoriteStatus}</p>}
         {selectedWork && <WorkPreview work={selectedWork} track={showFavorites ? favorites.find((work) => work.id === selectedWork.id)?.song : track}

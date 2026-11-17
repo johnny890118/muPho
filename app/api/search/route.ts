@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const ip = proxyHeader ? request.headers.get(proxyHeader) : null;
     const network = ip && isIP(ip) ? sign(secret, `ip:${ip}`) : undefined;
     const blocked = new Set(blockedCommonsIds());
-    const key = createHash("sha256").update(JSON.stringify([params.kind === "tracks" ? "v5" : "v6", params, [...blocked]])).digest("hex");
+    const key = createHash("sha256").update(JSON.stringify([params.kind === "tracks" ? "v5" : "v7", params, [...blocked]])).digest("hex");
     const agent = `MuPho/0.2 (${contact})`;
     const data = await budget.run<object>(params.kind, visitor, key, randomUUID(), async () =>
       params.kind === "tracks"

@@ -60,6 +60,7 @@ export function toWork(raw: unknown, media: Media, blocked: ReadonlySet<string>)
 }
 
 const batchSize = 18;
+const cc0Page = 9;
 export async function findWorks(query: string, media: Media, page: number, agent: string, blocked: ReadonlySet<string>): Promise<ImageBatch> {
   const url = new URL("https://commons.wikimedia.org/w/api.php");
   const words = query.replace(/[^\p{L}\p{N}\s'-]/gu, " ").trim();
@@ -67,8 +68,8 @@ export async function findWorks(query: string, media: Media, page: number, agent
   const medium = media === "photo" ? "" : "illustration";
   url.search = new URLSearchParams({
     action: "query", format: "json", formatversion: "2", generator: "search", maxlag: "5",
-    gsrsearch: `${words} ${medium} filetype:bitmap incategory:${page === 9 ? "CC-Zero" : "CC-BY-4.0"}`, gsrnamespace: "6", gsrlimit: String(batchSize),
-    gsroffset: String(page === 9 ? 0 : page * batchSize), prop: "imageinfo|categories", cllimit: "100",
+    gsrsearch: `${words} ${medium} filetype:bitmap incategory:${page === cc0Page ? "CC-Zero" : "CC-BY-4.0"}`, gsrnamespace: "6", gsrlimit: String(batchSize),
+    gsroffset: String(page === cc0Page ? 0 : page * batchSize), prop: "imageinfo|categories", cllimit: "100",
     iiprop: "url|size|mime|metadata|extmetadata", iiurlwidth: "640",
     iiextmetadatafilter: "Artist|LicenseShortName|LicenseUrl|ObjectName|ImageDescription|Restrictions",
   }).toString();
@@ -85,9 +86,11 @@ export async function findWorks(query: string, media: Media, page: number, agent
     authors.set(key, repetition + 1);
     return { work, repetition };
   }).sort((a, b) => a.repetition - b.repetition);
+  const nextPage = page < cc0Page ? (raw.length < batchSize ? cc0Page : page + 1) : undefined;
   return {
     works: ordered.map(({ work }) => work),
-    hasMore: page < 9 && (page === 8 || raw.length === batchSize),
+    hasMore: nextPage !== undefined,
+    nextPage,
     status: ordered.length ? "matched" : raw.length ? "filtered" : "empty",
   };
 }

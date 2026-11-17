@@ -30,8 +30,8 @@ test("song selection, pagination, preview and local favorites", async ({ page })
       ],
     } });
     if (params.get("media") === "illustration") return route.fulfill({ json: { works: [], hasMore: false } });
-    if (params.get("page") === "1") return route.fulfill({ json: { works: [sunset, dusk], hasMore: false } });
-    return route.fulfill({ json: { works: [sunset], hasMore: true } });
+    if (params.get("page") === "9") return route.fulfill({ json: { works: [sunset, dusk], hasMore: false } });
+    return route.fulfill({ json: { works: [sunset], hasMore: true, nextPage: 9 } });
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -155,4 +155,33 @@ test("upstream outage, upstream rate limit and true empty results are distinct",
   response = { status: 200, json: { works: [], hasMore: false, status: "empty" } };
   await page.getByRole("button", { name: "搜尋", exact: true }).click();
   await expect(region.getByRole("heading", { name: "目前沒有相符的作品" })).toBeVisible();
+});
+
+test("provided lyrics stay in the browser and can be replaced with track metadata", async ({ page }) => {
+  const requests: string[] = [];
+  await page.route("https://thumb.wikimedia.org/**", (route) => route.abort());
+  await page.route("**/api/search?**", (route) => {
+    const params = new URL(route.request().url()).searchParams;
+    requests.push(params.get("q") ?? "");
+    return route.fulfill({ json: params.get("kind") === "tracks"
+      ? { tracks: [{ id: "1", title: "晴天", artist: "周杰倫" }] }
+      : { status: "matched", works: [sunset], hasMore: false } });
+  });
+  await page.goto("/");
+  await page.getByRole("textbox", { name: "歌名" }).fill("晴天 — 周杰倫");
+  await page.getByRole("button", { name: "搜尋", exact: true }).click();
+  await expect(page.getByText("依歌曲資料推薦・未分析完整歌詞")).toBeVisible();
+  await page.getByRole("button", { name: "提供歌詞" }).click();
+  const lyrics = page.getByRole("textbox", { name: "你提供的歌詞" });
+  await lyrics.fill("雨打在窗戶\n這是一段私密的測試文字");
+  const apply = page.getByRole("button", { name: "用歌詞找圖" });
+  await expect(apply).toBeDisabled();
+  await page.getByRole("checkbox").check();
+  await apply.click();
+  await expect(page.getByText("依你提供的歌詞擷取意象")).toBeVisible();
+  await expect.poll(() => requests).toEqual(["晴天 — 周杰倫", "school corridor", "rain window"]);
+  await page.getByRole("button", { name: "提供歌詞" }).click();
+  await expect(lyrics).toHaveValue("");
+  await page.getByRole("button", { name: "回到歌曲資料推薦" }).click();
+  await expect(page.getByText("依歌曲資料推薦・未分析完整歌詞")).toBeVisible();
 });

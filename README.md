@@ -50,4 +50,4 @@ npm run test:visual
 
 [架構](docs/architecture.md) · [可行性盤點](docs/feasibility.md) · [資料來源與授權](docs/providers-and-licensing.md) · [營運與額度](docs/operations-and-limits.md) · [驗收紀錄](docs/verification.md)
 
-此版本使用歌曲資料推薦，歌詞上傳、完整歌詞分析和外部 AI 均關閉。遇到授權或分類資料不足的作品會略過，部分查詢只會顯示少量作品。
+歌曲預設使用歌曲資料推薦。選曲後可在瀏覽器提供有權處理的歌詞，擷取固定詞庫中的視覺意象。原文不傳送、不保存。外部歌詞來源與 AI 語意分析維持停用。遇到授權或分類資料不足的作品會略過，部分查詢只會顯示少量作品。
