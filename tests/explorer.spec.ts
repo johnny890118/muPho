@@ -121,9 +121,9 @@ test("song fallback, first-screen gallery and preview image recovery", async ({ 
   await expect.poll(() => dialog.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1);
   if (info.project.use.hasTouch) {
     await dialog.locator("img").evaluate((image) => {
-      const touch = (clientX: number) => new Touch({ identifier: 1, target: image, clientX, clientY: 120 });
-      image.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [touch(220)] }));
-      image.dispatchEvent(new TouchEvent("touchend", { bubbles: true, changedTouches: [touch(100)] }));
+      const touch = (clientX: number) => ({ clientX, clientY: 120 });
+      image.dispatchEvent(Object.assign(new Event("touchstart", { bubbles: true }), { touches: [touch(220)] }));
+      image.dispatchEvent(Object.assign(new Event("touchend", { bubbles: true }), { changedTouches: [touch(100)] }));
     });
   } else {
     await page.keyboard.press("ArrowRight");
