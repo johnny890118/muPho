@@ -45,3 +45,5 @@ npm run test:images:live --silent -- --media illustration --cases 5,7,10
 ```
 
 實網工具序列請求、等待至少 1.35 秒、共用重複的查詢結果，來源出錯或限流即停止。正式產品的 SQLite 額度與退避未變。
+
+另於 1440×900 與 390×844 本機瀏覽器走實網〈Dreams〉選曲。錄音 18 個候選，攝影 `rain clouds` 回傳 9 張。切至插畫時 `storm clouds` 首查為空，退讓至 `rain` 回傳 3 張，包含可載入縮圖的 David Revoy 作品。兩種視窗都可開啟 Commons 原始來源，Esc 關閉後焦點回圖卡。

@@ -46,6 +46,12 @@ npm run test:visual
 
 比較失敗時先檢查 `test-results/` 的 expected、actual、diff。修正意外差異後重跑。只有確認是預期變更並檢視差異後，才用 `npx playwright test tests/home.visual.spec.ts --project=<受影響專案> --update-snapshots=changed` 更新該尺寸，再正常重跑。測試字型為首頁字元子集，若新增字元，檢查 fixture 的字形覆蓋與回退。和即時來源有關的冒煙測試另跑並另記結果。
 
+## 圖片、跨引擎與本機模型驗收
+
+- `npm run test:images:live --silent` 在有網路時依序查 Commons。可加 `-- --cases 5,10 --media illustration` 重跑指定案例。[24 首圖片驗收](docs/verification/image-relevance.md)
+- `npx playwright install webkit` 後執行 `npm run test:webkit`，跑桌機與手機視窗的互動回歸。`npm test` 包含獨立程序共享 SQLite 額度測試。
+- 若已啟動離線 llama.cpp 測試伺服器，可執行 `npm run test:lyrics:local`。評估只使用自撰樣本。[本機全詞模型驗收](docs/verification/local-lyrics-model.md)
+
 ## 營運
 
 [架構](docs/architecture.md) · [可行性盤點](docs/feasibility.md) · [資料來源與授權](docs/providers-and-licensing.md) · [營運與額度](docs/operations-and-limits.md) · [首版驗收](docs/verification.md) · [主分支整合驗收](docs/verification/main-integration.md)
