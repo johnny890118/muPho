@@ -1,3 +1,4 @@
+import { matchesIllustrationSubject, rankWorks } from "../image-relevance";
 import { z } from "zod";
 import type { ImageBatch, Media, Work } from "@/lib/search-types";
 import { providerJson, SearchError } from "./http";
@@ -16,9 +17,11 @@ const responseSchema = z.object({
   error: z.object({ code: z.string(), lag: z.number().optional() }).optional(),
 });
 const strip = (value: string) => value.replace(/<[^>]*>/g, " ").replaceAll("&amp;", "&").replace(/\s+/g, " ").trim();
-const illustration = /illustrat|drawings?|sketch|digital art|插畫|イラスト|일러스트/i;
-const photo = /photo(?:graph)?|taken (?:with|on)|攝影|写真|사진/i;
+const illustration = /\b(?:illustrations?|illustrated|drawings?|sketch(?:es)?|digital (?:art|paintings?)|watercolou?rs?)\b|插畫|イラスト|일러스트/i;
+const photo = /\b(?:photos?|photograph(?:s|y|ic)?|taken (?:with|on))\b|攝影|写真|사진/i;
 const excludedArt = /oil painting|century painting|engravings?|coat of arms|logos?|icons?|ai.generated|midjourney|stable diffusion|dall.e|graphic symbols|infographics?|posters?|maps?|diagrams?|screenshots?|campaign|noirlab|technical drawing/i;
+const researchIllustration = /technosignatures?|exoplanets?|\b(?:research figures?|chemical structures?|scientific illustrations?|satellite diagrams?|scientific diagrams?)\b/i;
+const painted = /\bpaintings?\b/i;
 const licenses = {
   "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
   "CC0 1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
@@ -46,10 +49,15 @@ export function toWork(raw: unknown, media: Media, blocked: ReadonlySet<string>)
   const author = strip(meta("Artist")).slice(0, 200);
   if (!author || /^(?:unknown|anonymous|n\/a|various|作者不明)$/i.test(author)) return;
   const name = title.replace(/^File:/, "");
-  const terms = [name, strip(meta("ImageDescription")), ...categories.map((category) => category.title.slice(9))].join(" ");
-  const camera = image.metadata?.some((item) => /^(?:Make|Model|LensModel|ExposureTime)$/i.test(item.name) && item.value);
-  const evidence = photo.test(terms) || Boolean(camera);
-  if (excludedArt.test(terms) || (media === "photo" ? !evidence || illustration.test(terms) : !illustration.test(terms) || evidence)) return;
+  const labels = [name, ...categories.map((category) => category.title.slice(9))].join(" ");
+  const description = strip(meta("ImageDescription"));
+  const terms = `${labels} ${description}`;
+  const drawing = illustration.test(labels);
+  const cameraExposure = image.metadata?.some((item) => /^(?:LensModel|ExposureTime)$/i.test(item.name) && item.value);
+  const photographed = Boolean(cameraExposure) || photo.test(labels) || (!drawing && photo.test(description));
+  if (excludedArt.test(terms) || (media === "photo"
+    ? !photographed || drawing || painted.test(labels)
+    : !drawing || photographed || researchIllustration.test(terms))) return;
   const thumbnail = cleanUrl(image.thumburl, ["upload.wikimedia.org", "thumb.wikimedia.org"], "/wikipedia/commons/");
   const previewUrl = cleanUrl(image.responsiveUrls?.["2"] ?? "", ["upload.wikimedia.org", "thumb.wikimedia.org"], "/wikipedia/commons/");
   const source = cleanUrl(image.descriptionurl, ["commons.wikimedia.org"], "/wiki/File:");
@@ -78,17 +86,14 @@ export async function findWorks(query: string, media: Media, page: number, agent
   const raw = result.data.query?.pages ?? [];
   const pages = raw.map((item) => pageSchema.safeParse(item)).flatMap((item) => item.success ? [item.data] : []);
   const works = pages.sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-    .flatMap((item) => toWork(item, media, blocked) ?? []);
-  const authors = new Map<string, number>();
-  const ordered = works.map((work) => {
-    const key = work.author.toLowerCase();
-    const repetition = authors.get(key) ?? 0;
-    authors.set(key, repetition + 1);
-    return { work, repetition };
-  }).sort((a, b) => a.repetition - b.repetition);
+    .flatMap((item) => {
+      if (media === "illustration" && !matchesIllustrationSubject(words, [item.title, ...item.categories.map(({ title }) => title)].join(" "))) return [];
+      return toWork(item, media, blocked) ?? [];
+    });
+  const ordered = rankWorks(works, words);
   const nextPage = page < cc0Page ? (raw.length < batchSize ? cc0Page : page + 1) : undefined;
   return {
-    works: ordered.map(({ work }) => work),
+    works: ordered,
     hasMore: nextPage !== undefined,
     nextPage,
     status: ordered.length ? "matched" : raw.length ? "filtered" : "empty",

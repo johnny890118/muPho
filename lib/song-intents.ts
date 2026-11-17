@@ -1,31 +1,33 @@
-import { normalize, type AnalysisMode, type Track } from "./search-types";
+import { normalize, type AnalysisMode, type Media, type Track } from "./search-types";
 
-export const songIntents = [
-  ["晴天", "周杰倫", "school corridor"],
-  ["稻香", "周杰倫", "rice fields sunset"],
-  ["夜曲", "周杰倫", "night city shadows"],
-  ["小幸運", "田馥甄", "schoolyard golden light"],
-  ["突然好想你", "五月天", "empty train station"],
-  ["十年", "陳奕迅", "old city street"],
-  ["Space Oddity", "David Bowie", "moon space astronaut"],
-  ["Here Comes the Sun", "The Beatles", "sunrise spring"],
-  ["Fast Car", "Tracy Chapman", "night highway car"],
-  ["Dreams", "Fleetwood Mac", "rain clouds"],
-  ["Dreams", "The Cranberries", "wind meadow"],
-  ["Clair de lune", "Claude Debussy", "moonlight lake"],
-  ["夜に駆ける", "YOASOBI", "night rooftops city"],
-  ["アイドル", "YOASOBI", "stage lights silhouette"],
-  ["Lemon", "米津玄師", "lemon window light"],
-  ["桜坂", "福山雅治", "cherry blossoms street"],
-  ["First Love", "宇多田ヒカル", "train window snow"],
-  ["Summer", "久石譲", "summer meadow sky"],
-  ["봄날", "BTS", "winter train snow"],
-  ["밤편지", "IU", "handwritten letter night"],
-  ["Through the Night", "IU", "handwritten letter night"],
-  ["좋은 날", "IU", "sunny street flowers"],
-  ["벚꽃 엔딩", "Busker Busker", "cherry blossoms breeze"],
-  ["Hype Boy", "NewJeans", "neon night dance"],
-] as const;
+type SongIntent = readonly [title: string, artist: string, photo: string, photoFallback: string, illustration: string, illustrationFallback: string];
+
+export const songIntents: readonly SongIntent[] = [
+  ["晴天", "周杰倫", "school corridor", "schoolyard", "school classroom", "school"],
+  ["稻香", "周杰倫", "rice fields", "rice paddy", "rice field", "countryside"],
+  ["夜曲", "周杰倫", "rainy street", "night street", "night city", "night street"],
+  ["小幸運", "田馥甄", "school courtyard", "schoolyard", "classroom sketch", "schoolyard"],
+  ["突然好想你", "五月天", "empty train platform", "train platform", "railway station", "train"],
+  ["十年", "陳奕迅", "old city street", "old street", "old street", "street"],
+  ["Space Oddity", "David Bowie", "astronaut spacewalk", "astronaut", "astronaut", "space station"],
+  ["Here Comes the Sun", "The Beatles", "spring sunrise", "sunrise", "sunrise", "dawn landscape"],
+  ["Fast Car", "Tracy Chapman", "highway at night", "night road", "night road", "road"],
+  ["Dreams", "Fleetwood Mac", "rain clouds", "storm clouds", "storm clouds", "rain"],
+  ["Dreams", "The Cranberries", "wildflower meadow", "meadow", "flower meadow", "flowers"],
+  ["Clair de lune", "Claude Debussy", "moonlight lake", "moon at night", "moonlit landscape", "moonlight"],
+  ["夜に駆ける", "YOASOBI", "night rooftops", "city at night", "night rooftop", "night city"],
+  ["アイドル", "YOASOBI", "stage spotlight", "stage lights", "stage lights", "stage performance"],
+  ["Lemon", "米津玄師", "lemon still life", "lemon", "lemon fruit", "citrus fruit"],
+  ["桜坂", "福山雅治", "cherry blossom street", "cherry blossoms", "cherry blossom", "cherry tree"],
+  ["First Love", "宇多田ヒカル", "snowy train window", "winter railway", "winter train", "snow landscape"],
+  ["Summer", "久石譲", "green meadow", "meadow", "summer landscape", "meadow"],
+  ["봄날", "BTS", "train in snow", "winter railway", "winter train", "snowy landscape"],
+  ["밤편지", "IU", "handwritten letter", "candlelight", "handwritten letter", "letter"],
+  ["Through the Night", "IU", "handwritten letter", "candlelight", "handwritten letter", "letter"],
+  ["좋은 날", "IU", "flower market street", "spring garden", "flowers in sunlight", "flowers"],
+  ["벚꽃 엔딩", "Busker Busker", "cherry blossom street", "cherry blossoms", "cherry blossom", "cherry tree"],
+  ["Hype Boy", "NewJeans", "neon dance floor", "neon lights", "neon dance", "neon lights"],
+];
 
 const aliases: Record<string, string> = {
   "ye ni kakeru": "夜に駆ける", "yoru ni kakeru": "夜に駆ける", "spring day": "봄날",
@@ -68,14 +70,15 @@ export function canonicalQuery(query: string) {
 
 export type VisualIntent = { mode: AnalysisMode; query: string; fallback?: string; curated: boolean };
 
-export function describeTrack(track: Track): VisualIntent {
+export function describeTrack(track: Track, media: Media = "photo"): VisualIntent {
   const credit = key(creditedQuery(track.title, track.artist));
-  const intents = songIntents.find(([title, artist]) => key(creditedQuery(title, artist)) === credit);
-  const fallback = intents?.[0] === "晴天" ? "schoolyard" : undefined;
+  const intent = songIntents.find(([title, artist]) => key(creditedQuery(title, artist)) === credit);
+  if (!intent) return { mode: "metadata_only", query: track.title, curated: false };
+  const [, , photo, photoFallback, illustration, illustrationFallback] = intent;
   return {
     mode: "metadata_only",
-    query: intents?.[2] ?? track.title,
-    curated: Boolean(intents),
-    ...(fallback ? { fallback } : {}),
+    query: media === "illustration" ? illustration : photo,
+    fallback: media === "illustration" ? illustrationFallback : photoFallback,
+    curated: true,
   };
 }

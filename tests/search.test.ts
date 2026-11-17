@@ -49,8 +49,10 @@ test("validates and normalizes user input and labels all 24 title-based intents"
   assert.equal(searchSchema.safeParse({kind: "images", q: "bad", media: "svg", page: 0}).success, false);
   assert.equal(searchSchema.safeParse({kind: "tracks", q: "x".repeat(101)}).success, false);
   assert.equal(songIntents.length, 24);
-  for (const [title, artist, expected] of songIntents) {
-    assert.deepEqual(describeTrack({id: "fixture", title, artist}), {mode: "metadata_only", query: expected, curated: true, ...(title === "晴天" ? { fallback: "schoolyard" } : {})});
+  for (const [title, artist, photo, photoFallback, drawing, drawingFallback] of songIntents) {
+    const track = { id: "fixture", title, artist };
+    assert.deepEqual(describeTrack(track), { mode: "metadata_only", query: photo, fallback: photoFallback, curated: true });
+    assert.deepEqual(describeTrack(track, "illustration"), { mode: "metadata_only", query: drawing, fallback: drawingFallback, curated: true });
   }
   assert.equal(describeTrack({id: "fixture", title: "Dreams", artist: "Unlisted cover"}).curated, false);
 });
@@ -122,7 +124,7 @@ test("known compact song credits share a canonical query without splitting arbit
   assert.equal(canonicalQuery("Through the Night — Other Artist"), "Through the Night — Other Artist");
   assert.equal(canonicalQuery("Through the Night"), "Through the Night");
   assert.equal(canonicalQuery("벚꽃 엔딩 — Busker Busker"), "벚꽃 엔딩 — 버스커 버스커");
-  assert.equal(describeTrack({ id: "fixture", title: "벚꽃 엔딩", artist: "버스커 버스커" }).query, "cherry blossoms breeze");
+  assert.equal(describeTrack({ id: "fixture", title: "벚꽃 엔딩", artist: "버스커 버스커" }).query, "cherry blossom street");
   assert.equal(canonicalQuery("Space Oddity — David Bowie"), "Space Oddity — David Bowie");
   assert.equal(canonicalQuery("夜に駆ける — YOASOBI"), "夜に駆ける — YOASOBI");
   assert.equal(canonicalQuery("봄날 — BTS"), "봄날 — BTS");
@@ -206,4 +208,23 @@ test("Commons can reach CC0 after a short CC BY page without querying empty inte
   assert.equal(second.works[0].license, "CC0 1.0");
   assert.match(queries[0], /incategory:CC-BY-4\.0$/);
   assert.match(queries[1], /incategory:CC-Zero$/);
+});
+
+test("illustrations need subject labels and reject research figures, while works rank by title evidence", async (t) => {
+  const { findWorks } = await import("../lib/providers/commons");
+  const { rankWorks } = await import("../lib/image-relevance");
+  const base = toWork(record, "photo", new Set());
+  assert.ok(base);
+  const off = { ...base, id: "99", title: "A research trip", terms: "rain clouds" };
+  assert.deepEqual(rankWorks([off, { ...base, title: "Rain clouds along the coast" }], "rain clouds").map(({ id }) => id), ["21", "99"]);
+
+  const illustration = { ...record, title: "File:Railway station digital illustration.png", categories: [{ title: "Category:Digital illustrations" }] };
+  const irrelevant = { ...illustration, pageid: 22, title: "File:Train schedule drawing.png" };
+  const research = { ...illustration, pageid: 23, title: "File:Railway station exoplanet illustration.png" };
+  t.mock.method(globalThis, "fetch", async () => Response.json({ query: { pages: [irrelevant, research, illustration] } }));
+  const result = await findWorks("railway station", "illustration", 0, "MuPho test", new Set());
+  assert.deepEqual(result.works.map(({ id }) => id), ["21"]);
+
+  const scannedPainting = { ...record, title: "File:Rain.jpg", categories: [{ title: "Category:Paintings by Vincent van Gogh" }] };
+  assert.equal(toWork(scannedPainting, "photo", new Set()), undefined);
 });

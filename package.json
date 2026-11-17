@@ -11,7 +11,8 @@
     "test": "tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "test:live": "tsx tests/live-music.ts",
-    "test:visual": "playwright test tests/home.visual.spec.ts --project=desktop-1440 --project=mobile-390 --update-snapshots=none"
+    "test:visual": "playwright test tests/home.visual.spec.ts --project=desktop-1440 --project=mobile-390 --update-snapshots=none",
+    "test:images:live": "tsx tests/live-images.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

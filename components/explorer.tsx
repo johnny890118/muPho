@@ -182,7 +182,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   }
 
   function loadInitial(item: Track | undefined, kind: Media, refinement = "", provided?: VisualIntent) {
-    const intent = provided ?? (item ? describeTrack(item) : undefined);
+    const intent = provided ?? (item ? describeTrack(item, kind) : undefined);
     const base = intent?.query ?? imageLabel;
     const q = [base, refinement].filter(Boolean).join(" ").slice(0, 100);
     setReference(undefined);
