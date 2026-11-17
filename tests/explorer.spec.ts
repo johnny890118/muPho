@@ -185,3 +185,30 @@ test("provided lyrics stay in the browser and can be replaced with track metadat
   await page.getByRole("button", { name: "回到歌曲資料推薦" }).click();
   await expect(page.getByText("依歌曲資料推薦・未分析完整歌詞")).toBeVisible();
 });
+
+test("native share receives song credit and source attribution", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "share", {
+      value: async (data: ShareData) => sessionStorage.setItem("test-native-share", JSON.stringify(data)),
+    });
+  });
+  await page.route("https://thumb.wikimedia.org/**", (route) => route.abort());
+  await page.route("**/api/search?**", (route) => {
+    const kind = new URL(route.request().url()).searchParams.get("kind");
+    return route.fulfill({ json: kind === "tracks"
+      ? { tracks: [{ id: "1", title: "晴天", artist: "周杰倫" }] }
+      : { works: [sunset], hasMore: false, status: "matched" } });
+  });
+
+  await page.goto("/");
+  await page.getByRole("textbox", { name: "歌名" }).fill("晴天 — 周杰倫");
+  await page.getByRole("button", { name: "搜尋", exact: true }).click();
+  await page.getByRole("button", { name: "預覽 Sunset over the sea" }).click();
+  await page.getByRole("button", { name: "分享", exact: true }).click();
+  await page.getByRole("button", { name: "分享文案" }).click();
+  const payload = await page.evaluate(() => JSON.parse(sessionStorage.getItem("test-native-share") ?? "{}"));
+  expect(payload.text).toContain("晴天 — 周杰倫");
+  expect(payload.text).toContain(sunset.author);
+  expect(payload.text).toContain(sunset.source);
+  expect(payload.text).toContain(sunset.licenseUrl);
+});

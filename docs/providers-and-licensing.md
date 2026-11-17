@@ -19,3 +19,5 @@
 電影感首頁封面為 Jorge Franganillo 的〈Pontevedra - rainy night〉，從 Commons 載入縮圖，以 CSS 裁切及暗角呈現。原始作品頁標示 CC BY 4.0 與作者資訊。[作品與授權](https://commons.wikimedia.org/wiki/File:Pontevedra_-_rainy_night.jpg)
 
 首頁另外選用〈Night Rainy View〉（S.M.M.Musabbir Uddin）與〈Olkhon Island, Capes, cliffs at sunset, Lake Baikal, Russia〉（Vyacheslav Argenberg）。兩個原始檔案頁均標示 CC BY 4.0，首頁標明裁切。[雨夜作品](https://commons.wikimedia.org/wiki/File:Night_Rainy_View.jpg) · [暮色作品](https://commons.wikimedia.org/wiki/File:Olkhon_Island,_Capes,_cliffs_at_sunset,_Lake_Baikal,_Russia.jpg)
+
+使用者可提供有權處理的歌詞。MuPho 在瀏覽器逐行比對固定詞庫，送出的圖片搜尋查詢只包含該詞庫的概念。原文不寫入 MuPho 儲存或傳至 API。外部歌詞批次擷取與第三方語意模型維持停用。

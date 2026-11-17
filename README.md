@@ -31,7 +31,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-`npm run test:live` 選用。依序查詢 MusicBrainz 並依其退避規則停止，結果受上游資料與可用性影響。
+`npm run test:live` 選用。依序查詢 MusicBrainz 並依其退避規則停止，結果受上游資料與可用性影響。退避後可用 `npm run test:live -- --from 9 --count 4` 從指定的 1-based 案例繼續。
 
 ## UI 驗收
 
