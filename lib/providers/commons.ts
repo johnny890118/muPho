@@ -21,6 +21,8 @@ const illustration = /\b(?:illustrations?|illustrated|drawings?|sketch(?:es)?|di
 const photo = /\b(?:photos?|photograph(?:s|y|ic)?|taken (?:with|on))\b|攝影|写真|사진/i;
 const excludedArt = /oil painting|century painting|engravings?|coat of arms|logos?|icons?|ai.generated|midjourney|stable diffusion|dall.e|graphic symbols|infographics?|posters?|maps?|diagrams?|screenshots?|campaign|noirlab|technical drawing/i;
 const researchIllustration = /technosignatures?|exoplanets?|\b(?:research figures?|chemical structures?|scientific illustrations?|satellite diagrams?|scientific diagrams?)\b/i;
+const reproductionCategory = "Artworks missing digital representation of for 2D work";
+const reproductionDescription = /\b(?:reproduction|scan|photograph) of (?:an? |the )?(?:painting|watercolou?r|drawing|print)\b/i;
 const painted = /\bpaintings?\b/i;
 const licenses = {
   "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
@@ -55,8 +57,10 @@ export function toWork(raw: unknown, media: Media, blocked: ReadonlySet<string>)
   const drawing = illustration.test(labels);
   const cameraExposure = image.metadata?.some((item) => /^(?:LensModel|ExposureTime)$/i.test(item.name) && item.value);
   const photographed = Boolean(cameraExposure) || photo.test(labels) || (!drawing && photo.test(description));
+  const artworkReproduction = categories.some(({ title }) => title === `Category:${reproductionCategory}`)
+    || reproductionDescription.test(description);
   if (excludedArt.test(terms) || (media === "photo"
-    ? !photographed || drawing || painted.test(labels)
+    ? !photographed || drawing || painted.test(labels) || artworkReproduction
     : !drawing || photographed || researchIllustration.test(terms))) return;
   const thumbnail = cleanUrl(image.thumburl, ["upload.wikimedia.org", "thumb.wikimedia.org"], "/wikipedia/commons/");
   const previewUrl = cleanUrl(image.responsiveUrls?.["2"] ?? "", ["upload.wikimedia.org", "thumb.wikimedia.org"], "/wikipedia/commons/");
@@ -73,7 +77,8 @@ export async function findWorks(query: string, media: Media, page: number, agent
   const url = new URL("https://commons.wikimedia.org/w/api.php");
   const words = query.replace(/[^\p{L}\p{N}\s'-]/gu, " ").trim();
   if (!words) throw new SearchError("invalid");
-  const medium = media === "photo" ? "" : "illustration";
+  // Commons may truncate batch category metadata, so exclude known reproductions at the index too.
+  const medium = media === "photo" ? `-incategory:"${reproductionCategory}"` : "illustration";
   url.search = new URLSearchParams({
     action: "query", format: "json", formatversion: "2", generator: "search", maxlag: "5",
     gsrsearch: `${words} ${medium} filetype:bitmap incategory:${page === cc0Page ? "CC-Zero" : "CC-BY-4.0"}`, gsrnamespace: "6", gsrlimit: String(batchSize),

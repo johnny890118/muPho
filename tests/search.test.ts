@@ -42,6 +42,16 @@ test("Commons validates attribution, source hosts, media and take-downs", () => 
   assert.deepEqual(similarWorks(work, [work]), []);
 });
 
+test("Commons rejects photographs of two-dimensional artworks in photography results", () => {
+  const reproduction = structuredClone(record);
+  reproduction.categories.push({ title: "Category:Artworks missing digital representation of for 2D work" });
+  assert.equal(toWork(reproduction, "photo", new Set()), undefined);
+  const described = structuredClone(record);
+  Object.assign(described.imageinfo[0].extmetadata, { ImageDescription: { value: "Photograph of a watercolor" } });
+  assert.equal(toWork(described, "photo", new Set()), undefined);
+  assert.ok(toWork(record, "photo", new Set()));
+});
+
 test("validates and normalizes user input and labels all 24 title-based intents", () => {
   assert.equal(canonicalQuery(" Ｑｉｎｇ　Ｔｉａｎ — 周杰倫 "), "晴天 — 周杰倫");
   assert.equal(canonicalQuery("Yoru ni Kakeru — YOASOBI"), "夜に駆ける — YOASOBI");

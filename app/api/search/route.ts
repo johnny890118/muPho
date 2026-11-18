@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       : parsed.data;
     const { visitor, network } = visitorIdentity(request, secret);
     const blocked = new Set(blockedCommonsIds());
-    const key = createHash("sha256").update(JSON.stringify([params.kind === "tracks" ? "v5" : "v8", params, [...blocked]])).digest("hex");
+    const key = createHash("sha256").update(JSON.stringify([params.kind === "tracks" ? "v5" : "v9", params, [...blocked]])).digest("hex");
     const agent = `MuPho/0.2 (${contact})`;
     const data = await budget.run<object>(params.kind, visitor, key, randomUUID(), async () =>
       params.kind === "tracks"
