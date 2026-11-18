@@ -70,6 +70,7 @@ export function Explorer({ reportUrl, blockedIds, cloudLyrics = false }: { repor
   const current = useRef<AbortController | null>(null);
   const results = useRef<HTMLElement>(null);
   const retrySearch = useRef<() => void>(null);
+  const nextDirectionRequest = useRef(0);
 
 
   useEffect(() => {
@@ -193,11 +194,10 @@ export function Explorer({ reportUrl, blockedIds, cloudLyrics = false }: { repor
       const batches: ImageBatch[] = [];
       const next: DirectionPage[] = [];
       let issue: unknown;
-      for (const [index, entry] of pages.entries()) {
-        if (index > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 1100));
-          signal.throwIfAborted();
-        }
+      for (const entry of pages) {
+        const delay = nextDirectionRequest.current - performance.now();
+        if (delay > 0) await new Promise((resolve) => setTimeout(resolve, delay));
+        signal.throwIfAborted();
         try {
           const batch = await search<ImageBatch>({ kind: "images", q: entry.q, media: kind, page: String(entry.page) }, signal);
           signal.throwIfAborted();
@@ -207,6 +207,9 @@ export function Explorer({ reportUrl, blockedIds, cloudLyrics = false }: { repor
           signal.throwIfAborted();
           issue = failure;
           break;
+        } finally {
+          // The upstream gap also applies when switching media or opening the next batch.
+          nextDirectionRequest.current = performance.now() + 1100;
         }
       }
       // Alternate directions to keep the first screen from being dominated by one query.
@@ -323,8 +326,8 @@ export function Explorer({ reportUrl, blockedIds, cloudLyrics = false }: { repor
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2 px-1.5 sm:px-0 md:mb-0">
               <Tabs value={media} activationMode="manual" onValueChange={(value) => loadInitial(track, value as Media, appliedRefine, lyricsIntent)}>
                 <TabsList aria-label="圖片類型" className="media-tabs h-auto rounded-full bg-secondary p-0.5">
-                  <TabsTrigger value="photo" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">攝影</TabsTrigger>
-                  <TabsTrigger value="illustration" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">插畫</TabsTrigger>
+                  <TabsTrigger value="photo" disabled={Boolean(directions && pending)} className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">攝影</TabsTrigger>
+                  <TabsTrigger value="illustration" disabled={Boolean(directions && pending)} className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">插畫</TabsTrigger>
                 </TabsList>
               </Tabs>
               <div className="flex items-center gap-1">

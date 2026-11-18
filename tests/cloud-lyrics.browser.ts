@@ -4,6 +4,7 @@ test("preselects a recording and searches independent AI directions only after c
   const lyrics = "完整歌詞測試：起初心事重重。雨停時，我走到門前看見光。";
   const inputs: unknown[] = [];
   const images: string[] = [];
+  let lastImageSearch = -Infinity;
   await page.route("https://thumb.wikimedia.org/**", (route) => route.fulfill({
     contentType: "image/svg+xml",
     body: '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="640" height="400" fill="#5c5143"/></svg>',
@@ -13,6 +14,9 @@ test("preselects a recording and searches independent AI directions only after c
     if (query.get("kind") === "tracks") return route.fulfill({ json: { tracks: [
       { id: "1", title: "晴天", artist: "周杰倫" }, { id: "2", title: "晴天", artist: "試作藝人" },
     ] } });
+    const now = performance.now();
+    if (now - lastImageSearch < 1000) return route.fulfill({ status: 429, json: { error: "busy" } });
+    lastImageSearch = now;
     const q = query.get("q")!;
     const media = query.get("media")!;
     images.push(q);
