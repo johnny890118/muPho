@@ -7,6 +7,7 @@ import { SearchBudget, limits } from "../lib/search-budget";
 import { SearchError, providerJson } from "../lib/providers/http";
 import { findTracks } from "../lib/providers/musicbrainz";
 import { toWork } from "../lib/providers/commons";
+import { rankWorks } from "../lib/image-relevance";
 import { canonicalQuery, describeTrack, songIntents } from "../lib/song-intents";
 import { searchSchema } from "../lib/search-types";
 import { attribution, readFavorites, similarWorks } from "../lib/work-actions";
@@ -50,6 +51,30 @@ test("Commons rejects photographs of two-dimensional artworks in photography res
   Object.assign(described.imageinfo[0].extmetadata, { ImageDescription: { value: "Photograph of a watercolor" } });
   assert.equal(toWork(described, "photo", new Set()), undefined);
   assert.ok(toWork(record, "photo", new Set()));
+});
+
+test("Commons normalizes a verified CC0 1.0 localized deed without accepting other declarations", () => {
+  const item = structuredClone(record);
+  const metadata = item.imageinfo[0].extmetadata;
+  metadata.LicenseShortName.value = "CC0";
+  metadata.LicenseUrl.value = "http://creativecommons.org/publicdomain/zero/1.0/deed.en";
+  assert.equal(toWork(item, "photo", new Set())?.license, "CC0 1.0");
+  assert.equal(toWork(item, "photo", new Set())?.licenseUrl, "https://creativecommons.org/publicdomain/zero/1.0/");
+  metadata.LicenseUrl.value = "https://creativecommons.org.example/publicdomain/zero/1.0/deed.en";
+  assert.equal(toWork(item, "photo", new Set()), undefined);
+  metadata.LicenseUrl.value = "https://creativecommons.org/publicdomain/zero/1.0/deed.en";
+  metadata.LicenseShortName.value = "Public domain";
+  assert.equal(toWork(item, "photo", new Set()), undefined);
+});
+
+test("independent descriptive evidence outranks an incidental title match", () => {
+  const sample = toWork(record, "photo", new Set())!;
+  const airplane = { ...sample, id: "airport", title: "Alaska Horizon at SEA", terms: "Alaska Horizon at SEA airport" };
+  const ocean = { ...sample, id: "ocean", title: "Pure Blue Serenity", terms: "blue sea and horizon" };
+  const query = "open sea horizon";
+  assert.equal(rankWorks([airplane, ocean], query)[0].id, "airport");
+  const captions = new Map([[airplane.id, airplane.title], [ocean.id, "A tranquil blue sea stretches into the horizon"]]);
+  assert.equal(rankWorks([airplane, ocean], query, captions)[0].id, "ocean");
 });
 
 test("validates and normalizes user input and labels all 24 title-based intents", () => {

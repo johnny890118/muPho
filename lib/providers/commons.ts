@@ -44,10 +44,16 @@ export function toWork(raw: unknown, media: Media, blocked: ReadonlySet<string>)
   const image = imageinfo[0];
   if (!image || blocked.has(String(pageid)) || !["image/jpeg", "image/png", "image/webp"].includes(image.mime)) return;
   const meta = (key: string) => image.extmetadata[key]?.value ?? "";
-  const license = meta("LicenseShortName");
+  const shortName = meta("LicenseShortName");
+  const license = shortName === "CC0" ? "CC0 1.0" : shortName;
   if (license !== "CC BY 4.0" && license !== "CC0 1.0") return;
   const licenseUrl = licenses[license];
-  if (meta("LicenseUrl").replace(/\/?$/, "/") !== licenseUrl || meta("Restrictions").trim()) return;
+  const declaredUrl = meta("LicenseUrl");
+  // Commons can emit the canonical CC0 deed using HTTP and a language suffix.
+  const verified = license === "CC0 1.0"
+    ? /^https?:\/\/creativecommons\.org\/publicdomain\/zero\/1\.0(?:\/deed\.[a-z0-9-]+)?\/?$/i.test(declaredUrl)
+    : declaredUrl.replace(/\/?$/, "/") === licenseUrl;
+  if (!verified || meta("Restrictions").trim()) return;
   const author = strip(meta("Artist")).slice(0, 200);
   if (!author || /^(?:unknown|anonymous|n\/a|various|作者不明)$/i.test(author)) return;
   const name = title.replace(/^File:/, "");
@@ -90,12 +96,16 @@ export async function findWorks(query: string, media: Media, page: number, agent
   if (!result.success || result.data.error) throw new SearchError("offline", 60);
   const raw = result.data.query?.pages ?? [];
   const pages = raw.map((item) => pageSchema.safeParse(item)).flatMap((item) => item.success ? [item.data] : []);
+  const descriptions = new Map<string, string>();
   const works = pages.sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
     .flatMap((item) => {
       if (media === "illustration" && !matchesIllustrationSubject(words, [item.title, ...item.categories.map(({ title }) => title)].join(" "))) return [];
-      return toWork(item, media, blocked) ?? [];
+      const work = toWork(item, media, blocked);
+      if (!work) return [];
+      if (media === "photo") descriptions.set(work.id, strip(item.imageinfo[0].extmetadata.ImageDescription?.value ?? ""));
+      return work;
     });
-  const ordered = rankWorks(works, words);
+  const ordered = rankWorks(works, words, media === "photo" ? descriptions : undefined);
   const nextPage = page < cc0Page ? (raw.length < batchSize ? cc0Page : page + 1) : undefined;
   return {
     works: ordered,
