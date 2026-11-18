@@ -16,7 +16,8 @@
     "test:webkit": "playwright test --config=playwright.webkit.config.ts",
     "test:lyrics:local": "tsx tests/local-lyrics-model.ts",
     "test:cloud": "playwright test --config=playwright.cloud.config.ts",
-    "test:lyrics:cloud": "tsx tests/cloud-lyrics-live.ts"
+    "test:lyrics:cloud": "tsx tests/cloud-lyrics-live.ts",
+    "test:photos:licenses": "tsx tests/photo-license-live.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

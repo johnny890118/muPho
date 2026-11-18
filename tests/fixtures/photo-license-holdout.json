@@ -1,0 +1,10 @@
+[
+ {"q":"foggy bridge","expected":"A visible bridge in fog, subdued and quiet"},
+ {"q":"candlelit room","expected":"Room actually lit by candles, intimate or contemplative"},
+ {"q":"desert sunrise","expected":"Desert landscape at sunrise, quiet and hopeful"},
+ {"q":"empty playground","expected":"Playground with no visible people, still or lonely"},
+ {"q":"autumn park bench","expected":"An outdoor bench amid autumn foliage, peaceful"},
+ {"q":"rough mountain trail","expected":"Rugged uphill trail in mountains, arduous or adventurous"},
+ {"q":"evening campfire","expected":"Genuine outdoor fire at dusk or night, warm or intimate"},
+ {"q":"misty lake","expected":"Open lake with visible mist, quiet or reflective"}
+]
