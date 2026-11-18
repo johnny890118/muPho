@@ -37,7 +37,10 @@ test("song selection, pagination, preview and local favorites", async ({ page })
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.getByRole("textbox", { name: "歌名" }).fill("Dreams");
   await page.getByRole("button", { name: "搜尋", exact: true }).click();
-  await page.getByRole("button", { name: /Dreams — Fleetwood Mac/ }).click();
+  await expect(page.getByRole("heading", { name: /^Dreams.*Fleetwood Mac/ })).toBeVisible();
+  await page.getByRole("button", { name: "更換歌曲" }).click();
+  await expect(page.getByRole("button", { name: /Dreams — The Cranberries/ })).toBeVisible();
+  await page.keyboard.press("Escape");
   await expect(page.getByText("未分析完整歌詞", { exact: false })).toBeVisible();
   await page.getByRole("button", { name: "載入更多" }).click();
   const trigger = page.getByRole("button", { name: "預覽 Sunset over the sea" });
@@ -108,7 +111,7 @@ test("song fallback, first-screen gallery and preview image recovery", async ({ 
   await page.getByRole("textbox", { name: "歌名" }).fill("晴天-周杰倫");
   await page.getByRole("button", { name: "搜尋", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(0);
-  await page.getByRole("dialog").getByRole("button", { name: /晴天 — 周杰倫/ }).click();
+  await expect(page.getByRole("heading", { name: /^晴天.*周杰倫/ })).toBeVisible();
   const trigger = page.getByRole("button", { name: /^預覽 A long title/ });
   await expect(trigger).toBeInViewport();
   expect(imageQueries).toEqual(["school corridor", "schoolyard"]);

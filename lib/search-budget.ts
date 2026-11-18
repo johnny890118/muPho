@@ -4,6 +4,7 @@ import { SearchError } from "@/lib/providers/http";
 const hour = 3_600_000;
 const day = 24 * hour;
 export const limits = {
+  lyrics: { site: 12, daily: 36, visitor: 2, gap: 60_000 },
   tracks: { site: 60, daily: 240, visitor: 12, gap: 1100 },
   images: { site: 90, daily: 360, visitor: 20, gap: 1000 },
 };
@@ -24,7 +25,7 @@ export class SearchBudget {
     `);
   }
 
-  async run<T>(kind: keyof typeof limits, visitor: string, key: string, owner: string, perform: () => Promise<T>, network?: string): Promise<T> {
+  async run<T>(kind: keyof typeof limits, visitor: string, key: string | null, owner: string, perform: () => Promise<T>, network?: string): Promise<T> {
     const policy = limits[kind];
     const now = Date.now();
     const lease = 18_000;
@@ -33,7 +34,7 @@ export class SearchBudget {
       this.db.prepare("DELETE FROM cache WHERE expires <= ?").run(now);
       this.db.prepare("DELETE FROM counts WHERE expires <= ?").run(now);
       this.db.prepare("DELETE FROM locks WHERE expires <= ?").run(now);
-      const cached = this.db.prepare("SELECT body FROM cache WHERE key = ?").get(key);
+      const cached = key === null ? undefined : this.db.prepare("SELECT body FROM cache WHERE key = ?").get(key);
       if (cached) {
         const result = JSON.parse(String(cached.body)) as T;
         this.db.exec("COMMIT");
@@ -73,7 +74,7 @@ export class SearchBudget {
     }
     try {
       const result = await perform();
-      this.db.prepare("INSERT OR REPLACE INTO cache VALUES (?, ?, ?)").run(key, Date.now() + hour, JSON.stringify(result));
+      if (key !== null) this.db.prepare("INSERT OR REPLACE INTO cache VALUES (?, ?, ?)").run(key, Date.now() + hour, JSON.stringify(result));
       return result;
     } catch (error) {
       if (error instanceof SearchError && error.retrySeconds) {

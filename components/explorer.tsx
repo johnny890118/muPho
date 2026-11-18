@@ -11,6 +11,7 @@ import { Skeleton } from "./ui/skeleton";
 import { FeaturedWorks } from "./featured-work";
 import { WorkImage, WorkPreview } from "./work-preview";
 import { readFavorites, similarWorks, type FavoriteWork } from "@/lib/work-actions";
+import type { Directions } from "@/lib/ai-lyrics";
 import { fetchImageBatch } from "@/lib/image-search";
 import { LyricsInput } from "./lyrics-input";
 import { TrackOptions } from "./track-options";
@@ -28,20 +29,17 @@ const messages: Record<SearchErrorCode, string> = {
 
 async function search<T>(params: Record<string, string>, signal: AbortSignal): Promise<T> {
   const url = "/api/search?" + new URLSearchParams(params);
-  for (let attempt = 0; ; attempt++) {
-    const response = await fetch(url, { signal });
-    const data = await response.json().catch(() => undefined);
-    if (response.ok && data) return data as T;
-    if (data?.error !== "busy" || attempt >= 2) throw new Error(messages[data?.error as SearchErrorCode] ?? messages.offline);
-    const retry = Number(response.headers.get("retry-after")) || 1;
-    await new Promise((resolve) => setTimeout(resolve, Math.min(retry, 3) * 1000 + 100));
-    signal.throwIfAborted();
-  }
+  const response = await fetch(url, { signal });
+  const data = await response.json().catch(() => undefined);
+  if (response.ok && data) return data as T;
+  throw new Error(messages[data?.error as SearchErrorCode] ?? messages.offline);
 }
+
+type DirectionPage = { q: string; page: number };
 
 const favoritesKey = "mupho-favorites-v1";
 
-export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blockedIds: string[] }) {
+export function Explorer({ reportUrl, blockedIds, cloudLyrics = false }: { reportUrl?: string; blockedIds: string[]; cloudLyrics?: boolean }) {
   const [searched, setSearched] = useState(false);
   const [mode, setMode] = useState("song");
   const [input, setInput] = useState("");
@@ -49,6 +47,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
   const [choosing, setChoosing] = useState(false);
   const [track, setTrack] = useState<Track>();
   const [lyricsIntent, setLyricsIntent] = useState<VisualIntent>();
+  const [directions, setDirections] = useState<Directions>();
+  const [directionPages, setDirectionPages] = useState<DirectionPage[]>([]);
   const [media, setMedia] = useState<Media>("photo");
   const [imageLabel, setImageLabel] = useState("");
   const [status, setStatus] = useState<ImageBatch["status"]>();
@@ -156,6 +156,8 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     setRefining(false);
     setTrack(undefined);
     setLyricsIntent(undefined);
+    setDirections(undefined);
+    setDirectionPages([]);
     setTracks(null);
     setChoosing(false);
     setQuery("");
@@ -174,14 +176,56 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
         signal.throwIfAborted();
         setTracks(data.tracks);
         const canonical = canonicalQuery(q).toLowerCase();
-        const only = data.tracks.length === 1 ? data.tracks[0] : undefined;
-        if (only && canonical === canonicalQuery(`${only.title} — ${only.artist}`).toLowerCase()) select(only);
-        else setChoosing(data.tracks.length > 0);
+        const likely = data.tracks.find(({ title, artist }) => canonical === canonicalQuery(`${title} — ${artist}`).toLowerCase()) ?? data.tracks[0];
+        if (likely) select(likely);
       });
     }
   }
 
+  function loadDirections(pages: DirectionPage[], kind: Media, append = false) {
+    setMedia(kind);
+    setReference(undefined);
+    setNextPage(undefined);
+    setDirectionPages([]);
+    if (!append) setWorks([]);
+    retrySearch.current = () => void loadDirections(pages, kind, append);
+    return run(async (signal) => {
+      const batches: ImageBatch[] = [];
+      const next: DirectionPage[] = [];
+      let issue: unknown;
+      for (const [index, entry] of pages.entries()) {
+        if (index > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 1100));
+          signal.throwIfAborted();
+        }
+        try {
+          const batch = await search<ImageBatch>({ kind: "images", q: entry.q, media: kind, page: String(entry.page) }, signal);
+          signal.throwIfAborted();
+          batches.push(batch);
+          if (batch.hasMore && batch.nextPage !== undefined) next.push({ q: entry.q, page: batch.nextPage });
+        } catch (failure) {
+          signal.throwIfAborted();
+          issue = failure;
+          break;
+        }
+      }
+      // Alternate directions to keep the first screen from being dominated by one query.
+      const merged = Array.from({ length: Math.max(0, ...batches.map((batch) => batch.works.length)) },
+        (_, index) => batches.flatMap((batch) => batch.works[index] ?? [])).flat();
+      setWorks((previous) => [...new Map([...(append ? previous : []), ...merged].map((work) => [work.id, work])).values()]);
+      setStatus(merged.length ? "matched" : batches.some((batch) => batch.status === "filtered") ? "filtered" : "empty");
+      setDirectionPages(next);
+      if (issue) throw issue;
+    });
+  }
+
+  function startDirections(plan: Directions, kind: Media, refinement = "") {
+    void loadDirections(plan.map((direction) => ({ q: [direction[kind], refinement].filter(Boolean).join(" "), page: 0 })), kind);
+  }
+
   function loadInitial(item: Track | undefined, kind: Media, refinement = "", provided?: VisualIntent) {
+    if (directions && item) { startDirections(directions, kind, refinement); return; }
+    if (cloudLyrics && item) { setMedia(kind); return; }
     const intent = provided ?? (item ? describeTrack(item, kind) : undefined);
     const base = intent?.query ?? imageLabel;
     const q = [base, refinement].filter(Boolean).join(" ").slice(0, 100);
@@ -195,10 +239,26 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
     setTrack(item);
     setLyricsIntent(undefined);
     setChoosing(false);
+    setReference(undefined);
     setRefine("");
     setAppliedRefine("");
     setRefining(false);
-    loadInitial(item, media);
+    setDirections(undefined);
+    setDirectionPages([]);
+    if (cloudLyrics) {
+      current.current?.abort();
+      setPending(false);
+      setError("");
+      setQuery("");
+      setWorks([]);
+      setNextPage(undefined);
+      setStatus(undefined);
+      return;
+    }
+    const intent = describeTrack(item, media);
+    setWorks([]);
+    setStatus(undefined);
+    void load(intent.query, media, 0, false, intent.fallback);
   }
 
   const compact = searched || showFavorites;
@@ -247,36 +307,43 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
           </div>}
           {choosing && tracks?.length ? <TrackOptions tracks={tracks} onSelect={select} onClose={() => setChoosing(false)}
             restoreFocus={() => results.current?.focus({ preventScroll: true })} /> : null}
-          {query && <>
+          {(query || track) && <>
             <div className="md:mb-3 md:flex md:items-center md:justify-between md:gap-5">
             <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 px-1.5 sm:px-0 md:mb-0 md:flex-1 md:justify-start">
               <div className="min-w-0 flex-1">
                 <h2 className="font-display text-2xl leading-tight break-words sm:text-3xl">
                   {track ? <>{track.title}<span className="ml-2 font-sans text-sm text-muted-foreground sm:text-base">· {track.artist}</span></> : imageLabel}
                 </h2>
-                {track && <p className="mt-1 text-xs text-muted-foreground">{lyricsIntent ? "依你提供的歌詞擷取意象" : "依歌曲資料推薦・未分析完整歌詞"}</p>}
+                {track && <p className="mt-1 text-xs text-muted-foreground">{directions ? "依你提供的完整歌詞找圖" : cloudLyrics ? "提供完整歌詞，讓 AI 依歌曲意境找圖" : lyricsIntent ? "依你提供的歌詞擷取意象" : "依歌曲資料推薦・未分析完整歌詞"}</p>}
               </div>
               {track && <Button variant="ghost" className="min-h-11 shrink-0 px-2 text-primary" onClick={() => setChoosing(true)}>
                 <RefreshCw />更換歌曲
               </Button>}
             </div>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2 px-1.5 sm:px-0 md:mb-0">
-              <Tabs value={media} onValueChange={(value) => loadInitial(track, value as Media, appliedRefine, lyricsIntent)}>
+              <Tabs value={media} activationMode="manual" onValueChange={(value) => loadInitial(track, value as Media, appliedRefine, lyricsIntent)}>
                 <TabsList aria-label="圖片類型" className="media-tabs h-auto rounded-full bg-secondary p-0.5">
                   <TabsTrigger value="photo" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">攝影</TabsTrigger>
                   <TabsTrigger value="illustration" className="min-h-11 rounded-full px-5 dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground">插畫</TabsTrigger>
                 </TabsList>
               </Tabs>
               <div className="flex items-center gap-1">
-                <Button variant="ghost" className="min-h-11 px-2 text-muted-foreground" aria-expanded={refining} onClick={() => setRefining(!refining)}>
+                <Button variant="ghost" className="min-h-11 px-2 text-muted-foreground" disabled={Boolean(track && cloudLyrics && !directions)} aria-expanded={refining} onClick={() => setRefining(!refining)}>
                   <SlidersHorizontal />微調
                 </Button>
-                <Button variant="ghost" className="size-11 text-muted-foreground" aria-label="更新結果" disabled={pending}
+                <Button variant="ghost" className="size-11 text-muted-foreground" aria-label="更新結果" disabled={pending || Boolean(track && cloudLyrics && !directions)}
                   onClick={() => loadInitial(track, media, appliedRefine, lyricsIntent)}><RefreshCw /></Button>
               </div>
             </div>
             </div>
-            {track && <LyricsInput key={track.id} pending={pending} active={Boolean(lyricsIntent)}
+            {track && <LyricsInput key={track.id} pending={pending} active={Boolean(lyricsIntent || directions)}
+              onCloud={cloudLyrics ? (plan) => {
+                setDirections(plan);
+                setRefine("");
+                setAppliedRefine("");
+                setRefining(false);
+                startDirections(plan, media);
+              } : undefined}
               onApply={(intent) => {
                 setLyricsIntent(intent);
                 setAppliedRefine("");
@@ -285,6 +352,18 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
                 loadInitial(track, media, "", intent);
               }} onReset={() => {
                 setLyricsIntent(undefined);
+                if (cloudLyrics) {
+                  current.current?.abort();
+                  setPending(false);
+                  setError("");
+                  setDirections(undefined);
+                  setDirectionPages([]);
+                  setStatus(undefined);
+                  setWorks([]);
+                  setReference(undefined);
+                  setRefining(false);
+                  return;
+                }
                 loadInitial(track, media, appliedRefine);
               }} />}
             {refining && <form className="mb-4 flex max-w-md gap-2" onSubmit={(event) => {
@@ -297,7 +376,7 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
               <Button variant="outline" type="submit" className="min-h-11" disabled={pending}>套用</Button>
             </form>}
             {reference && <Button variant="ghost" className="mb-2 min-h-11" onClick={() => setReference(undefined)}>返回原搜尋排序</Button>}
-            {!pending && !error && !works.length && <div className="rounded-md bg-card px-4 py-6">
+            {!pending && !error && (status || query) && !works.length && <div className="rounded-md bg-card px-4 py-6">
               <h3 className="font-display text-xl">{status === "empty" ? "目前沒有相符的作品" : "這一批沒有符合類型與授權條件的作品。"}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{media === "illustration"
                 ? "可搜尋較常見的場景，或切換到攝影。"
@@ -317,6 +396,10 @@ export function Explorer({ reportUrl, blockedIds }: { reportUrl?: string; blocke
           {visibleWorks.map((work) => <WorkCard key={work.id} work={work} saved={favorites.some((item) => item.id === work.id)}
             onToggle={() => setFavoriteStatus(toggleFavorite(work))} onOpen={(button) => openPreview(work.id, button)} />)}
         </div>
+        {!showFavorites && directionPages.length > 0 && <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="outline" disabled={pending} onClick={() => void loadDirections(directionPages, media, true)}>載入更多</Button>
+          <Button variant="outline" disabled={pending} onClick={() => void loadDirections(directionPages, media)}>換一批</Button>
+        </div>}
         {!showFavorites && nextPage !== undefined && <div className="mt-4 flex flex-wrap gap-2">
           <Button variant="outline" disabled={pending} onClick={() => void load(query, media, nextPage, true)}>載入更多</Button>
           <Button variant="outline" disabled={pending} onClick={() => { setReference(undefined); void load(query, media, nextPage); }}>換一批</Button>
