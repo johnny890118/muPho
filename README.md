@@ -56,4 +56,11 @@ npm run test:visual
 
 [架構](docs/architecture.md) · [可行性盤點](docs/feasibility.md) · [資料來源與授權](docs/providers-and-licensing.md) · [營運與額度](docs/operations-and-limits.md) · [首版驗收](docs/verification.md) · [主分支整合驗收](docs/verification/main-integration.md)
 
-歌曲預設使用歌曲資料推薦。選曲後可在瀏覽器提供有權處理的歌詞，擷取固定詞庫中的視覺意象。原文不傳送、不保存。外部歌詞來源與 AI 語意分析維持停用。遇到授權或分類資料不足的作品會略過，部分查詢只會顯示少量作品。
+歌曲預設使用歌曲資料推薦。選曲後可在瀏覽器提供有權處理的歌詞，擷取固定詞庫中的視覺意象。未設定 GroqCloud 時，原文只在瀏覽器處理，外部歌詞來源維持停用。遇到授權或分類資料不足的作品會略過，部分查詢只會顯示少量作品。
+
+
+## GroqCloud 完整歌詞找圖
+
+搜尋啟用後，使用專用的 GroqCloud **Free** 組織，保持無付款方式並開啟 Zero Data Retention（ZDR）。在伺服器環境設定 `GROQ_API_KEY`、`MUPHO_GROQ_FREE_ZDR=1` 與 `MUPHO_GROQ_ORIGIN`（本機例為 `http://127.0.0.1:3174`，公開環境為精確 HTTPS origin）。金鑰勿放入公開變數、Git 或指令引數。啟用後先預選錄音；使用者可重新選擇，貼上全文並明確同意外送後才查詢。
+
+額度由 SQLite 跨程序共享。上游組織的 Free 方案是零帳單的必要條件，MuPho 的呼叫上限另行防濫用。[操作與額度](docs/operations-and-limits.md) · [驗收方法](docs/verification/cloud-lyrics.md)

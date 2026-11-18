@@ -10,6 +10,7 @@
 | [Openverse](https://docs.openverse.org/terms_of_service) | 可能對特定用途收費，索引標記不能取代來源核實。停用。 |
 | [Pexels](https://help.pexels.com/hc/en-us/articles/4405588861721-Can-I-use-the-API-as-a-wallpaper-app) | API 限制類圖庫與桌布核心流程。移除。 |
 | [LRCLIB](https://lrclib.net/docs) | 免費讀取未確認個別歌詞有 AI 再利用授權。停用。 |
+| [GroqCloud Free](https://console.groq.com/docs/billing-faqs) · [資料政策](https://console.groq.com/docs/your-data) | 只允許無付款方式的專用 Free 組織，管理者先啟用 ZDR。MuPho 尚未取得實測金鑰。 |
 | [OpenRouter](https://openrouter.ai/collections/free-models) · [Gemini](https://ai.google.dev/gemini-api/docs/billing) | 模型、免費配額及資料政策可變。未確認歌詞外送與無計費部署條件，均停用。 |
 
 下列情形應擋下結果或只導向原始來源：授權欄位不符或缺少作者，無法判斷媒體，檔案失效，疑似 AI 作品或來源遭封鎖。
@@ -20,4 +21,4 @@
 
 首頁另外選用〈Night Rainy View〉（S.M.M.Musabbir Uddin）與〈Olkhon Island, Capes, cliffs at sunset, Lake Baikal, Russia〉（Vyacheslav Argenberg）。兩個原始檔案頁均標示 CC BY 4.0，首頁標明裁切。[雨夜作品](https://commons.wikimedia.org/wiki/File:Night_Rainy_View.jpg) · [暮色作品](https://commons.wikimedia.org/wiki/File:Olkhon_Island,_Capes,_cliffs_at_sunset,_Lake_Baikal,_Russia.jpg)
 
-使用者可提供有權處理的歌詞。MuPho 在瀏覽器逐行比對固定詞庫，送出的圖片搜尋查詢只包含該詞庫的概念。原文不寫入 MuPho 儲存或傳至 API。外部歌詞批次擷取與第三方語意模型維持停用。
+使用者必須有權將歌詞交由 GroqCloud 處理，並在表單明確同意全文外送。MuPho 不持久保存歌詞或模型回應，Commons 只接收衍生搜尋詞。Groq 仍會保留使用量中繼資料；帳戶開啟 ZDR 前，推論輸入與輸出可能因可靠性或防濫用目的短期留存。自動擷取外部歌詞維持停用。

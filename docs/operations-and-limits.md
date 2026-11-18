@@ -6,7 +6,8 @@
 | --- | --- | --- | --- |
 | MusicBrainz | 12／36 | 60／240 | 1，請求間隔至少 1.1 秒 |
 | Wikimedia Commons | 20／60 | 90／360 | 1，請求間隔至少 1 秒 |
-| 外部 AI 與外部歌詞來源 | 關閉 | 關閉 | 0 |
+| GroqCloud 全詞分析（選擇啟用） | 2／6 | 12／36 | 1，兩次啟動至少相隔 60 秒 |
+| 外部歌詞來源 | 關閉 | 關閉 | 0 |
 
 上限是 MuPho 的保守設定，非上游保證。時段以 UTC 計算。在同一交易檢查並扣除各額度，實際呼叫後即使失敗也保留扣款。命中快取不扣額度。API 處理上游 429、5xx、逾時及 Retry-After，回傳本地化錯誤代碼。上游 429／5xx 冷卻至少 30 秒。快取 TTL 一小時，逾期資料在後續請求清除。停用搜尋可設 `MUPHO_ENABLE_SEARCH=0` 後重啟。
 
@@ -16,6 +17,6 @@
 
 輪換 Git 歷史中的舊憑證及曾由前端載入的 Pexels 金鑰。舊版 `.env` 變數不供新程式使用。
 
-歌詞意象擷取在瀏覽器記憶體中完成，無獨立上游額度。只有固定詞庫中擷取出的意象會透過既有圖片搜尋路由送出，適用相同的 Wikimedia 額度、快取與退避。
+GroqCloud 僅支援專用 Free 組織、無付款方式、啟用 ZDR。應用程式無法從金鑰辨別帳戶方案；管理者確認後才設定 `MUPHO_GROQ_FREE_ZDR=1`。此旗標沒有變更供應商帳戶的權限。Groq 固定只用 GPT-OSS 20B、每次最多 6,000 字元和 768 output tokens；原文與 AI 回傳值不寫入 SQLite，請求失敗仍計入額度。攝影或插畫的兩次獨立搜尋沿用 Wikimedia 額度；上游失敗時停止該批。
 
 `main` 透過 `vercel.json` 停用 Vercel Git 自動部署。Git 推送與正式環境部署分開。公開搜尋仍需符合上述資料庫與額度條件。[Vercel Git 設定](https://vercel.com/docs/project-configuration/git-configuration)
