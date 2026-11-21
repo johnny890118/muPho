@@ -28,7 +28,17 @@ export function groqKey() {
     cloudLyricsOrigin() && key?.startsWith("gsk_") ? key : undefined;
 }
 
-export async function analyzeLyrics(text: string, token: string, signal?: AbortSignal) {
+export type LyricsDiagnostic = {
+  status?: number;
+  finishReason?: string;
+  fingerprint?: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  failure?: "http" | "invalid_output" | "network";
+};
+
+export async function analyzeLyrics(text: string, token: string, signal?: AbortSignal,
+  diagnostic?: (event: LyricsDiagnostic) => void) {
   try {
     const deadline = AbortSignal.timeout(12_000);
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -45,15 +55,29 @@ export async function analyzeLyrics(text: string, token: string, signal?: AbortS
         messages: [{ role: "system", content: prompt }, { role: "user", content: JSON.stringify({ lyrics: text }) }],
       }),
     });
+    diagnostic?.({ status: response.status });
     if (response.status === 429) {
       const seconds = Number(response.headers.get("retry-after"));
       throw new SearchError("upstream_limited", Number.isFinite(seconds) ? Math.max(60, Math.ceil(seconds)) : 60);
     }
     if (!response.ok) throw new SearchError("offline", 60);
-    const { choices: [{ message }] } = responseSchema.parse(await response.json());
+    const raw: unknown = await response.json();
+    const metadata = z.object({
+      choices: z.array(z.object({ finish_reason: z.string().nullish() })),
+      system_fingerprint: z.string().optional(),
+      usage: z.object({ prompt_tokens: z.number(), completion_tokens: z.number() }).optional(),
+    }).safeParse(raw);
+    if (metadata.success) diagnostic?.({
+      finishReason: metadata.data.choices[0]?.finish_reason ?? undefined,
+      fingerprint: metadata.data.system_fingerprint,
+      inputTokens: metadata.data.usage?.prompt_tokens,
+      outputTokens: metadata.data.usage?.completion_tokens,
+    });
+    const { choices: [{ message }] } = responseSchema.parse(raw);
     const out = outputSchema.parse(JSON.parse(message.content));
     return directionsSchema.parse([out.primary, out.secondary]);
   } catch (error) {
+    diagnostic?.({ failure: error instanceof SearchError ? "http" : error instanceof z.ZodError || error instanceof SyntaxError ? "invalid_output" : "network" });
     if (error instanceof SearchError) throw error;
     throw new SearchError("offline", 30);
   }

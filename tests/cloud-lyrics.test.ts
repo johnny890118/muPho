@@ -6,7 +6,7 @@ import { test } from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { NextRequest } from "next/server";
 import { POST } from "../app/api/lyrics/route";
-import { analyzeLyrics } from "../lib/providers/groq";
+import { analyzeLyrics, type LyricsDiagnostic } from "../lib/providers/groq";
 
 const result = { primary: { photo: "rain window", illustration: "rain" }, secondary: { photo: "porch light", illustration: "lit doorway" } };
 const choice = (content: object) => Response.json({ choices: [{ finish_reason: "stop", message: { content: JSON.stringify(content) } }] });
@@ -22,7 +22,12 @@ test("Groq output is data-only and rejects invalid or duplicate phrases without 
     assert.deepEqual(JSON.parse(body.messages[1].content), { lyrics: "fixture lyrics" });
     return choice(result);
   });
-  assert.deepEqual(await analyzeLyrics("fixture lyrics", "key"), [result.primary, result.secondary]);
+  const diagnostics: LyricsDiagnostic[] = [];
+  assert.deepEqual(await analyzeLyrics("fixture lyrics", "key", undefined, (event) => diagnostics.push(event)),
+    [result.primary, result.secondary]);
+  assert.equal(diagnostics[0].status, 200);
+  assert.equal(diagnostics[1].finishReason, "stop");
+  assert.ok(!JSON.stringify(diagnostics).includes("fixture lyrics"));
   mock.mock.mockImplementation(async () => choice({ ...result, secondary: { ...result.secondary, photo: "the rainy glass window" } }));
   await assert.rejects(analyzeLyrics("fixture lyrics", "key"), { code: "offline" });
   mock.mock.mockImplementation(async () => new Response(null, { status: 429, headers: { "Retry-After": "75" } }));

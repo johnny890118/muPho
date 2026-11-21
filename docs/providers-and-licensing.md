@@ -10,7 +10,7 @@
 | [Openverse](https://docs.openverse.org/terms_of_service) | 可能對特定用途收費，索引標記不能取代來源核實。停用。 |
 | [Pexels](https://help.pexels.com/hc/en-us/articles/4405588861721-Can-I-use-the-API-as-a-wallpaper-app) | API 限制類圖庫與桌布核心流程。移除。 |
 | [LRCLIB](https://lrclib.net/docs) | 免費讀取未確認個別歌詞有 AI 再利用授權。停用。 |
-| [GroqCloud Free](https://console.groq.com/docs/billing-faqs) · [資料政策](https://console.groq.com/docs/your-data) | 只允許無付款方式的專用 Free 組織，管理者先啟用 ZDR。MuPho 尚未取得實測金鑰。 |
+| [GroqCloud Free](https://console.groq.com/docs/billing-faqs) · [資料政策](https://console.groq.com/docs/your-data) | 只允許無付款方式的專用 Free 組織，管理者先啟用 ZDR。已完成自撰歌詞的實網驗收，品質限制見驗收紀錄。 |
 | [OpenRouter](https://openrouter.ai/collections/free-models) · [Gemini](https://ai.google.dev/gemini-api/docs/billing) | 模型、免費配額及資料政策可變。未確認歌詞外送與無計費部署條件，均停用。 |
 
 下列情形應擋下結果或只導向原始來源：授權欄位不符或缺少作者，無法判斷媒體，檔案失效，疑似 AI 作品或來源遭封鎖。

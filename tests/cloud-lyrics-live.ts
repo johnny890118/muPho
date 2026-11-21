@@ -1,3 +1,4 @@
+import holdout from "./fixtures/lyrics-holdout.json";
 import { setTimeout as wait } from "node:timers/promises";
 import { findWorks } from "../lib/providers/commons";
 import { analyzeLyrics, groqKey, model, promptVersion } from "../lib/providers/groq";
@@ -13,14 +14,15 @@ const samples = [
 
 async function main() {
   const id = process.argv[2];
-  const sample = samples.find(([name]) => name === id);
+  const fresh = holdout.find((item) => item.id === id);
+  const sample = samples.find(([name]) => name === id) ?? (fresh ? [fresh.id, fresh.lyrics] : undefined);
   const token = groqKey();
-  if (!sample || !token) throw new Error("Configure verified Free/ZDR credentials and specify zh, en, en-reversal, ja, or ko. Run one case per minute.");
+  if (!sample || !token) throw new Error("Configure verified Free/ZDR credentials and specify zh, en, en-reversal, ja, ko, or new-zh/new-en/new-ja/new-ko. Run one case per minute.");
   const contact = process.env.MUPHO_PROVIDER_CONTACT;
   if (!contact || !/^https:\/\/[^\s]+$/.test(contact)) throw new Error("Set a valid MUPHO_PROVIDER_CONTACT.");
   const started = Date.now();
-  const directions = await analyzeLyrics(sample[1], token);
-  console.log(JSON.stringify({ id, model, promptVersion, elapsedMs: Date.now() - started, directions }));
+  const directions = await analyzeLyrics(sample[1], token, undefined, (event) => console.error(JSON.stringify({ id, diagnostic: event })));
+  console.log(JSON.stringify({ id, model, promptVersion, elapsedMs: Date.now() - started, expected: fresh?.expected, directions }));
   const agent = `MuPho/0.2 (${contact})`;
   for (const media of ["photo", "illustration"] as const) {
     for (const [index, direction] of directions.entries()) {

@@ -1,0 +1,6 @@
+[
+ {"id":"new-zh","title":"山路上的回聲","language":"zh","lyrics":"我背著你的舊背包，沿著山路慢慢走\n每一步都想起再也聽不到的聲音\n到了山脊，妹妹講起你最愛說的笑話\n我們笑到山谷也回答，腳步終於輕了\n回程的路還長，我已能帶著你向前","expected":"Mountain path, grieving opening, shared laughter and hope at ending"},
+ {"id":"new-en","title":"One Small Flame","language":"en","lyrics":"A candle shook beside my bed\nI feared each shadow on the wall\nThe knocking was a branch against the pane\nI opened my hand and watched the small flame stand\nThe room grew quiet as my breathing slowed\nNothing needed chasing now","expected":"Candlelit room, fearful opening, quiet and peaceful ending"},
+ {"id":"new-ja","title":"森の返事","language":"ja","lyrics":"森の道をひとり歩いた\n返事のない枝に名前を呼んだ\n足元の落ち葉ばかり見ていた\nやがて木の音を数えることをやめた\n誰もいなくても足りていると分かった\n深く息をして、その静けさを受け取った","expected":"Forest path, loneliness turning into accepted solitude and calm"},
+ {"id":"new-ko","title":"꺼진 운동장","language":"ko","lyrics":"학교 운동장에서 내일을 기다렸어\n친구들과 새 팀을 만들 생각에 웃었지\n그런데 문이 잠기고 불이 모두 꺼졌어\n어둠 속에서 발소리가 나를 따라왔어\n나는 담장 옆에 몸을 숨겼어\n돌아볼 용기도 없이 숨을 참았어","expected":"School playground, hopeful beginning, darkness and fear at ending"}
+]
