@@ -1,0 +1,1369 @@
+[
+  {
+    "version": "v1",
+    "id": "new-zh",
+    "replayed_images": true,
+    "output": [
+      {
+        "id": "new-zh",
+        "model": "openai/gpt-oss-20b",
+        "promptVersion": "mupho-visual-v1",
+        "directions": [
+          {
+            "photo": "backpack mountain trail",
+            "illustration": "backpack on trail"
+          },
+          {
+            "photo": "ridge laughter",
+            "illustration": "ridge laughter"
+          }
+        ],
+        "replay": true
+      },
+      {
+        "id": "new-zh",
+        "media": "photo",
+        "direction": 1,
+        "q": "backpack mountain trail",
+        "count": 6,
+        "status": "matched",
+        "top": [
+          {
+            "id": "202172153",
+            "title": "Turyści z plecakami na ścieżce wśród kosodrzewiny w masywie Pilska",
+            "author": "Krzysztof Popławski",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Tury%C5%9Bci_z_plecakami_na_%C5%9Bcie%C5%BCce_w%C5%9Br%C3%B3d_kosodrzewiny_w_masywie_Pilska.jpg/960px-Tury%C5%9Bci_z_plecakami_na_%C5%9Bcie%C5%BCce_w%C5%9Br%C3%B3d_kosodrzewiny_w_masywie_Pilska.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Tury%C5%9Bci_z_plecakami_na_%C5%9Bcie%C5%BCce_w%C5%9Br%C3%B3d_kosodrzewiny_w_masywie_Pilska.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "202171895",
+            "title": "Turysta z kijami trekkingowymi na szlaku wśród kosodrzewiny na Pilsku",
+            "author": "Krzysztof Popławski",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Turysta_z_kijami_trekkingowymi_na_szlaku_w%C5%9Br%C3%B3d_kosodrzewiny_na_Pilsku.jpg/960px-Turysta_z_kijami_trekkingowymi_na_szlaku_w%C5%9Br%C3%B3d_kosodrzewiny_na_Pilsku.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Turysta_z_kijami_trekkingowymi_na_szlaku_w%C5%9Br%C3%B3d_kosodrzewiny_na_Pilsku.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "148339355",
+            "title": "Górski szlak pieszy PR1 z Pico Arreiro do Pico Ruivo - Vereda do Areeiro - Madeira, Portugalia, sierpień 2022",
+            "author": "Krzysztof Popławski",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/G%C3%B3rski_szlak_pieszy_PR1_z_Pico_Arreiro_do_Pico_Ruivo_-_Vereda_do_Areeiro_-_Madeira%2C_Portugalia%2C_sierpie%C5%84_2022.jpg/960px-G%C3%B3rski_szlak_pieszy_PR1_z_Pico_Arreiro_do_Pico_Ruivo_-_Vereda_do_Areeiro_-_Madeira%2C_Portugalia%2C_sierpie%C5%84_2022.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:G%C3%B3rski_szlak_pieszy_PR1_z_Pico_Arreiro_do_Pico_Ruivo_-_Vereda_do_Areeiro_-_Madeira,_Portugalia,_sierpie%C5%84_2022.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-zh",
+        "media": "photo",
+        "direction": 2,
+        "q": "ridge laughter",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-zh",
+        "media": "illustration",
+        "direction": 1,
+        "q": "backpack on trail",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-zh",
+        "media": "illustration",
+        "direction": 2,
+        "q": "ridge laughter",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "version": "v1",
+    "id": "new-en",
+    "replayed_images": true,
+    "output": [
+      {
+        "id": "new-en",
+        "model": "openai/gpt-oss-20b",
+        "promptVersion": "mupho-visual-v1",
+        "directions": [
+          {
+            "photo": "bedroom candle",
+            "illustration": "candle beside bed"
+          },
+          {
+            "photo": "quiet candle flame",
+            "illustration": "still flame"
+          }
+        ],
+        "replay": true
+      },
+      {
+        "id": "new-en",
+        "media": "photo",
+        "direction": 1,
+        "q": "bedroom candle",
+        "count": 0,
+        "status": "filtered",
+        "top": []
+      },
+      {
+        "id": "new-en",
+        "media": "photo",
+        "direction": 2,
+        "q": "quiet candle flame",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-en",
+        "media": "illustration",
+        "direction": 1,
+        "q": "candle beside bed",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-en",
+        "media": "illustration",
+        "direction": 2,
+        "q": "still flame",
+        "count": 0,
+        "status": "filtered",
+        "top": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "version": "v1",
+    "id": "new-ja",
+    "replayed_images": true,
+    "output": [
+      {
+        "id": "new-ja",
+        "model": "openai/gpt-oss-20b",
+        "promptVersion": "mupho-visual-v1",
+        "directions": [
+          {
+            "photo": "autumn forest path",
+            "illustration": "fallen leaves path"
+          },
+          {
+            "photo": "deep breath alone",
+            "illustration": "quiet breathing"
+          }
+        ],
+        "replay": true
+      },
+      {
+        "id": "new-ja",
+        "media": "photo",
+        "direction": 1,
+        "q": "autumn forest path",
+        "count": 16,
+        "status": "matched",
+        "top": [
+          {
+            "id": "44708917",
+            "title": "Autumn path in Završnica valley in Slovenia",
+            "author": "Dreamy Pixel",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Autumn_path_in_Zavr%C5%A1nica_valley_in_Slovenia.jpg/960px-Autumn_path_in_Zavr%C5%A1nica_valley_in_Slovenia.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Autumn_path_in_Zavr%C5%A1nica_valley_in_Slovenia.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "202164231",
+            "title": "Jesienna ścieżka leśna w Kluczach w promieniach słońca",
+            "author": "Krzysztof Popławski",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Jesienna_%C5%9Bcie%C5%BCka_le%C5%9Bna_w_Kluczach_w_promieniach_s%C5%82o%C5%84ca.jpg/960px-Jesienna_%C5%9Bcie%C5%BCka_le%C5%9Bna_w_Kluczach_w_promieniach_s%C5%82o%C5%84ca.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Jesienna_%C5%9Bcie%C5%BCka_le%C5%9Bna_w_Kluczach_w_promieniach_s%C5%82o%C5%84ca.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "202164252",
+            "title": "Drewniany płotek i znak przy leśnej ścieżce w rejonie Pustyni Błędowskiej",
+            "author": "Krzysztof Popławski",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Drewniany_p%C5%82otek_i_znak_przy_le%C5%9Bnej_%C5%9Bcie%C5%BCce_w_rejonie_Pustyni_B%C5%82%C4%99dowskiej.jpg/960px-Drewniany_p%C5%82otek_i_znak_przy_le%C5%9Bnej_%C5%9Bcie%C5%BCce_w_rejonie_Pustyni_B%C5%82%C4%99dowskiej.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Drewniany_p%C5%82otek_i_znak_przy_le%C5%9Bnej_%C5%9Bcie%C5%BCce_w_rejonie_Pustyni_B%C5%82%C4%99dowskiej.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-ja",
+        "media": "photo",
+        "direction": 2,
+        "q": "deep breath alone",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-ja",
+        "media": "illustration",
+        "direction": 1,
+        "q": "fallen leaves path",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-ja",
+        "media": "illustration",
+        "direction": 2,
+        "q": "quiet breathing",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "version": "v1",
+    "id": "new-ko",
+    "replayed_images": true,
+    "output": [
+      {
+        "id": "new-ko",
+        "model": "openai/gpt-oss-20b",
+        "promptVersion": "mupho-visual-v1",
+        "directions": [
+          {
+            "photo": "empty school courtyard",
+            "illustration": "empty school courtyard"
+          },
+          {
+            "photo": "fence hiding",
+            "illustration": "hidden behind fence"
+          }
+        ],
+        "replay": true
+      },
+      {
+        "id": "new-ko",
+        "media": "photo",
+        "direction": 1,
+        "q": "empty school courtyard",
+        "count": 0,
+        "status": "filtered",
+        "top": []
+      },
+      {
+        "id": "new-ko",
+        "media": "photo",
+        "direction": 2,
+        "q": "fence hiding",
+        "count": 2,
+        "status": "matched",
+        "top": [
+          {
+            "id": "140003738",
+            "title": "Gattec 6",
+            "author": "Banne27",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Gattec_6.jpg/960px-Gattec_6.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Gattec_6.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "145913842",
+            "title": "Zürich Arosasteig 02",
+            "author": "Balise42",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Z%C3%BCrich_Arosasteig_02.jpg/960px-Z%C3%BCrich_Arosasteig_02.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Z%C3%BCrich_Arosasteig_02.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-ko",
+        "media": "illustration",
+        "direction": 1,
+        "q": "empty school courtyard",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-ko",
+        "media": "illustration",
+        "direction": 2,
+        "q": "hidden behind fence",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": []
+  },
+  {
+    "version": "v1",
+    "id": "final-zh",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "Harbor before dawn, anxiety yielding to reassurance and sunrise",
+        "elapsedMs": 1451,
+        "directions": [
+          {
+            "photo": "pier dawn",
+            "illustration": "pier dawn"
+          },
+          {
+            "photo": "hand releasing rope",
+            "illustration": "hand letting go"
+          }
+        ]
+      },
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "media": "photo",
+        "direction": 1,
+        "q": "pier dawn",
+        "count": 1,
+        "status": "matched",
+        "top": [
+          {
+            "id": "202042554",
+            "title": "A Low Cloud Bank Spotlights the Oakland Shoreline While Two Shipyard Cranes Stand Watch – Crane Cove Park, Dogpatch, San Francisco - Flickr - dalecruse",
+            "author": "Dale Cruse - 12M views from San Francisco, CA, USA",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/A_Low_Cloud_Bank_Spotlights_the_Oakland_Shoreline_While_Two_Shipyard_Cranes_Stand_Watch_%E2%80%93_Crane_Cove_Park%2C_Dogpatch%2C_San_Francisco_-_Flickr_-_dalecruse.jpg/960px-A_Low_Cloud_Bank_Spotlights_the_Oakland_Shoreline_While_Two_Shipyard_Cranes_Stand_Watch_%E2%80%93_Crane_Cove_Park%2C_Dogpatch%2C_San_Francisco_-_Flickr_-_dalecruse.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:A_Low_Cloud_Bank_Spotlights_the_Oakland_Shoreline_While_Two_Shipyard_Cranes_Stand_Watch_%E2%80%93_Crane_Cove_Park,_Dogpatch,_San_Francisco_-_Flickr_-_dalecruse.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "media": "photo",
+        "direction": 2,
+        "q": "hand releasing rope",
+        "count": 18,
+        "status": "matched",
+        "top": [
+          {
+            "id": "65618037",
+            "title": "Hand rail",
+            "author": "Captain Lander",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Hand_rail_%28AM_1965.78.816-6%29.jpg/960px-Hand_rail_%28AM_1965.78.816-6%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Hand_rail_(AM_1965.78.816-6).jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "65535038",
+            "title": "(Group portrait of men holding coils of wire and rope)",
+            "author": "Collins, Tudor Washington, 1898-1970, photographer",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Group_portrait_of_men_holding_coils_of_wire_and_rope_%28AM_81005-1%29.jpg/960px-Group_portrait_of_men_holding_coils_of_wire_and_rope_%28AM_81005-1%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Group_portrait_of_men_holding_coils_of_wire_and_rope_(AM_81005-1).jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "64471864",
+            "title": "Hand rail",
+            "author": "Captain Lander",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Hand_rail_%28AM_1965.78.815-9%29.jpg/960px-Hand_rail_%28AM_1965.78.815-9%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Hand_rail_(AM_1965.78.815-9).jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 1,
+        "q": "pier dawn",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 2,
+        "q": "hand letting go",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "final-zh",
+        "version": "v1",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_a4315eb300",
+          "inputTokens": 450,
+          "outputTokens": 457
+        }
+      }
+    ]
+  },
+  {
+    "version": "v1",
+    "id": "final-en",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "final-en",
+        "version": "v1",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "Garden and pond, anger yielding to calm in still water",
+        "elapsedMs": 934,
+        "directions": [
+          {
+            "photo": "garden gate",
+            "illustration": "garden gate"
+          },
+          {
+            "photo": "stone in water",
+            "illustration": "rippling pond"
+          }
+        ]
+      },
+      {
+        "id": "final-en",
+        "version": "v1",
+        "media": "photo",
+        "direction": 1,
+        "q": "garden gate",
+        "count": 16,
+        "status": "matched",
+        "top": [
+          {
+            "id": "166740753",
+            "title": "Brooklyn Botanic Garden Japanese Garden Gate",
+            "author": "CooperBeckel",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Brooklyn_Botanic_Garden_Japanese_Garden_Gate.jpg/960px-Brooklyn_Botanic_Garden_Japanese_Garden_Gate.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Brooklyn_Botanic_Garden_Japanese_Garden_Gate.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "195873756",
+            "title": "Malabar botanical garden gate IMG 20260710 145029210",
+            "author": "Ranjithsiji",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Malabar_botanical_garden_gate_IMG_20260710_145029210.jpg/960px-Malabar_botanical_garden_gate_IMG_20260710_145029210.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Malabar_botanical_garden_gate_IMG_20260710_145029210.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "149663077",
+            "title": "Yoorala Street Community Garden, sign on gate 2",
+            "author": "Aliceinthealice",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Yoorala_Street_Community_Garden%2C_sign_on_gate_2.jpg/960px-Yoorala_Street_Community_Garden%2C_sign_on_gate_2.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Yoorala_Street_Community_Garden,_sign_on_gate_2.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "final-en",
+        "version": "v1",
+        "media": "photo",
+        "direction": 2,
+        "q": "stone in water",
+        "count": 12,
+        "status": "matched",
+        "top": [
+          {
+            "id": "202990975",
+            "title": "Stone House, Diamond Hill Water Feature Park in November 2026",
+            "author": "姒姓賢寧",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Stone_House%2C_Diamond_Hill_Water_Feature_Park_in_November_2026.jpg/960px-Stone_House%2C_Diamond_Hill_Water_Feature_Park_in_November_2026.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Stone_House,_Diamond_Hill_Water_Feature_Park_in_November_2026.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "193963956",
+            "title": "A Symbol of Japan in Stone and Water",
+            "author": "JayYoshimura",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/A_Symbol_of_Japan_in_Stone_and_Water.jpg/960px-A_Symbol_of_Japan_in_Stone_and_Water.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:A_Symbol_of_Japan_in_Stone_and_Water.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "78967420",
+            "title": "Anyang City-Designated Folklore Herltage No.5 (Gamnojeong Stone Water Container at Sammaksa Temple) (4)",
+            "author": "고려",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Anyang_City-Designated_Folklore_Herltage_No.5_%28Gamnojeong_Stone_Water_Container_at_Sammaksa_Temple%29_%284%29.jpg/960px-Anyang_City-Designated_Folklore_Herltage_No.5_%28Gamnojeong_Stone_Water_Container_at_Sammaksa_Temple%29_%284%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Anyang_City-Designated_Folklore_Herltage_No.5_(Gamnojeong_Stone_Water_Container_at_Sammaksa_Temple)_(4).jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "final-en",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 1,
+        "q": "garden gate",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "final-en",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 2,
+        "q": "rippling pond",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "final-en",
+        "version": "v1",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "final-en",
+        "version": "v1",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_a12402de73",
+          "inputTokens": 440,
+          "outputTokens": 460
+        }
+      }
+    ]
+  },
+  {
+    "version": "v1",
+    "id": "final-ja",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "Rainy bus stop and wet road, loneliness turning to reunion and warmth",
+        "elapsedMs": 1226,
+        "directions": [
+          {
+            "photo": "rainy bus stop",
+            "illustration": "umbrella bus stop"
+          },
+          {
+            "photo": "puddle reflection",
+            "illustration": "laughing siblings"
+          }
+        ]
+      },
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "media": "photo",
+        "direction": 1,
+        "q": "rainy bus stop",
+        "count": 5,
+        "status": "matched",
+        "top": [
+          {
+            "id": "157567217",
+            "title": "Slatinice Lázně autobusová točna",
+            "author": "Matojeje",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Slatinice_L%C3%A1zn%C4%9B_autobusov%C3%A1_to%C4%8Dna.jpg/960px-Slatinice_L%C3%A1zn%C4%9B_autobusov%C3%A1_to%C4%8Dna.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Slatinice_L%C3%A1zn%C4%9B_autobusov%C3%A1_to%C4%8Dna.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "154907207",
+            "title": "Lake Mary SunRail Station; 2024-11-04-13",
+            "author": "DanTD",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Lake_Mary_SunRail_Station%3B_2024-11-04-13.jpg/960px-Lake_Mary_SunRail_Station%3B_2024-11-04-13.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Lake_Mary_SunRail_Station;_2024-11-04-13.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "154908134",
+            "title": "Altamonte Springs SunRail Station; 2024-11-04-08",
+            "author": "DanTD",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Altamonte_Springs_SunRail_Station%3B_2024-11-04-08.jpg/960px-Altamonte_Springs_SunRail_Station%3B_2024-11-04-08.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Altamonte_Springs_SunRail_Station;_2024-11-04-08.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "media": "photo",
+        "direction": 2,
+        "q": "puddle reflection",
+        "count": 16,
+        "status": "matched",
+        "top": [
+          {
+            "id": "116836312",
+            "title": "Reflection of a landscape on a puddle on Nybyggetintie in Sotunki, Vantaa, Finland, 2022 April",
+            "author": "Ximonic (Simo Räsänen)",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Reflection_of_a_landscape_on_a_puddle_on_Nybyggetintie_in_Sotunki%2C_Vantaa%2C_Finland%2C_2022_April.jpg/960px-Reflection_of_a_landscape_on_a_puddle_on_Nybyggetintie_in_Sotunki%2C_Vantaa%2C_Finland%2C_2022_April.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Reflection_of_a_landscape_on_a_puddle_on_Nybyggetintie_in_Sotunki,_Vantaa,_Finland,_2022_April.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "190715612",
+            "title": "Sky and forest reflections in a puddle, Western Serbia. April-2026",
+            "author": "Ljiljana Krupanj",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Sky_and_forest_reflections_in_a_puddle%2C_Western_Serbia._April-2026.jpg/960px-Sky_and_forest_reflections_in_a_puddle%2C_Western_Serbia._April-2026.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Sky_and_forest_reflections_in_a_puddle,_Western_Serbia._April-2026.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "107440809",
+            "title": "Reflection of Jagannath Temple and 3 carts of Ratha Jatra",
+            "author": "Government of Odisha",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Reflection_of_Jagannath_Temple_and_3_carts_of_Ratha_Jatra.jpg/960px-Reflection_of_Jagannath_Temple_and_3_carts_of_Ratha_Jatra.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Reflection_of_Jagannath_Temple_and_3_carts_of_Ratha_Jatra.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 1,
+        "q": "umbrella bus stop",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 2,
+        "q": "laughing siblings",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "final-ja",
+        "version": "v1",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_aef561cf8e",
+          "inputTokens": 451,
+          "outputTokens": 506
+        }
+      }
+    ]
+  },
+  {
+    "version": "v1",
+    "id": "final-ko",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "Beach at sunset turning dark, waiting and warmth turning into grief",
+        "elapsedMs": 1136,
+        "directions": [
+          {
+            "photo": "beach chair sunset",
+            "illustration": "empty beach chair"
+          },
+          {
+            "photo": "waves erasing footprints",
+            "illustration": "lonely figure crying"
+          }
+        ]
+      },
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "media": "photo",
+        "direction": 1,
+        "q": "beach chair sunset",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "media": "photo",
+        "direction": 2,
+        "q": "waves erasing footprints",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 1,
+        "q": "empty beach chair",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "media": "illustration",
+        "direction": 2,
+        "q": "lonely figure crying",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "final-ko",
+        "version": "v1",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_e189667b30",
+          "inputTokens": 451,
+          "outputTokens": 495
+        }
+      }
+    ]
+  },
+  {
+    "version": "a",
+    "id": "new-zh",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "new-zh",
+        "version": "a",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "new-zh",
+        "version": "a",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "a",
+    "id": "new-en",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "new-en",
+        "version": "a",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "Candlelit room, fearful opening, quiet and peaceful ending",
+        "elapsedMs": 839,
+        "directions": [
+          {
+            "photo": "bedside candle",
+            "illustration": "bedside candle"
+          },
+          {
+            "photo": "quiet room",
+            "illustration": "quiet room"
+          }
+        ]
+      },
+      {
+        "id": "new-en",
+        "version": "a",
+        "media": "photo",
+        "direction": 1,
+        "q": "bedside candle",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-en",
+        "version": "a",
+        "media": "photo",
+        "direction": 2,
+        "q": "quiet room",
+        "count": 8,
+        "status": "matched",
+        "top": [
+          {
+            "id": "176043094",
+            "title": "Inside MAAT Lisbon – Photography Exhibit in the Oval Gallery (54702984107)",
+            "author": "Dale Cruse - 10M views from San Francisco, CA, USA",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Inside_MAAT_Lisbon_%E2%80%93_Photography_Exhibit_in_the_Oval_Gallery_%2854702984107%29.jpg/960px-Inside_MAAT_Lisbon_%E2%80%93_Photography_Exhibit_in_the_Oval_Gallery_%2854702984107%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Inside_MAAT_Lisbon_%E2%80%93_Photography_Exhibit_in_the_Oval_Gallery_(54702984107).jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "188976007",
+            "title": "Upstairs dining room in Wolf Creek Inn",
+            "author": "Rick Obst",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Upstairs_dining_room_in_Wolf_Creek_Inn.jpg/960px-Upstairs_dining_room_in_Wolf_Creek_Inn.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Upstairs_dining_room_in_Wolf_Creek_Inn.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "188975635",
+            "title": "Jack London Room in Wolf Creek Inn",
+            "author": "Rick Obst",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Jack_London_Room_in_Wolf_Creek_Inn.jpg/960px-Jack_London_Room_in_Wolf_Creek_Inn.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Jack_London_Room_in_Wolf_Creek_Inn.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-en",
+        "version": "a",
+        "media": "illustration",
+        "direction": 1,
+        "q": "bedside candle",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-en",
+        "version": "a",
+        "media": "illustration",
+        "direction": 2,
+        "q": "quiet room",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "new-en",
+        "version": "a",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "new-en",
+        "version": "a",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_e2cb7a84ec",
+          "inputTokens": 508,
+          "outputTokens": 218
+        }
+      }
+    ]
+  },
+  {
+    "version": "a",
+    "id": "new-ja",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "new-ja",
+        "version": "a",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "Forest path, loneliness turning into accepted solitude and calm",
+        "elapsedMs": 1159,
+        "directions": [
+          {
+            "photo": "forest trail",
+            "illustration": "forest path"
+          },
+          {
+            "photo": "quiet clearing",
+            "illustration": "soft light forest"
+          }
+        ]
+      },
+      {
+        "id": "new-ja",
+        "version": "a",
+        "media": "photo",
+        "direction": 1,
+        "q": "forest trail",
+        "count": 17,
+        "status": "matched",
+        "top": [
+          {
+            "id": "149080104",
+            "title": "Enders State Forest trail, Granby CT",
+            "author": "John Phelan",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Enders_State_Forest_trail%2C_Granby_CT.jpg/960px-Enders_State_Forest_trail%2C_Granby_CT.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Enders_State_Forest_trail,_Granby_CT.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "171734286",
+            "title": "Forest trail in the Karura Forest, Nairobi",
+            "author": "Brihaspati",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Forest_trail_in_the_Karura_Forest%2C_Nairobi.jpg/960px-Forest_trail_in_the_Karura_Forest%2C_Nairobi.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Forest_trail_in_the_Karura_Forest,_Nairobi.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "144655265",
+            "title": "Split Oak Forest 20240122 Florida Trail sign",
+            "author": "Rajanogray",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Split_Oak_Forest_20240122_Florida_Trail_sign.jpg/960px-Split_Oak_Forest_20240122_Florida_Trail_sign.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Split_Oak_Forest_20240122_Florida_Trail_sign.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-ja",
+        "version": "a",
+        "media": "photo",
+        "direction": 2,
+        "q": "quiet clearing",
+        "count": 0,
+        "status": "filtered",
+        "top": []
+      },
+      {
+        "id": "new-ja",
+        "version": "a",
+        "media": "illustration",
+        "direction": 1,
+        "q": "forest path",
+        "count": 0,
+        "status": "filtered",
+        "top": []
+      },
+      {
+        "id": "new-ja",
+        "version": "a",
+        "media": "illustration",
+        "direction": 2,
+        "q": "soft light forest",
+        "count": 0,
+        "status": "filtered",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "new-ja",
+        "version": "a",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "new-ja",
+        "version": "a",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_bb6a356524",
+          "inputTokens": 537,
+          "outputTokens": 480
+        }
+      }
+    ]
+  },
+  {
+    "version": "a",
+    "id": "new-ko",
+    "replayed_images": false,
+    "output": [
+      {
+        "id": "new-ko",
+        "version": "a",
+        "model": "openai/gpt-oss-20b",
+        "productionPrompt": "mupho-visual-v1",
+        "expected": "School playground, hopeful beginning, darkness and fear at ending",
+        "elapsedMs": 1005,
+        "directions": [
+          {
+            "photo": "school field dusk",
+            "illustration": "school field dusk"
+          },
+          {
+            "photo": "dark fence",
+            "illustration": "dark fence"
+          }
+        ]
+      },
+      {
+        "id": "new-ko",
+        "version": "a",
+        "media": "photo",
+        "direction": 1,
+        "q": "school field dusk",
+        "count": 3,
+        "status": "matched",
+        "top": [
+          {
+            "id": "200106042",
+            "title": "Stourbridge Skatepark, Junction Road, Stourbridge, UK",
+            "author": "LowriLlewellyn",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Stourbridge_Skatepark%2C_Junction_Road%2C_Stourbridge%2C_UK.jpg/960px-Stourbridge_Skatepark%2C_Junction_Road%2C_Stourbridge%2C_UK.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Stourbridge_Skatepark,_Junction_Road,_Stourbridge,_UK.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "160493692",
+            "title": "Mesure de la réponse acoustique individuelle d'anchois (Engraulis encrasicolus) (Ifremer 00696-80791 - 32832)",
+            "author": "Florence Sanchez",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Mesure_de_la_r%C3%A9ponse_acoustique_individuelle_d%27anchois_%28Engraulis_encrasicolus%29_%28Ifremer_00696-80791_-_32832%29.jpg/960px-Mesure_de_la_r%C3%A9ponse_acoustique_individuelle_d%27anchois_%28Engraulis_encrasicolus%29_%28Ifremer_00696-80791_-_32832%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Mesure_de_la_r%C3%A9ponse_acoustique_individuelle_d%27anchois_(Engraulis_encrasicolus)_(Ifremer_00696-80791_-_32832).jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "160493684",
+            "title": "Mesure de la réponse acoustique individuelle d'anchois (Engraulis encrasicolus) (Ifremer 00696-80791 - 32831)",
+            "author": "Florence Sanchez",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Mesure_de_la_r%C3%A9ponse_acoustique_individuelle_d%27anchois_%28Engraulis_encrasicolus%29_%28Ifremer_00696-80791_-_32831%29.jpg/960px-Mesure_de_la_r%C3%A9ponse_acoustique_individuelle_d%27anchois_%28Engraulis_encrasicolus%29_%28Ifremer_00696-80791_-_32831%29.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Mesure_de_la_r%C3%A9ponse_acoustique_individuelle_d%27anchois_(Engraulis_encrasicolus)_(Ifremer_00696-80791_-_32831).jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-ko",
+        "version": "a",
+        "media": "photo",
+        "direction": 2,
+        "q": "dark fence",
+        "count": 10,
+        "status": "matched",
+        "top": [
+          {
+            "id": "200837608",
+            "title": "Dark wooden coaster structure framed by trees and fence, Cedar Creek Mine Ride 2002 - ThrillZing",
+            "author": "ThrillZing",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Dark_wooden_coaster_structure_framed_by_trees_and_fence%2C_Cedar_Creek_Mine_Ride_2002_-_ThrillZing.jpg/960px-Dark_wooden_coaster_structure_framed_by_trees_and_fence%2C_Cedar_Creek_Mine_Ride_2002_-_ThrillZing.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Dark_wooden_coaster_structure_framed_by_trees_and_fence,_Cedar_Creek_Mine_Ride_2002_-_ThrillZing.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "195620086",
+            "title": "Traditional houses in Tokari Sumy Oblast Ukraine by baby-bear.org.jpg 03",
+            "author": "Natalka Ukraine ( baby-bear.org )",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Traditional_houses_in_Tokari_Sumy_Oblast_Ukraine_by_baby-bear.org.jpg_03.jpg/960px-Traditional_houses_in_Tokari_Sumy_Oblast_Ukraine_by_baby-bear.org.jpg_03.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Traditional_houses_in_Tokari_Sumy_Oblast_Ukraine_by_baby-bear.org.jpg_03.jpg",
+            "license": "CC BY 4.0"
+          },
+          {
+            "id": "195619446",
+            "title": "Wooden gates in Tokari Sumy Oblast Ukraine in 2019 by baby-bear.org.jpg 07",
+            "author": "Natalka Ukraine ( baby-bear.org )",
+            "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Wooden_gates_in_Tokari_Sumy_Oblast_Ukraine_in_2019_by_baby-bear.org.jpg_07.jpg/960px-Wooden_gates_in_Tokari_Sumy_Oblast_Ukraine_in_2019_by_baby-bear.org.jpg_07.jpg",
+            "source": "https://commons.wikimedia.org/wiki/File:Wooden_gates_in_Tokari_Sumy_Oblast_Ukraine_in_2019_by_baby-bear.org.jpg_07.jpg",
+            "license": "CC BY 4.0"
+          }
+        ]
+      },
+      {
+        "id": "new-ko",
+        "version": "a",
+        "media": "illustration",
+        "direction": 1,
+        "q": "school field dusk",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      },
+      {
+        "id": "new-ko",
+        "version": "a",
+        "media": "illustration",
+        "direction": 2,
+        "q": "dark fence",
+        "count": 0,
+        "status": "empty",
+        "top": []
+      }
+    ],
+    "diagnostics": [
+      {
+        "id": "new-ko",
+        "version": "a",
+        "diagnostic": {
+          "status": 200
+        }
+      },
+      {
+        "id": "new-ko",
+        "version": "a",
+        "diagnostic": {
+          "finishReason": "stop",
+          "fingerprint": "fp_84bb35977d",
+          "inputTokens": 536,
+          "outputTokens": 392
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "new-zh",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "new-zh",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "new-zh",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "new-zh",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "new-en",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "new-en",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "new-en",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "new-en",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "new-ja",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "new-ja",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "new-ja",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "new-ja",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "new-ko",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "new-ko",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "new-ko",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "new-ko",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "final-zh",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "final-zh",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "final-zh",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "final-zh",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "final-en",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "final-en",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "final-en",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "final-en",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "final-ja",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "final-ja",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "final-ja",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "final-ja",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  },
+  {
+    "version": "b",
+    "id": "final-ko",
+    "replayed_images": false,
+    "output": [],
+    "diagnostics": [
+      {
+        "id": "final-ko",
+        "version": "b",
+        "providerError": "json_validate_failed"
+      },
+      {
+        "id": "final-ko",
+        "version": "b",
+        "diagnostic": {
+          "status": 400
+        }
+      },
+      {
+        "id": "final-ko",
+        "version": "b",
+        "diagnostic": {
+          "failure": "http"
+        }
+      }
+    ]
+  }
+]

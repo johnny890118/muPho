@@ -1,0 +1,6 @@
+[
+ {"id":"final-zh","lyrics":"碼頭的風把話吹散\n我看著繩子，怕船再也回不來\n後來父親陪我坐到天色泛白\n海面一點一點亮起來\n我終於放開手，願意等新的一天","expected":"Harbor before dawn, anxiety yielding to reassurance and sunrise"},
+ {"id":"final-en","lyrics":"The garden gate creaked after everyone had gone\nI carried anger like a stone in my coat\nBeside the pond I listened to the birds\nThe stone slipped from my hand into the water\nI watched the ripples fade and walked home calm","expected":"Garden and pond, anger yielding to calm in still water"},
+ {"id":"final-ja","lyrics":"雨のバス停で誰も来ないと思った\n傘の下で小さくなっていた\n遠くから妹が手を振った\nふたりで水たまりをよけながら笑った\n濡れた道にも帰る場所ができた","expected":"Rainy bus stop and wet road, loneliness turning to reunion and warmth"},
+ {"id":"final-ko","lyrics":"해변의 빈 의자에서 너를 기다렸어\n저녁 햇빛이 아직 따뜻했어\n네가 오지 않는다는 전화를 받았어\n파도가 발자국을 모두 지웠어\n어두워진 바다 앞에서 혼자 울었어","expected":"Beach at sunset turning dark, waiting and warmth turning into grief"}
+]
