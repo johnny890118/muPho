@@ -1,0 +1,1212 @@
+{
+  "date": "2026-11-22",
+  "ratingScale": {
+    "0": "不相關",
+    "1": "主題相關但情緒或場景不足",
+    "2": "場景與情緒強相關"
+  },
+  "scores": [
+    {
+      "id": "long-en",
+      "version": "v1",
+      "photo": [
+        [
+          2,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0
+        ]
+      ],
+      "notes": [
+        "首圖空曠灰雨月台能承載失落等待，後兩圖較像一般交通紀錄。",
+        "票券展示和兩張會議紀錄未表達接受與離開。"
+      ]
+    },
+    {
+      "id": "long-en",
+      "version": "three",
+      "photo": [
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "notes": [
+        "首圖有人群而孤寂感弱，第二張空月台與陰暗光線貼近等待。",
+        "首圖黎明空站與釋懷吻合，第二張偏城市地鐵入口，第三張港口離題。"
+      ]
+    },
+    {
+      "id": "turn-ja",
+      "version": "v1",
+      "photo": [
+        [
+          1,
+          2,
+          1
+        ],
+        [
+          2
+        ]
+      ],
+      "notes": [
+        "首圖冬季泳者偏寧靜，第二張明亮夏日海灘貼近開頭的活力，第三張陰雲弱化歡樂。",
+        "黑白空沙灘椅清楚承載缺席與哀傷，季節不同仍可作視覺轉譯。"
+      ]
+    },
+    {
+      "id": "turn-ja",
+      "version": "three",
+      "photo": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "notes": [
+        "首圖為同名地點機場草地，第二張日出剪影沒有群體歡樂，第三張為公園沙灘。",
+        "前三張為同名景點的人物度假照，沒有朋友缺席或空椅，海岸主題相符但情緒不足。"
+      ]
+    },
+    {
+      "id": "fresh-zh",
+      "version": "v1",
+      "photo": [
+        [],
+        []
+      ],
+      "failure": "HTTP200 stop, local invalid_output, no search",
+      "notes": [
+        "模型回答未通過正式輸出檢查，不推斷為語意失敗；本輪不重送。"
+      ]
+    },
+    {
+      "id": "fresh-zh",
+      "version": "three",
+      "photo": [
+        [],
+        []
+      ],
+      "notes": [
+        "摘要準確抓住冬夜孤獨轉陪伴，但兩個攝影詞均空。"
+      ]
+    },
+    {
+      "id": "fresh-ko",
+      "version": "v1",
+      "photo": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "notes": [
+        "機械防火幕與紡織物不具上台前的緊張。",
+        "燈具及烘手機不符站上舞台的勇氣。"
+      ]
+    },
+    {
+      "id": "fresh-ko",
+      "version": "three",
+      "photo": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          2,
+          1
+        ]
+      ],
+      "notes": [
+        "演員合照、球場更衣室與戶外換衣棚，沒有孤身緊張。",
+        "首張獨立表演者處於暖色聚光下，第二張也表達站上舞台，第三張多人節慶偏熱鬧。"
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "name": "diag-b2048-long-en",
+      "output": [
+        {
+          "id": "long-en",
+          "version": "diag-b2048",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Empty station at night, repeated waiting and grief slowly become acceptance in morning; no reunion.",
+          "characters": 3098,
+          "directions": [
+            {
+              "photo": "rainy station platform",
+              "illustration": "empty chair"
+            },
+            {
+              "photo": "pale light",
+              "illustration": "figure"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "long-en",
+          "version": "diag-b2048",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "long-en",
+          "version": "diag-b2048",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_e189667b30",
+            "inputTokens": 1171,
+            "outputTokens": 1081
+          }
+        }
+      ]
+    },
+    {
+      "name": "diag-b768-long-en",
+      "output": [
+        {
+          "id": "long-en",
+          "version": "diag-b768",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Empty station at night, repeated waiting and grief slowly become acceptance in morning; no reunion.",
+          "characters": 3098,
+          "directions": [
+            {
+              "photo": "rainy station platform",
+              "illustration": "yellow lamp"
+            },
+            {
+              "photo": "pale light",
+              "illustration": "folded ticket"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "long-en",
+          "version": "diag-b768",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "long-en",
+          "version": "diag-b768",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_9340e7d14d",
+            "inputTokens": 1171,
+            "outputTokens": 620
+          }
+        }
+      ]
+    },
+    {
+      "name": "diag-simple-long-en",
+      "output": [
+        {
+          "id": "long-en",
+          "version": "diag-simple",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Empty station at night, repeated waiting and grief slowly become acceptance in morning; no reunion.",
+          "characters": 3098,
+          "directions": [
+            {
+              "photo": "rainy street",
+              "illustration": "rainy street"
+            },
+            {
+              "photo": "empty station",
+              "illustration": "empty station"
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "long-en",
+          "version": "diag-simple",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "long-en",
+          "version": "diag-simple",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_9b8528b477",
+            "inputTokens": 998,
+            "outputTokens": 221
+          }
+        }
+      ]
+    },
+    {
+      "name": "three-fresh-ko",
+      "output": [
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Tense backstage before performance becomes courage stepping into warm stage light, audience unseen.",
+          "characters": 261,
+          "artifact": {
+            "meaning": "A performer waits behind a closed curtain, counting breaths, then opens the door, sings into the light, revealing confidence.",
+            "primary": {
+              "scene": "Backstage, a lone figure in a dimly lit dressing room, counting breaths, hands trembling.",
+              "photo": "backstage dressing room",
+              "illustration": "backstage silhouette"
+            },
+            "secondary": {
+              "scene": "Spotlight hits the stage, the performer steps forward, voice trembling, audience unseen yet illuminated.",
+              "photo": "stage spotlight",
+              "illustration": "stage light"
+            }
+          },
+          "directions": [
+            {
+              "photo": "backstage dressing room",
+              "illustration": "backstage silhouette"
+            },
+            {
+              "photo": "stage spotlight",
+              "illustration": "stage light"
+            }
+          ]
+        },
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "media": "photo",
+          "direction": 1,
+          "q": "backstage dressing room",
+          "count": 8,
+          "status": "matched",
+          "top": [
+            {
+              "id": "118394656",
+              "title": "Cast members of South Pacific in their dressing room",
+              "author": "Los Angeles Daily News",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Cast_members_of_South_Pacific_in_their_dressing_room.jpg/960px-Cast_members_of_South_Pacific_in_their_dressing_room.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Cast_members_of_South_Pacific_in_their_dressing_room.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "202758447",
+              "title": "Hill Dickinson Stadium Everton dressing room 2026",
+              "author": "Tomsk Toffee",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/ba/Hill_Dickinson_Stadium_Everton_dressing_room_2026.jpg/960px-Hill_Dickinson_Stadium_Everton_dressing_room_2026.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Hill_Dickinson_Stadium_Everton_dressing_room_2026.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "67471940",
+              "title": "Strömsö 18 Dressing room",
+              "author": "Htm",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Str%C3%B6ms%C3%B6_18_Dressing_room.jpg/960px-Str%C3%B6ms%C3%B6_18_Dressing_room.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Str%C3%B6ms%C3%B6_18_Dressing_room.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "media": "photo",
+          "direction": 2,
+          "q": "stage spotlight",
+          "count": 3,
+          "status": "matched",
+          "top": [
+            {
+              "id": "198048311",
+              "title": "Spotlight on Tradition",
+              "author": "Bert Andone",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Spotlight_on_Tradition.jpg/960px-Spotlight_on_Tradition.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Spotlight_on_Tradition.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "178536065",
+              "title": "Paloma Hyperweekend 2023",
+              "author": "IngWen22",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Paloma_Hyperweekend_2023.jpg/960px-Paloma_Hyperweekend_2023.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Paloma_Hyperweekend_2023.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "177470969",
+              "title": "Poparzeni Kawą Trzy, 62. Krajowy Festiwal Piosenki Polskiej w Opolu, 2025, KsP 146",
+              "author": "Krzysztof Popławski",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Poparzeni_Kaw%C4%85_Trzy%2C_62._Krajowy_Festiwal_Piosenki_Polskiej_w_Opolu%2C_2025%2C_KsP_146.jpg/960px-Poparzeni_Kaw%C4%85_Trzy%2C_62._Krajowy_Festiwal_Piosenki_Polskiej_w_Opolu%2C_2025%2C_KsP_146.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Poparzeni_Kaw%C4%85_Trzy,_62._Krajowy_Festiwal_Piosenki_Polskiej_w_Opolu,_2025,_KsP_146.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "media": "illustration",
+          "direction": 1,
+          "q": "backstage silhouette",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "media": "illustration",
+          "direction": 2,
+          "q": "stage light",
+          "count": 0,
+          "status": "filtered",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "fresh-ko",
+          "version": "three",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_9340e7d14d",
+            "inputTokens": 649,
+            "outputTokens": 750
+          }
+        }
+      ]
+    },
+    {
+      "name": "three-fresh-zh",
+      "output": [
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Winter city apartment loneliness; neighbor shares warm bread, quiet companionship, no romance.",
+          "characters": 160,
+          "artifact": {
+            "meaning": "A solitary winter night in a high‑rise apartment, routine isolation, then a neighbor's quiet kindness brings shared warmth and quiet companionship.",
+            "primary": {
+              "scene": "Dim apartment interior, single bowl on table, TV glowing, window with city lights, door closed.",
+              "photo": "dim apartment interior",
+              "illustration": "lonely apartment"
+            },
+            "secondary": {
+              "scene": "Neighbor at door with warm bread, two cups on table, window showing winter night.",
+              "photo": "neighbor bread",
+              "illustration": "shared cups"
+            }
+          },
+          "directions": [
+            {
+              "photo": "dim apartment interior",
+              "illustration": "lonely apartment"
+            },
+            {
+              "photo": "neighbor bread",
+              "illustration": "shared cups"
+            }
+          ]
+        },
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "media": "photo",
+          "direction": 1,
+          "q": "dim apartment interior",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "media": "photo",
+          "direction": 2,
+          "q": "neighbor bread",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "media": "illustration",
+          "direction": 1,
+          "q": "lonely apartment",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "media": "illustration",
+          "direction": 2,
+          "q": "shared cups",
+          "count": 0,
+          "status": "filtered",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "fresh-zh",
+          "version": "three",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_f102a3179c",
+            "inputTokens": 631,
+            "outputTokens": 765
+          }
+        }
+      ]
+    },
+    {
+      "name": "three-long-en",
+      "output": [
+        {
+          "id": "long-en",
+          "version": "three",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Empty station at night, repeated waiting and grief slowly become acceptance in morning; no reunion.",
+          "characters": 3098,
+          "artifact": {
+            "meaning": "A lone traveler waits at an empty station, holding a ticket, feeling stuck until dawn when he folds the ticket, leaves, and finds freedom.",
+            "primary": {
+              "scene": "Rain-soaked platform under a flickering yellow lamp, an empty chair beside a ticking clock, a lone ticket in a pocket, silence thick.",
+              "photo": "rainy platform",
+              "illustration": "yellow lamp"
+            },
+            "secondary": {
+              "scene": "First light breaks over the station, the chair abandoned, ticket folded, footsteps echoing into the pale dawn, freedom in motion.",
+              "photo": "dawn station",
+              "illustration": "folded ticket"
+            }
+          },
+          "directions": [
+            {
+              "photo": "rainy platform",
+              "illustration": "yellow lamp"
+            },
+            {
+              "photo": "dawn station",
+              "illustration": "folded ticket"
+            }
+          ]
+        },
+        {
+          "id": "long-en",
+          "version": "three",
+          "media": "photo",
+          "direction": 1,
+          "q": "rainy platform",
+          "count": 17,
+          "status": "matched",
+          "top": [
+            {
+              "id": "78673770",
+              "title": "Nishi-Tokorozawa - rainy day - platforms - May 4 2019 4pm",
+              "author": "Nesnad",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm.jpeg/960px-Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm.jpeg",
+              "source": "https://commons.wikimedia.org/wiki/File:Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm.jpeg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "79589615",
+              "title": "Mimomi stn platforms - rainy day - Jun 10 2019 11-37 AM",
+              "author": "Nesnad",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Mimomi_stn_platforms_-_rainy_day_-_Jun_10_2019_11-37_AM.jpeg/960px-Mimomi_stn_platforms_-_rainy_day_-_Jun_10_2019_11-37_AM.jpeg",
+              "source": "https://commons.wikimedia.org/wiki/File:Mimomi_stn_platforms_-_rainy_day_-_Jun_10_2019_11-37_AM.jpeg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "78673780",
+              "title": "Nishi-Tokorozawa - rainy day - platforms - May 4 2019 4pm 16 03 35 715000",
+              "author": "Nesnad",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm_16_03_35_715000.jpeg/960px-Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm_16_03_35_715000.jpeg",
+              "source": "https://commons.wikimedia.org/wiki/File:Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm_16_03_35_715000.jpeg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "long-en",
+          "version": "three",
+          "media": "photo",
+          "direction": 2,
+          "q": "dawn station",
+          "count": 17,
+          "status": "matched",
+          "top": [
+            {
+              "id": "185184067",
+              "title": "Dawn at Burhe Ave Station",
+              "author": "Gabe29",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Dawn_at_Burhe_Ave_Station.jpg/960px-Dawn_at_Burhe_Ave_Station.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Dawn_at_Burhe_Ave_Station.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "195454170",
+              "title": "Metro Portada Alta entrance at dawn (Málaga, Apr 2026)",
+              "author": "Alan Grant",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Metro_Portada_Alta_entrance_at_dawn_%28M%C3%A1laga%2C_Apr_2026%29.jpg/960px-Metro_Portada_Alta_entrance_at_dawn_%28M%C3%A1laga%2C_Apr_2026%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Metro_Portada_Alta_entrance_at_dawn_(M%C3%A1laga,_Apr_2026).jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "53113522",
+              "title": "Dawn on the harbour of Sète cf01",
+              "author": "Christian Ferrer",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Dawn_on_the_harbour_of_S%C3%A8te_cf01.jpg/960px-Dawn_on_the_harbour_of_S%C3%A8te_cf01.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Dawn_on_the_harbour_of_S%C3%A8te_cf01.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "long-en",
+          "version": "three",
+          "media": "illustration",
+          "direction": 1,
+          "q": "yellow lamp",
+          "count": 0,
+          "status": "filtered",
+          "top": []
+        },
+        {
+          "id": "long-en",
+          "version": "three",
+          "media": "illustration",
+          "direction": 2,
+          "q": "folded ticket",
+          "count": 0,
+          "status": "filtered",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "long-en",
+          "version": "three",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "long-en",
+          "version": "three",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_a8c584dda7",
+            "inputTokens": 1211,
+            "outputTokens": 558
+          }
+        }
+      ]
+    },
+    {
+      "name": "three-turn-ja",
+      "output": [
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Summer beach celebration turns into quiet grief after learning a friend has died; sea stays bright, no storm.",
+          "characters": 208,
+          "artifact": {
+            "meaning": "A joyful seaside run turns to quiet loss when a friend leaves; waves persist, echoing the fading laughter.",
+            "primary": {
+              "scene": "Group running on a sunrise beach, laughter echoing over white waves.",
+              "photo": "beach sunrise",
+              "illustration": "beach sunrise"
+            },
+            "secondary": {
+              "scene": "A lone figure stands beside an empty chair on a quiet shore, waves lapping softly.",
+              "photo": "lonely beach",
+              "illustration": "lonely beach"
+            }
+          },
+          "directions": [
+            {
+              "photo": "beach sunrise",
+              "illustration": "beach sunrise"
+            },
+            {
+              "photo": "lonely beach",
+              "illustration": "lonely beach"
+            }
+          ]
+        },
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "media": "photo",
+          "direction": 1,
+          "q": "beach sunrise",
+          "count": 16,
+          "status": "matched",
+          "top": [
+            {
+              "id": "200440567",
+              "title": "Airport Sunrise Beach Texas 2026",
+              "author": "Larry D. Moore",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Airport_Sunrise_Beach_Texas_2026.jpg/960px-Airport_Sunrise_Beach_Texas_2026.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Airport_Sunrise_Beach_Texas_2026.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "169128685",
+              "title": "Huntington Beach Sunrise 2025",
+              "author": "Erik Drost",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Huntington_Beach_Sunrise_2025.jpg/960px-Huntington_Beach_Sunrise_2025.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Huntington_Beach_Sunrise_2025.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "155248002",
+              "title": "Sunrise Park beach, Suffield CT",
+              "author": "John Phelan",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Sunrise_Park_beach%2C_Suffield_CT.jpg/960px-Sunrise_Park_beach%2C_Suffield_CT.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Sunrise_Park_beach,_Suffield_CT.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "media": "photo",
+          "direction": 2,
+          "q": "lonely beach",
+          "count": 18,
+          "status": "matched",
+          "top": [
+            {
+              "id": "110658070",
+              "title": "Koh Chang, Thailand, Sunset at Lonely Beach",
+              "author": "Vyacheslav Argenberg",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Koh_Chang%2C_Thailand%2C_Sunset_at_Lonely_Beach.jpg/960px-Koh_Chang%2C_Thailand%2C_Sunset_at_Lonely_Beach.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Koh_Chang,_Thailand,_Sunset_at_Lonely_Beach.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "110658086",
+              "title": "Koh Chang, Thailand, Sunset at Lonely Beach 2",
+              "author": "Vyacheslav Argenberg",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Koh_Chang%2C_Thailand%2C_Sunset_at_Lonely_Beach_2.jpg/960px-Koh_Chang%2C_Thailand%2C_Sunset_at_Lonely_Beach_2.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Koh_Chang,_Thailand,_Sunset_at_Lonely_Beach_2.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "110658066",
+              "title": "Koh Chang, Thailand, Lonely Beach",
+              "author": "Vyacheslav Argenberg",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Koh_Chang%2C_Thailand%2C_Lonely_Beach.jpg/960px-Koh_Chang%2C_Thailand%2C_Lonely_Beach.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Koh_Chang,_Thailand,_Lonely_Beach.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "media": "illustration",
+          "direction": 1,
+          "q": "beach sunrise",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "media": "illustration",
+          "direction": 2,
+          "q": "lonely beach",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "turn-ja",
+          "version": "three",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_e23fc997ca",
+            "inputTokens": 654,
+            "outputTokens": 378
+          }
+        }
+      ]
+    },
+    {
+      "name": "v1-fresh-ko",
+      "output": [
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Tense backstage before performance becomes courage stepping into warm stage light, audience unseen.",
+          "characters": 261,
+          "directions": [
+            {
+              "photo": "backstage curtain",
+              "illustration": "empty chair coat"
+            },
+            {
+              "photo": "stage light",
+              "illustration": "door opening"
+            }
+          ]
+        },
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "media": "photo",
+          "direction": 1,
+          "q": "backstage curtain",
+          "count": 13,
+          "status": "matched",
+          "top": [
+            {
+              "id": "145150911",
+              "title": "The lever and weights used to operate the fire curtain (or safety curtain) in a theatre",
+              "author": "Harrison Keely",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/The_lever_and_weights_used_to_operate_the_fire_curtain_%28or_safety_curtain%29_in_a_theatre.jpg/960px-The_lever_and_weights_used_to_operate_the_fire_curtain_%28or_safety_curtain%29_in_a_theatre.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:The_lever_and_weights_used_to_operate_the_fire_curtain_(or_safety_curtain)_in_a_theatre.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "83552420",
+              "title": "Drape, mantle",
+              "author": "Unknown author Unknown author",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Drape%2C_mantle_%28AM_6635-3%29.jpg/960px-Drape%2C_mantle_%28AM_6635-3%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Drape,_mantle_(AM_6635-3).jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "65270012",
+              "title": "Drape, mantel",
+              "author": "Ida Teutenberg; Franziska Teutenberg",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Drape%2C_mantel_%28AM_1992.250-1%29.jpg/960px-Drape%2C_mantel_%28AM_1992.250-1%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Drape,_mantel_(AM_1992.250-1).jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "media": "photo",
+          "direction": 2,
+          "q": "stage light",
+          "count": 3,
+          "status": "matched",
+          "top": [
+            {
+              "id": "73458541",
+              "title": "HamptonBay H-type 120V fixture EC719 ES0208SBA",
+              "author": "Artoria2e5",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/HamptonBay_H-type_120V_fixture_EC719_ES0208SBA.jpg/960px-HamptonBay_H-type_120V_fixture_EC719_ES0208SBA.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:HamptonBay_H-type_120V_fixture_EC719_ES0208SBA.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "152558081",
+              "title": "Palmer Fixture BluStorm hand dryer with some vandalism",
+              "author": "Baron Maddock",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Palmer_Fixture_BluStorm_hand_dryer_with_some_vandalism.jpg/960px-Palmer_Fixture_BluStorm_hand_dryer_with_some_vandalism.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Palmer_Fixture_BluStorm_hand_dryer_with_some_vandalism.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "157505032",
+              "title": "Palmer Fixture New BluStorm hand dryer",
+              "author": "Baron Maddock",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Palmer_Fixture_New_BluStorm_hand_dryer.jpg/960px-Palmer_Fixture_New_BluStorm_hand_dryer.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Palmer_Fixture_New_BluStorm_hand_dryer.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "media": "illustration",
+          "direction": 1,
+          "q": "empty chair coat",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "media": "illustration",
+          "direction": 2,
+          "q": "door opening",
+          "count": 0,
+          "status": "filtered",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "fresh-ko",
+          "version": "v1",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_feb9b278f1",
+            "inputTokens": 563,
+            "outputTokens": 505
+          }
+        }
+      ]
+    },
+    {
+      "name": "v1-fresh-zh",
+      "output": [],
+      "diagnostics": [
+        {
+          "id": "fresh-zh",
+          "version": "v1",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "fresh-zh",
+          "version": "v1",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_1d46a73b8b",
+            "inputTokens": 545,
+            "outputTokens": 386
+          }
+        },
+        {
+          "id": "fresh-zh",
+          "version": "v1",
+          "diagnostic": {
+            "failure": "invalid_output"
+          }
+        },
+        {
+          "message": "offline"
+        }
+      ]
+    },
+    {
+      "name": "v1-long-en",
+      "output": [
+        {
+          "id": "long-en",
+          "version": "v1",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Empty station at night, repeated waiting and grief slowly become acceptance in morning; no reunion.",
+          "characters": 3098,
+          "directions": [
+            {
+              "photo": "rainy station platform",
+              "illustration": "yellow lamp platform"
+            },
+            {
+              "photo": "folding ticket",
+              "illustration": "walking into light"
+            }
+          ]
+        },
+        {
+          "id": "long-en",
+          "version": "v1",
+          "media": "photo",
+          "direction": 1,
+          "q": "rainy station platform",
+          "count": 17,
+          "status": "matched",
+          "top": [
+            {
+              "id": "190494665",
+              "title": "Clyborn Metra Station (Rainy April 4 2026 morning)",
+              "author": "ItsNotRSnUN",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Clyborn_Metra_Station_%28Rainy_April_4_2026_morning%29.jpg/960px-Clyborn_Metra_Station_%28Rainy_April_4_2026_morning%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Clyborn_Metra_Station_(Rainy_April_4_2026_morning).jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "155692542",
+              "title": "SunRail Train and Platform @ DeLand Amtrak Station-01",
+              "author": "DanTD",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/SunRail_Train_and_Platform_%40_DeLand_Amtrak_Station-01.jpg/960px-SunRail_Train_and_Platform_%40_DeLand_Amtrak_Station-01.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:SunRail_Train_and_Platform_@_DeLand_Amtrak_Station-01.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "78673770",
+              "title": "Nishi-Tokorozawa - rainy day - platforms - May 4 2019 4pm",
+              "author": "Nesnad",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm.jpeg/960px-Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm.jpeg",
+              "source": "https://commons.wikimedia.org/wiki/File:Nishi-Tokorozawa_-_rainy_day_-_platforms_-_May_4_2019_4pm.jpeg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "long-en",
+          "version": "v1",
+          "media": "photo",
+          "direction": 2,
+          "q": "folding ticket",
+          "count": 12,
+          "status": "matched",
+          "top": [
+            {
+              "id": "64311623",
+              "title": "ticket, souvenir",
+              "author": "B.B., (London)",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Ticket%2C_souvenir_%28AM_1995.66.2%29.jpg/960px-Ticket%2C_souvenir_%28AM_1995.66.2%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Ticket,_souvenir_(AM_1995.66.2).jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "153698598",
+              "title": "Lawyers' discussion around phone at 29th Quill Awards",
+              "author": "Hayden Layton/Melbourne Press Club",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Lawyers%27_discussion_around_phone_at_29th_Quill_Awards.jpg/960px-Lawyers%27_discussion_around_phone_at_29th_Quill_Awards.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Lawyers%27_discussion_around_phone_at_29th_Quill_Awards.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "112703741",
+              "title": "מפגש של הc.I.O עם משה שרת, שר החוץ",
+              "author": "Benno Rothenberg",
+              "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/f/f1/The_Kirya_%28997008137488905171%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:The_Kirya_(997008137488905171).jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "long-en",
+          "version": "v1",
+          "media": "illustration",
+          "direction": 1,
+          "q": "yellow lamp platform",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "long-en",
+          "version": "v1",
+          "media": "illustration",
+          "direction": 2,
+          "q": "walking into light",
+          "count": 0,
+          "status": "filtered",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "long-en",
+          "version": "v1",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "long-en",
+          "version": "v1",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_a8c584dda7",
+            "inputTokens": 1125,
+            "outputTokens": 585
+          }
+        }
+      ]
+    },
+    {
+      "name": "v1-turn-ja",
+      "output": [
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "model": "openai/gpt-oss-20b",
+          "expected": "Summer beach celebration turns into quiet grief after learning a friend has died; sea stays bright, no storm.",
+          "characters": 208,
+          "directions": [
+            {
+              "photo": "morning beach",
+              "illustration": "sunrise beach"
+            },
+            {
+              "photo": "empty beach chair",
+              "illustration": "lonely chair"
+            }
+          ]
+        },
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "media": "photo",
+          "direction": 1,
+          "q": "morning beach",
+          "count": 15,
+          "status": "matched",
+          "top": [
+            {
+              "id": "199642161",
+              "title": "Hataitai beach morning swimmers 9 Sept 2026",
+              "author": "Heidi Meudt",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Hataitai_beach_morning_swimmers_9_Sept_2026.jpg/960px-Hataitai_beach_morning_swimmers_9_Sept_2026.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Hataitai_beach_morning_swimmers_9_Sept_2026.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "164108519",
+              "title": "Sunny Isles Beach Morning",
+              "author": "Miamiresidence",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Sunny_Isles_Beach_Morning.jpg/960px-Sunny_Isles_Beach_Morning.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Sunny_Isles_Beach_Morning.jpg",
+              "license": "CC BY 4.0"
+            },
+            {
+              "id": "175285344",
+              "title": "Cloud morning at the beach",
+              "author": "Debest27",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Cloud_morning_at_the_beach.jpg/960px-Cloud_morning_at_the_beach.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:Cloud_morning_at_the_beach.jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "media": "photo",
+          "direction": 2,
+          "q": "empty beach chair",
+          "count": 1,
+          "status": "matched",
+          "top": [
+            {
+              "id": "142352802",
+              "title": "At winter the sea shore of Tel Aviv is mostly empty of people",
+              "author": "Kim Nave",
+              "thumbnail": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/At_winter_the_sea_shore_of_Tel_Aviv_is_mostly_empty_of_people_%28FL45868233%29.jpg/960px-At_winter_the_sea_shore_of_Tel_Aviv_is_mostly_empty_of_people_%28FL45868233%29.jpg",
+              "source": "https://commons.wikimedia.org/wiki/File:At_winter_the_sea_shore_of_Tel_Aviv_is_mostly_empty_of_people_(FL45868233).jpg",
+              "license": "CC BY 4.0"
+            }
+          ]
+        },
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "media": "illustration",
+          "direction": 1,
+          "q": "sunrise beach",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        },
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "media": "illustration",
+          "direction": 2,
+          "q": "lonely chair",
+          "count": 0,
+          "status": "empty",
+          "top": []
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "diagnostic": {
+            "status": 200
+          }
+        },
+        {
+          "id": "turn-ja",
+          "version": "v1",
+          "diagnostic": {
+            "finishReason": "stop",
+            "fingerprint": "fp_9b8528b477",
+            "inputTokens": 568,
+            "outputTokens": 497
+          }
+        }
+      ]
+    }
+  ]
+}

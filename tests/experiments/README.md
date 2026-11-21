@@ -11,3 +11,9 @@ development 使用 lyrics-holdout.json，final 使用 lyrics-final.json。在檢
 以每方向為分母，記錄有效輸出率、非空率、首張強相關率、前三張強相關率。強相關需同時滿足故事場景與該方向情緒。模型失敗的兩個方向及空圖片查詢均計零，亦列出成功輸出的條件分母。插畫獨立統計，不用攝影代替。只有模型輸出率、圖像品質及留出驗收皆達到預定條件，才另行提出採用建議。
 
 本次最多 A、B 兩輪，任一輪未達標即保留正式 V1，沒有自動提升或正式實驗旗標。
+
+## 三階段獨立實驗
+
+three-stage.ts 與 visual-three-stage.txt 是後續單版實驗，不開放正式切換。先讀 docs/verification/three-stage-experiment.md 的預先固定條件與限制。以既有 Free/ZDR 環境，執行 `node --env-file=/absolute/path/.env.local --import tsx tests/experiments/run-three-stage.ts /absolute/path/new-evidence-directory`。輸出目錄必須尚不存在，矩陣固定 11 次、序列、無重試。單例工具供診斷使用，請勿重跑失敗條件以挑選成功回答。Runner 繼承環境而不讀取或保存金鑰。
+
+新 Schema 增加 meaning 字串及 primary/secondary 的 scene，兩方向不對應首尾。與 V1 比較時皆沿用正式短詞檢查及 Commons adapter，但新版本使用 2048 completion tokens，V1 維持 768。新產物僅留於實驗證據，不進 UI 或正式 API。診斷只記錄 failed_generation 長度與 JSON 可解析性，不儲存其內容。留出不得用來改提示。

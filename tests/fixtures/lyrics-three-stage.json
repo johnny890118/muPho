@@ -1,0 +1,26 @@
+[
+  {
+    "id": "long-en",
+    "suite": "development",
+    "expected": "Empty station at night, repeated waiting and grief slowly become acceptance in morning; no reunion.",
+    "lyrics": "Verse 1\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 2\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 3\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 4\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 5\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 6\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 7\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 8\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nThe platform hums, the rain returns, I wait again.\n\nVerse 9\nThe last train leaves the empty station. Rain collects beneath the yellow lamp. Your ticket stays inside my pocket. I read the clock but cannot make it turn.\nChorus\nStay until the morning, stay beside this empty chair. I keep a place for someone who will never meet me there.\nAt dawn I fold the ticket, leave the chair, and walk into the pale light. I do not hear your footsteps. I can finally breathe."
+  },
+  {
+    "id": "turn-ja",
+    "suite": "development",
+    "expected": "Summer beach celebration turns into quiet grief after learning a friend has died; sea stays bright, no storm.",
+    "lyrics": "朝の海へみんなで走った。白い波と青い空、砂の上には笑い声。君の席にも冷たい水を置いた。\n波よ歌え、今日もここで、僕らは夏を迎える。波よ歌え、今日もここで、君を待っている。\n電話の向こうで知らせを聞いた。君はもう帰らない。誰も水に手を伸ばさない。海は変わらず明るい。\n波よ歌え、今日もここで、僕らは夏を迎える。波よ歌え、今日もここで、君を待っている。\n帰り道、空いた椅子だけを振り返る。笑い声は止み、波の音だけが残る。"
+  },
+  {
+    "id": "fresh-zh",
+    "suite": "heldout",
+    "expected": "Winter city apartment loneliness; neighbor shares warm bread, quiet companionship, no romance.",
+    "lyrics": "高樓的冬夜，窗外一格一格的燈亮著。我的桌上只有一只碗，電視說話，房裡沒有人回答。\n把燈留下，把門關上，明天還是同一扇窗。把燈留下，把門關上，我以為沒有人在身旁。\n門外輕輕響了兩聲，鄰居端來剛烤好的麵包。我們沒有談遠方，只把兩只杯子放上桌。\n把燈留下，把門打開，窗外的冬天沒有離開。把燈留下，把門打開，今晚的安靜有人分擔。"
+  },
+  {
+    "id": "fresh-ko",
+    "suite": "heldout",
+    "expected": "Tense backstage before performance becomes courage stepping into warm stage light, audience unseen.",
+    "lyrics": "닫힌 막 뒤에서 손끝이 차갑다. 비어 있는 의자 하나에 외투를 놓고 발소리만 센다. 노래의 첫 줄이 자꾸 사라진다.\n숨을 세어, 하나 둘, 아직 문을 열지 마. 숨을 세어, 하나 둘, 나를 부르지 마.\n멀리서 피아노가 시작된다. 나는 외투를 두고 일어난다. 막 사이로 따뜻한 빛이 발 앞에 닿는다.\n숨을 세어, 하나 둘, 이제 내가 문을 연다. 숨을 세어, 하나 둘, 떨리는 목소리로 첫 줄을 부른다.\n객석은 보이지 않아도 빛 속에 서 있는 나를 더는 숨기지 않는다."
+  }
+]
