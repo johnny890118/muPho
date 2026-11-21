@@ -17,3 +17,7 @@ development 使用 lyrics-holdout.json，final 使用 lyrics-final.json。在檢
 three-stage.ts 與 visual-three-stage.txt 是後續單版實驗，不開放正式切換。先讀 docs/verification/three-stage-experiment.md 的預先固定條件與限制。以既有 Free/ZDR 環境，執行 `node --env-file=/absolute/path/.env.local --import tsx tests/experiments/run-three-stage.ts /absolute/path/new-evidence-directory`。輸出目錄必須尚不存在，矩陣固定 11 次、序列、無重試。單例工具供診斷使用，請勿重跑失敗條件以挑選成功回答。Runner 繼承環境而不讀取或保存金鑰。
 
 新 Schema 增加 meaning 字串及 primary/secondary 的 scene，兩方向不對應首尾。與 V1 比較時皆沿用正式短詞檢查及 Commons adapter，但新版本使用 2048 completion tokens，V1 維持 768。新產物僅留於實驗證據，不進 UI 或正式 API。診斷只記錄 failed_generation 長度與 JSON 可解析性，不儲存其內容。留出不得用來改提示。
+
+## 候選池上限
+
+`MUPHO_PROVIDER_CONTACT=https://your-contact.example node --import tsx tests/experiments/pool-ceiling.ts` 只重播已保存的 final-zh／final-ja 四個 V1 攝影詞，每詞一個首批，不呼叫 Groq、不擴頁、不重試。輸出完整原始池及正式排序後可用池。相機 metadata 僅保存資格判定使用的 LensModel／ExposureTime，避免保存無關 EXIF。完整評分與停止條件見 docs/verification/pool-quality-ceiling.md。重新執行會受到 Commons 索引變動影響，不能拿新池冒充報告內的同池重排。
